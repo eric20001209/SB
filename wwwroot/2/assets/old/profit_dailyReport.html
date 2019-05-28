@@ -1,0 +1,230 @@
+<!doctype html>
+<html class="fixed">
+
+<head>
+  <link rel="stylesheet" href="assets/stylesheets/skins/default.css" media="none" onload="if(media!='all')media='all'">
+  <!-- Basic -->
+  <meta charset="UTF-8">
+
+  <title>Profit Report </title>
+  <meta name="keywords" content="HTML5 Admin Template" />
+  <meta name="description" content="JSOFT Admin - Responsive HTML5 Template">
+  <meta name="author" content="JSOFT.net">
+
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- Web Fonts  -->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+  <!-- Vendor CSS -->
+  <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.css" />
+  <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
+  <link rel="stylesheet" href="assets/vendor/magnific-popup/magnific-popup.css" />
+  <link rel="stylesheet" href="assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+
+  <!-- Specific Page Vendor CSS -->
+  <link rel="stylesheet" href="assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+  <link rel="stylesheet" href="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+  <link rel="stylesheet" href="assets/vendor/morris/morris.css" />
+
+  <!-- Theme CSS -->
+  <link rel="stylesheet" href="assets/stylesheets/theme.css" />
+
+  <!-- Skin CSS -->
+  <link rel="stylesheet" href="assets/stylesheets/skins/default.css" />
+
+  <!-- Theme Custom CSS -->
+  <link rel="stylesheet" href="assets/stylesheets/theme-custom.css">
+
+  <!-- Head Libs -->
+  <script src="assets/vendor/modernizr/modernizr.js"></script>
+
+</head>
+
+<body onload=loaddata()>
+  <section class="body">
+
+    <!-- start: header -->
+    <header class="header">
+      <div class="logo-container">
+        <a href="#" class="logo">
+
+        </a>
+        <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+          <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+        </div>
+      </div>
+
+      <!-- start: search & user box -->
+
+      <!-- end: search & user box -->
+    </header>
+    <!-- end: header -->
+
+    <div class="inner-wrapper">
+      <!-- start: sidebar -->
+      <aside id="sidebar-left" class="sidebar-left">
+        <div id="sidebar"></div>
+      </aside>
+      <!-- end: sidebar -->
+
+      <section role="main" class="content-body">
+        <header class="page-header">
+
+          <h2>Profit Report</h2>
+
+
+          <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+              <li>
+                <a href="index.html">
+                  <i class="fa fa-home"></i>
+                </a>
+              </li>
+              <li><span>Daily Profit Report &nbsp; &nbsp; </span></li>
+
+            </ol>
+          </div>
+        </header>
+        <div class="col-md-12 col-lg-12 col-xl-12">
+
+          <div class="row">
+            <div class="row">
+
+              <div class="col-lg-12">
+                <section class="panel">
+                  <header class="panel-heading">
+
+                    <form class="form-horizontal form-bordered">
+                      <div class="form-group">
+                        <label class="col-md-3 control-label">Branch</label>
+                        <div class="col-md-6" id="comeon">
+                          <!-- <select data-plugin-selectTwo class="form-control populate" id="bran">
+
+                              <option value="ToTal Info">ToTal Info</option>
+
+                              <option value="Auckland Dominion Rd">Auckland Dominion Rd</option>
+                              <option value="Auckland Albany">Auckland Albany</option>
+                              <option value="Auckland CBD">Auckland CBD</option>
+                              <option value="Auckland Howick">Auckland Howick</option>
+                              <option value="Auckland Botany">Auckland Botany</option>
+                              <option value="Auckland Newmarket">Auckland Newmarket</option>
+
+
+                          </select> -->
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label">Date</label>
+                        <div class="col-md-6">
+                          <div class="input-group">
+                            <span class="input-group-addon">
+                              <i class="fa fa-calendar"></i>
+                            </span>
+                            <input type="text" data-plugin-datepicker class="form-control" id="datepicker"  autocomplete="off" >
+                            <!-- <input type="text" data-plugin-datepicker class="form-control" id="datepicker" onchange=getBranch2() autocomplete="off" > -->
+                          </div>
+
+                        </div>
+                      </div>
+
+
+                      <div class="form-group">
+												<label class="col-md-3 control-label">Show Past 7 Days</label>
+												<div class="col-md-6 col-xs-11">
+                          <button class="mb-xs mt-xs mr-xs btn btn-primary" type="button" onclick="drawBar()">View Report</button>
+
+                        </div>
+											</div>
+                  </header>
+
+
+                  <div class="panel-body">
+                    <div class="col-sm-9 col-sm-offset-4">
+                    </div>
+                    <div class="col-md-6">
+                    <div class="well primary "id="bartitle" style="text-align:center;font-size:30px"></div>
+                    <div class="chart chart-md" id="morrisBar"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <table class="table table-bordered mb-none" id="showdetail">
+
+                    </table>
+                  </div>
+                  </div>
+              </div>
+      </section>
+    </div>
+    </div>
+
+    </div>
+    </div>
+    <!-- end:date picker -->
+
+    </div>
+    <!-- end: page -->
+  </section>
+  </div>
+
+  </section>
+
+  <!-- Vendor -->
+  <script src="https://cdn.bootcss.com/moment.js/2.24.0/moment.js"></script>
+  <script src="assets/vendor/jquery/jquery.js"></script>
+  <script src="assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.js"></script>
+  <script src="assets/vendor/nanoscroller/nanoscroller.js"></script>
+  <script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+  <script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
+  <script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+  <!-- Specific Page Vendor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js"></script>
+  <script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+  <script src="assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+  <script src="assets/vendor/jquery-appear/jquery.appear.js"></script>
+  <script src="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+  <script src="assets/vendor/jquery-easypiechart/jquery.easypiechart.js"></script>
+  <script src="assets/vendor/flot/jquery.flot.js"></script>
+  <script src="assets/vendor/flot-tooltip/jquery.flot.tooltip.js"></script>
+  <script src="assets/vendor/flot/jquery.flot.pie.js"></script>
+  <script src="assets/vendor/flot/jquery.flot.categories.js"></script>
+  <script src="assets/vendor/flot/jquery.flot.resize.js"></script>
+  <script src="assets/vendor/jquery-sparkline/jquery.sparkline.js"></script>
+  <script src="assets/vendor/raphael/raphael.js"></script>
+  <script src="assets/vendor/morris/morris.js"></script>
+  <script src="assets/vendor/gauge/gauge.js"></script>
+  <script src="assets/vendor/snap-svg/snap.svg.js"></script>
+  <script src="assets/vendor/liquid-meter/liquid.meter.js"></script>
+  <script src="assets/vendor/jqvmap/jquery.vmap.js"></script>
+  <script src="assets/vendor/jqvmap/data/jquery.vmap.sampledata.js"></script>
+  <script src="assets/vendor/jqvmap/maps/jquery.vmap.world.js"></script>
+  <script src="assets/vendor/jqvmap/maps/continents/jquery.vmap.africa.js"></script>
+  <script src="assets/vendor/jqvmap/maps/continents/jquery.vmap.asia.js"></script>
+  <script src="assets/vendor/jqvmap/maps/continents/jquery.vmap.australia.js"></script>
+  <script src="assets/vendor/jqvmap/maps/continents/jquery.vmap.europe.js"></script>
+  <script src="assets/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"></script>
+  <script src="assets/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"></script>
+
+  <!-- Theme Base, Components and Settings -->
+  <script src="assets/javascripts/theme.js"></script>
+
+  <!-- Theme Custom -->
+  <script src="assets/javascripts/theme.custom.js"></script>
+
+  <!-- Theme Initialization Files -->
+  <script src="assets/javascripts/theme.init.js"></script>
+
+
+  <!-- Examples -->
+  <!-- <script src="assets/javascripts/ui-elements/examples.charts.js"></script> -->
+  <!-- <script src="assets/javascripts/dashboard/examples.dashboard.js"></script> -->
+  <!-- gpos js -->
+
+  <!-- <script src="assets/javascripts/gpos/dashboard.js"></script> -->
+  <script src="assets/javascripts/gpos/Profit_dailyReport.js"></script>
+  <script src="assets/javascripts/gpos/gpos.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin - Login</title>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!--bootstrap css-->
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin.css" rel="stylesheet">
+    <script src="js/popper.min.js"></script>
+   
+</head>
+
+<body class="bg-dark">
+    <div class="container">
+        <div class="card card-login mx-auto mt-5">
+            <div class="card-header">Login</div>
+            <div class="card-body">
+                <form onsubmit="return doLogin();" action="itemReportTop10.html"  target="nm_iframe" class="needs-validation" id="myform" >
+                    <div id="errorPanel"><div class="badge badge-danger" style="font-size:inherit" id="error"></div></div>
+                    <div id="successPanel" style="align-self:center"><div class="badge badge-success" style="font-size:inherit" id="success"></div></div>
+                    <div style="height:10px"></div>
+                    <style>
+                        #errorPanel {
+                            display: none;
+                        }
+
+                        #successPanel {
+                            display: none;
+                        }
+                    </style>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus"> <!-- onchange="checkemail(this.id)"-->
+                            <label for="inputEmail">Email address</label>
+                            <!--<div class="valid-feedback">Valid.</div>-->
+                            <div class="invalid-feedback">Please fill out this field in email format</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required" autocomplete="on">
+                            <label for="inputPassword">Password</label>
+                            <!--<div class="valid-feedback">Valid.</div>-->
+                            <div class="invalid-feedback">Please fill out this field.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="remember-me" id="remembermeckb">
+                                Remember Password
+                            </label>
+                        </div>
+                    </div>
+                    <!--<a class="btn btn-primary btn-block" href="#" onclick="doLogin()">Login</a>-->
+                    <button type="submit" class="btn btn-primary btn-block">Login</button> <!--"-->
+                </form>
+                <div class="text-center">
+                    <a class="d-block small mt-3" href="register.html">Register an Account</a>
+                    <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+    <script>
+        // Disable form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Get the forms we want to add validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        //if (document.getElementsById("inputPassword").value.length < 7) {
+                        //    alert('<7');
+                        //}                      
+
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.cookie.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!--<script src="vendor/bootstrap/js/bootstrap.js"></script>-->
+    <!--<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>-->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/authetication.js"></script>
+</body>
+
+</html>
