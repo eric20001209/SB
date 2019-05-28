@@ -48,6 +48,7 @@ namespace SB.Controllers
             //obtain login_email and pw
             string email = mylogin.login_email;
             string passowrd = mylogin.password;
+            string name = mylogin.name;
 
             //encrypt with md5
             MD5 md5Hash = MD5.Create();

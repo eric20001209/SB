@@ -85,7 +85,7 @@ function getDate() {//即日起之前12个月 e.g. today is 24/03/2019, begin da
     //$("#dateto").val(moment().format('DD/MM/YYYY'));
 }
 function getBranchList() {
-    var uri = "https://localhost:44367/api/SalesInvoice/Branches";
+    var uri = "https://localhost:44398/api/SalesInvoice/Branches";
     var xhr = new XMLHttpRequest();
     xhr.open("GET", uri, true);
     xhr.onload = function () {
@@ -134,7 +134,7 @@ function getdata() {
     var myReportDat;
 
     var chartdatalist = [];
-    var uri = "https://localhost:44367/api/itemreport10/month?start=" + startdate + "&end=" + enddate;
+    var uri = "https://localhost:44398/api/itemreport10/month?start=" + startdate + "&end=" + enddate;
 
     var myReport;
     var myReportTable;
@@ -161,7 +161,7 @@ function getdata() {
     //else
     {
         $.ajax({
-            //type: "post",
+      //    type: "post",
             type: "get",
             url: uri,
             async: true,

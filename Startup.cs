@@ -72,6 +72,9 @@ namespace SB
             app.UseAuthentication();
             app.UseStatusCodePages();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles(); //allow to access file in wwwroot folder
+
             app.UseHttpsRedirection();
             app.UseMvc();
         }

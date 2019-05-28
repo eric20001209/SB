@@ -10,7 +10,7 @@ namespace SB.Dto
     {
         public int id { get; set; }
 
-        [Required]
+        //[Required]
         [MaxLength(50,ErrorMessage = "The length is no more than 50")]
         public string name { get; set; }
 

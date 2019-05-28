@@ -41,7 +41,7 @@ function doLogin() {
  //   alert(preUrl);
     var email = document.getElementById("inputEmail").value;
     var password = document.getElementById("inputPassword").value;
-    var uri = "https://localhost:44367/api/login/login"
+    var uri = "https://localhost:44398/api/login/login"
     var someJsonString = {
         "login_email": email,
         "password": password
@@ -102,7 +102,7 @@ function doRegister() {
     var email = document.getElementById("inputEmail").value;
     var password = document.getElementById("inputPassword").value;
     var confirmPassword = document.getElementById("confirmPassword").value;
-    var uri = "https://localhost:44367/api/register/md5"
+    var uri = "https://localhost:44398/api/register/md5"
     var someJsonString = {
         "name": name,
         "email": email,
@@ -128,7 +128,7 @@ function doRegister() {
             dataType: "json",
             success: function (data) {
                 //注册成功之后登陆 创建token
-                var uri = "https://localhost:44367/api/login/login"
+                var uri = "https://localhost:44398/api/login/login"
                 var someJsonString = {
                     "login_email": email,
                     "password": password
@@ -208,7 +208,7 @@ function doAuthetication() {
 function doSendPw()
 {
     var email = document.getElementById("inputEmail").value;
-    var uri = "https://localhost:44367/api/login/sendPw/" + email;
+    var uri = "https://localhost:44398/api/login/sendPw/" + email;
 
     var someJsonString = {};
     //alert('2');

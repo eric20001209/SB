@@ -48,8 +48,7 @@ namespace webAPISQL.Controllers
                                     //.Where(i=>i.Paid == true)
                                     .Where(b => b.Activated == true);
 
-            decimal total = BranchInvoiceList.Sum(i => i.Total).GetValueOrDefault();
-
+            double total = (double)BranchInvoiceList.Sum(i => i.Total).Value;
 
             var sales = from s in _context.Sales
                         join b in BranchInvoiceList on s.InvoiceNumber equals b.InvoiceNumber
@@ -72,13 +71,13 @@ namespace webAPISQL.Controllers
                                {
                                    month = ConvertIntToMonth(g.Key),
                                    salesTotal = Math.Round((from s in g
-                                                            select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum(), 2),
+                                                            select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value, 2),
 
                                    profitTotal = Math.Round((from p in g
-                                                             select (p.CommitPrice - p.SupplierPrice) * (1 + (decimal)p.TaxRate) * (decimal)p.Quantity).Sum(), 2),
+                                                             select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value, 2),
 
                                    percent = Math.Round((from s in g
-                                                         select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum() / total * 100, 0),
+                                                         select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / total * 100, 0),
 
                                    TransQty = (from tq in g
                                                select tq.InvoiceNumber).Distinct().Count(),
@@ -89,16 +88,17 @@ namespace webAPISQL.Controllers
                                                  {
                                                      cat = cg.Key,
                                                      total = Math.Round((from sc in cg
-                                                                         select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum(), 2),
+                                                                         select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2),
                                                      percent = Math.Round(((from sc in cg
-                                                                            select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum() / ((from s in g
-                                                                                                                                              select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum()) * 100), 2) + "%"
+                                                                            select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum() / ((from s in g
+                                                                                                                                              select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2) + "%"
                                                  }).OrderByDescending(o => o.total).Take(10)
 
                                });
             return Ok(reportMonth);
         }
 
+        //[AllowAnonymous]
         [HttpGet("month")]
         public IActionResult getAnualDataByMonth([FromQuery] string start, [FromQuery] string end)
         {
@@ -123,7 +123,7 @@ namespace webAPISQL.Controllers
                                     //.Where(i=>i.Paid == true)
                                     .Where(b => b.Activated == true);
 
-            decimal total = BranchInvoiceList.Sum(i => i.Total).GetValueOrDefault();
+            double total = (double)BranchInvoiceList.Sum(i => i.Total).Value;
 
             var sales = from s in _context.Sales
                         join b in BranchInvoiceList on s.InvoiceNumber equals b.InvoiceNumber
@@ -146,13 +146,13 @@ namespace webAPISQL.Controllers
                                {
                                    month = ConvertIntToMonth(g.Key),
                                    salesTotal = Math.Round((from s in g
-                                                            select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum(), 2),
+                                                            select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value, 2),
 
                                    profitTotal = Math.Round((from p in g
-                                                             select (p.CommitPrice - p.SupplierPrice) * (1 + (decimal)p.TaxRate) * (decimal)p.Quantity).Sum(), 2),
+                                                             select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value, 2),
 
                                    percent = Math.Round((from s in g
-                                                         select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum() / total * 100, 0),
+                                                         select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / total * 100, 0),
 
                                    TransQty = (from tq in g
                                                select tq.InvoiceNumber).Distinct().Count(),
@@ -163,10 +163,10 @@ namespace webAPISQL.Controllers
                                                  {
                                                      cat = cg.Key,
                                                      total = Math.Round((from sc in cg
-                                                                         select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum(), 2),
+                                                                         select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2),
                                                      percent = Math.Round(((from sc in cg
-                                                                            select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum() / ((from s in g
-                                                                                                                                              select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum()) * 100), 2) + "%"
+                                                                            select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum() / ((from s in g
+                                                                                                                                              select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2) + "%"
                                                  }).OrderByDescending(o => o.total).Take(10)
 
                                });
@@ -307,17 +307,17 @@ namespace webAPISQL.Controllers
                                   {
                                       day = g.Key,
                                       salesTotal = Math.Round((from s in g
-                                                               select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum(), 2),
+                                                               select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value, 2),
                                       salesbycat = (from s in g
                                                     group s by s.Cat into cg
                                                     select new
                                                     {
                                                         cat = cg.Key,
                                                         total = Math.Round((from sc in cg
-                                                                            select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum(), 2),
+                                                                            select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2),
                                                         percent = Math.Round(((from sc in cg
-                                                                               select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum() / ((from s in g
-                                                                                                                                                 select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum()) * 100), 2) + "%"
+                                                                               select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum() / ((from s in g
+                                                                                                                                                 select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2) + "%"
                                                     }).OrderByDescending(o => o.total).Take(10)
 
                                   };
@@ -392,17 +392,17 @@ namespace webAPISQL.Controllers
                                   {
                                       day = g.Key,
                                       salesTotal = Math.Round((from s in g
-                                                               select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum(), 2),
+                                                               select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value, 2),
                                       salesbycat = (from s in g
                                                     group s by s.Cat into cg
                                                     select new
                                                     {
                                                         cat = cg.Key,
                                                         total = Math.Round((from sc in cg
-                                                                            select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum(), 2),
+                                                                            select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2),
                                                         percent = Math.Round(((from sc in cg
-                                                                               select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum() / ((from s in g
-                                                                                                                                                 select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum()) * 100), 2)
+                                                                               select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum() / ((from s in g
+                                                                                                                                                 select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2)
                                                     }).OrderByDescending(o => o.total).Take(10)
 
                                   };
@@ -456,7 +456,7 @@ namespace webAPISQL.Controllers
             var salesDetail = (from s in _context.Sales
                                join b in BranchInvoiceList on s.InvoiceNumber equals b.InvoiceNumber
 
-                               select new
+                               select new 
                                {
                                    id = s.Id,
                                    code = s.Code,
@@ -482,7 +482,7 @@ namespace webAPISQL.Controllers
                              {
                                  cat = g.Key,
                                  salesTotal = Math.Round((from p in g
-                                                          select (p.commit_price * (1 + (decimal)p.tax_rate) * (decimal)p.quantity)).Sum(), 2)
+                                                          select ((double)p.commit_price * (1 + p.tax_rate) * p.quantity)).Sum().Value, 2)
                              }).OrderByDescending(o => o.salesTotal).Take(10);
 
             return Ok(goupbycat);
@@ -535,14 +535,14 @@ namespace webAPISQL.Controllers
                                    {
                                        day = g.Key,
                                        salestotal = Math.Round((from s in g
-                                                                select s.CommitPrice * (1 + (decimal)s.TaxRate) * (decimal)s.Quantity).Sum(), 2),
+                                                                select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value, 2),
                                        salesbycat = (from s in g
                                                      group s by s.Cat into cg
                                                      select new
                                                      {
                                                          cat = cg.Key,
                                                          total = Math.Round((from sc in cg
-                                                                             select sc.CommitPrice * (1 + (decimal)sc.TaxRate) * (decimal)sc.Quantity).Sum(), 2)
+                                                                             select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2)
                                                      }).OrderByDescending(o => o.total).Take(10)
 
                                    };
