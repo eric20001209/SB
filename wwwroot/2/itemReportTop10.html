@@ -30,6 +30,22 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
     <link rel="import" href="sidebar.html" id="mysidebar" />
+
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker6').datetimepicker();
+            $('#datetimepicker7').datetimepicker({
+                useCurrent: false //Important! See issue #1075
+            });
+            $("#datetimepicker6").on("dp.change", function (e) {
+                $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+            });
+            $("#datetimepicker7").on("dp.change", function (e) {
+                $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+            });
+        });
+
+/**/</script>
 </head>
 
 <body id="page-top" onload="doAuthetication(),loaddata()">
@@ -142,8 +158,16 @@
                                 <div class="row">
                                     <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">FROM:</div>
                                     <div class="input-group date col-xs-9 col-sm-9 col-md-9 col-lg-6">
-                                        <!--<span class="input-group-addon"><i class="fa fa-calendar"></i></span>-->
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
                                         <input type="text" data-plugin-datepicker class="form-control" id="datefrom" autocomplete="off">
+                                        <!--<div class='input-group date' id='datetimepicker6'>
+        <input type='text' class="form-control" />
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -155,11 +179,18 @@
                                     <div class="input-group col-xs-9 col-sm-9 col-md-9 col-lg-6">
                                         <!--<span class="input-group-addon"><i class="fa fa-calendar"></i></span>-->
                                         <input type="text" data-plugin-datepicker class="form-control" id="dateto" autocomplete="off">
+                                        <!--<div class='input-group date' id='datetimepicker7'>
+                                            <input type='text' class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>-->
                                     </div>
 
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div class="row">

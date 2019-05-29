@@ -112,7 +112,7 @@ function getDate2()
     $('#enddate').datepicker('setDate', moment().format('DD/MM/YYYY'));
 }
 function getBranchList() {
-    var uri = "https://localhost:44367/api/SalesInvoice/Branches";
+    var uri = "https://localhost:44398/api/Branches";
     var xhr = new XMLHttpRequest();
     xhr.open("GET", uri, true);
     xhr.onload = function () {
