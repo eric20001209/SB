@@ -106,8 +106,6 @@ function getBranchList() {
     xhr.send(null);
 }
 
-
-
 function getdata() {
     var last_year_month = function () {
         var d = new Date();

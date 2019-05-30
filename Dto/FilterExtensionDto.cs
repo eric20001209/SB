@@ -23,10 +23,18 @@ namespace SB.Dto
             return myfilter;
         }
 
-        //7days
+        //last 7days
         public static FilterDto seven_days(this FilterDto myfilter)
         {
             myfilter.Start = DateTime.Today.Date.AddDays(-6);
+            myfilter.End = DateTime.Today.Date;
+            return myfilter;
+        }
+
+        //last 30 days
+        public static FilterDto thirty_days(this FilterDto myfilter)
+        {
+            myfilter.Start = DateTime.Today.Date.AddDays(-29);
             myfilter.End = DateTime.Today.Date;
             return myfilter;
         }

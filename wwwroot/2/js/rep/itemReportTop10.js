@@ -138,7 +138,9 @@ function getdata()
     var to = $("#dateto").val();
     var startdate = moment(from, 'DD/MM/YYYY').add(0,'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
+
     var branchId = $("#bran").find("option:selected").attr("branid");
+
     var chartdataDayofWeek;
     var chartdataMonth;
     var chartdatalist = [];
