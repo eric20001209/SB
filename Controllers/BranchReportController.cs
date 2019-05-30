@@ -108,12 +108,13 @@ namespace SB.Controllers
                             b.BranchName
                         };
 
-            //double total = (double)sales.Sum(i => i.Total).Value;
+            double total = (double)BranchInvoiceList.Sum(i => i.Total).Value;
 
             var report = (from s in sales
                           group s by s.BranchName into g
                           select new
                           {
+         
                               BranchName = g.Key,
 
                               salesTotal = Math.Round((from s in g
@@ -122,8 +123,8 @@ namespace SB.Controllers
                               profitTotal = Math.Round((from p in g
                                                         select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value, 2),
 
-                              //percent = Math.Round((from s in g
-                              //                      select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / total * 100, 0),
+                              percent = Math.Round((from s in g
+                                                    select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / total * 100, 0),
 
                               TransQty = (from tq in g
                                           select tq.InvoiceNumber).Distinct().Count(),
