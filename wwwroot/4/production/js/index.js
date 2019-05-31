@@ -104,6 +104,7 @@ function getData() {
     var salesbycat = [];
 
     var piedatasale = [];
+    var piedataprofit = [];
 
     var from = $("#from").html();
     var to = $("#to").html();
@@ -137,8 +138,11 @@ function getData() {
                 salesbycat[i] = JSON.stringify(data[i].salesbycat); //localstorage 只能存字符串， 要先tringify一下 ； 取值的时候要parse一下
                 localStorage.setItem(branch[i].toString(), salesbycat[i]);
                 //piechart data
-                piedatasale[i] = { 'value': salestotal[i], 'name': branch[i], 'percent': percent[i]};
+                piedatasale[i] = { 'value': salestotal[i], 'name': branch[i], 'percent': percent[i] };
+                piedataprofit[i] = { 'value': salestotal[i], 'name': branch[i]};
             }
+
+            //manage data for chart
             chartdatabar = {
                 branch: branch,
                 salesTotal: salestotal,
@@ -148,12 +152,13 @@ function getData() {
                 branch: branch,
                 piedatasale:piedatasale
             }
-            //manage data for pie chart
+            chartdatapieprofit = {
+                branch: branch,
+                piedataprofit: piedataprofit
+            }
 
 
-
-            chartdatalist = { chartdatabar,chartdatapiesales }
- //           drawchart(chartdatalist, startdate.format('YYYY-MM-DD'), enddate.format('YYYY-MM-DD'));
+            chartdatalist = { chartdatabar, chartdatapiesales, chartdatapieprofit }
             drawchart(chartdatalist);
         },
         error: function (data) {
@@ -164,9 +169,12 @@ function getData() {
 }
 
 function drawchart(data) {
+    //get data for chart
     var mychartdataBar = data.chartdatabar;
     var mychartdataPieSales = data.chartdatapiesales;
-    var mychartdataPieProfit = ''; //data.chartdatapieprofit;
+    var mychartdataPieProfit = data.chartdatapieprofit;
+
+    //renew container
     var saleschartBar, saleschartPieSales, saleschartPieProfit;
     if (saleschartBar != null && saleschartBar != "" && saleschartBar != undefined) {
         saleschartBar.dispose();
@@ -177,39 +185,76 @@ function drawchart(data) {
     if (saleschartPieProfit != null && saleschartPieProfit != "" && saleschartPieProfit != undefined) {
         saleschartPieProfit.dispose();
     }
-    require.config({
-        paths: {
-            echarts: 'js/eChart'
-        }
-    });
-    require(
-        [
-            'echarts',
-            'echarts/chart/line',
-            'echarts/chart/bar',
-            'echarts/chart/pie',
-            'echarts/chart/radar'
-        ]
-        ,
-        function drawmychart(ec) {
-            saleschartBar = ec.init(document.getElementById('myBarChart'));
-            saleschartPieSales = ec.init(document.getElementById('piechartsales'),'macarons');
+
+    ////echarts
+    //require.config({
+    //    paths: {
+    //        echarts: 'js/eChart'
+    //    }
+    //});
+    //require(
+    //    [
+    //        'echarts',
+    //        'echarts/chart/line',
+    //        'echarts/chart/bar',
+    //        'echarts/chart/pie',
+    //        'echarts/chart/radar'
+    //    ]
+    //    ,
+        saleschartBar = echarts.init(document.getElementById('myBarChart'));
+        saleschartPieSales = echarts.init(document.getElementById('piechartsales'),'macarons');
+        saleschartPieProfit = echarts.init(document.getElementById('piechartprofit'), 'macarons');
 
             var optionBranchreportBar = '';
-            optionBranchreportBar = {
+            optionBranchreportBar =
+                //{
+                //    color: ['#3398DB'],
+                //    tooltip: {
+                //        trigger: 'axis',
+                //        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                //            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                //        }
+                //    },
+                //    grid: {
+                //        left: '3%',
+                //        right: '4%',
+                //        bottom: '3%',
+                //        containLabel: true
+                //    },
+                //    xAxis: [
+                //        {
+                //            type: 'category',
+                //            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                //            axisTick: {
+                //                alignWithLabel: true
+                //            }
+                //        }
+                //    ],
+                //    yAxis: [
+                //        {
+                //            type: 'value'
+                //        }
+                //    ],
+                //    series: [
+                //        {
+                //            name: '直接访问',
+                //            type: 'bar',
+                //            barWidth: '60%',
+                //            data: [10, 52, 200, 334, 390, 330, 220]
+                //        }
+                //    ]
+                //};
+                {
                 tooltip: {
+                    show: true,
                     trigger: 'axis',
                     left: '10px',
                     formatter: function (params) {
-                        //var res = params.name + '<br/>';
                         var res = '<div><p>Branch： ' + params[0].name + '</p></div>'
                         res += '<p>' + 'Sales' + ': ' + params[0].data.formatMoney() + '</p>'
                         res += '<p>' + 'Profit' + ': ' + params[1].data.formatMoney() + '</p>'
-                        //res += '<p>' + '剂量' + ':' + params[2].data + '</p>'
-                        //res += '<p>' + '剂量' + ':' + params[3].data + '</p>'
                         return res;
                     }
-
                 },
                 legend: {
                     show: false,
@@ -230,13 +275,14 @@ function drawchart(data) {
                     {
                         type: 'category',
                         axisLabel: {
+
                             /********echart click event start**********************/
                             clickable: true,
+                            /********echart click event ends***************************************/
                             formatter: function (params) {
                                 var newParamsName = "";
                                 var paramsNameNumber = params.length;
                                 var provideNumber = 9;
-                                //                            var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
                                 if (paramsNameNumber > provideNumber) {
                                     var tempStr = "";
 
@@ -247,7 +293,7 @@ function drawchart(data) {
                                 }
                                 return newParamsName
                             },
-                            /********echart click event ends***************************************/
+
                             interval: 0,
                             rotate: 0
                         },
@@ -288,7 +334,7 @@ function drawchart(data) {
                         //stack: '总量',
                         itemStyle: {
                             normal: {
-                                color: 'rgba(5,105,205, 0.8)',
+                                color: 'rgba(5,105,105, 0.8)',
                                 label: {
                                     normal: {
                                         show: true,
@@ -302,14 +348,20 @@ function drawchart(data) {
                     }
                 ]
             };
+
             saleschartBar.on('click', function (params) {
                 if (params.value) {
-                    $("#mycatbtn").click();
-                    initTable(params.name);
+                    //$("#mycatbtn").click();
+                    //initTable(params.name);
                 } else {
                     alert("单击了" + params.name + "x轴标签");
                 }
             });
+            saleschartBar.on('mouseover', function (params) {
+                if (params.name) { console.log(JSON.stringify(params.name));}
+               
+            });
+
 
             var optionBranchReportPieSales = '';
             optionBranchReportPieSales = {
@@ -321,7 +373,7 @@ function drawchart(data) {
                     x: 'center'
                 },
                 tooltip: {
-                    show: true,
+                    show: false,
                     trigger: 'item',
                     formatter:
                         function (a) {
@@ -329,11 +381,7 @@ function drawchart(data) {
                                 + '</br>'
                                 + 'Amount: ' + a['value'].formatMoney()
                                 + '(' + a['percent']+'%)'
-                                
-                                //+ '<br>free_space:' + a['data'].datas[0]
-                                //+ '<br>sum_blocks:' + a['data'].datas[1]
-                                //+ '<br>sum_space:' + a['data'].datas[2]
-                                //+ '<br>used_space:' + a['data'].datas[3]
+                              
                             );
                         }
 
@@ -345,27 +393,6 @@ function drawchart(data) {
                     x: 'left',
                     data: mychartdataPieSales.branch 
                 },
-                toolbox: {
-                    show: false,
-                    feature: {
-                        mark: { show: true },
-                        dataView: { show: true, readOnly: false },
-                        magicType: {
-                            show: true,
-                            type: ['pie', 'funnel'],
-                            option: {
-                                funnel: {
-                                    x: '25%',
-                                    width: '50%',
-                                    funnelAlign: 'left',
-                                    max: 1548
-                                }
-                            }
-                        },
-                        restore: { show: true },
-                        saveAsImage: { show: true }
-                    }
-                },
                 calculable: true,
                 series: [
                     {
@@ -373,55 +400,59 @@ function drawchart(data) {
                         type: 'pie',
                         radius: '90%',
                         center: ['50%', '50%'],
-                        data: mychartdataPieSales.piedatasale
-                            //[
-                            //{ value: 335, name: '直接访问' },
-                            //{ value: 310, name: '邮件营销' },
-                            //{ value: 234, name: '联盟广告' },
-                            //{ value: 135, name: '视频广告' },
-                            //{ value: 1548, name: '搜索引擎' }
-                            //]
-                        ,
-       
-                        itemStyle: {
-                 
+                        data: mychartdataPieSales.piedatasale,
+                        label: {
                             normal: {
-                                label: {
+
                                     show: true,
-                                    formatter: "{b}({d}%)",
-   
+                                    formatter: "{b}",
                                     position: 'inner', //标签的位置
-                                    textStyle: {
-                                        fontWeight: 400,
-                                        fontSize: 8    //文字的字体大小
-                                    }
-                 
-                                },
-                                labelLine: {    //指示线状态
-                                    show: false,
-                                    smooth: 0.2,
-                                    length: 10,
-                                    length2: 20
+                                textStyle: {
+                                    fontSize: '15',
+                                    fontWeight: 'bold'
                                 }
+                                
+                            },
+                        emphasis: {
+
+                            formatter: "{c}({d}%)",
+                            show: true,
+                            position: 'inner', //标签的位置
+                            textStyle: {
+                                fontWeight: 400,
+                                fontSize: 12   //文字的字体大小
                             }
-                        }
+                        },
+                                labelLine: {
+                                    normal: {
+                                        show: false
+                                    }
+                                }
+
+                            }
                     }
                 ]
             };
 
-
-            var optionBranchReportPieProfit = ''
+            var optionBranchReportPieProfit = '';
             optionBranchReportPieProfit=
                 {
                 tooltip: {
+                    show:false,
                     trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        formatter:
+                            "{b}: {c} ({d}%)",
+                        textStyle: {
+                            //fontWeight: 400
+                            ////fontSize: 10    //文字的字体大小
+                        }
                 },
                 legend: {
                     show: false,
                     orient: 'vertical',
                     x: 'left',
-                    data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                    data:
+                        mychartdataPieProfit.branch
                 },
                 toolbox: {
                     show: false,
@@ -444,39 +475,45 @@ function drawchart(data) {
                         saveAsImage: { show: true }
                     }
                 },
-                calculable: true,
+                //calculable: true,
                 series: [
                     {
                         name: '访问来源',
                         type: 'pie',
-                        radius: ['50%', '70%'],
-                        itemStyle: {
+                        radius: ['50%', '90%'],
+                        avoidLabelOverlap: false,
+                        label: {
                             normal: {
-                                label: {
-                                    show: false
-                                },
-                                labelLine: {
-                                    show: false
+                                show: true,
+                                formatter: "{b}",
+                                position: 'inner',
+                                textStyle: {
+                                    fontSize: '15',
+                                    fontWeight: 'bold'
                                 }
+              
                             },
                             emphasis: {
-                                label: {
-                                    show: true,
-                                    position: 'center',
-                                    textStyle: {
-                                        fontSize: '30',
-                                        fontWeight: 'bold'
-                                    }
+
+                                formatter: "{c}({d}%)",
+                                show: true,
+                                position: 'center', //标签的位置
+                                textStyle: {
+                                    fontWeight: 400,
+                                    fontSize: 12   //文字的字体大小
                                 }
+
+              
+
                             }
                         },
-                        data: [
-                            { value: 335, name: '直接访问' },
-                            { value: 310, name: '邮件营销' },
-                            { value: 234, name: '联盟广告' },
-                            { value: 135, name: '视频广告' },
-                            { value: 1548, name: '搜索引擎' }
-                        ]
+                        labelLine: {
+                            normal: {
+                                show: false
+                            }
+                        },
+                        data:
+                            mychartdataPieProfit.piedataprofit
                     }
                 ]
             };
@@ -484,10 +521,11 @@ function drawchart(data) {
 
             saleschartBar.setOption(optionBranchreportBar);
             saleschartPieSales.setOption(optionBranchReportPieSales);
+            saleschartPieProfit.setOption(optionBranchReportPieProfit);
 
             window.addEventListener("resize", () => {
                 saleschartBar.resize();
                 saleschartPieSales.resize();
+                saleschartPieProfit.resize();
             });
-        });
 }
