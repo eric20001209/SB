@@ -32,8 +32,8 @@ namespace SB.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=192.168.1.247;Database=wucha_cloud_260319;User Id=eznz;password=9seqxtf7");
- //               optionsBuilder.UseSqlServer("Server=LAPTOP-69SGD41T;Database=wucha_cloud;User Id=eznz;password=9seqxtf7;Trusted_Connection=True;");
+ //               optionsBuilder.UseSqlServer("Server=192.168.1.247;Database=wucha_cloud_260319;User Id=eznz;password=9seqxtf7");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-69SGD41T;Database=wucha_cloud;User Id=eznz;password=9seqxtf7;Trusted_Connection=True;");
             }
         }
 

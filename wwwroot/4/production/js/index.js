@@ -37,11 +37,9 @@ function loaddata() {
     initDateRange();
     getData();
 }
-
 function initDateRange() {
     $('#reportTitle').html($('#reportrange span').html());
 };
-
 function getDate() {
     $(function () {
         var start = moment().subtract(3, 'month').startOf('month');//moment().subtract(29, 'days');
@@ -90,12 +88,14 @@ console.log($('#from').html());
     });
 
 }
-
 function getData() {
 
     var chart1, chart2, chart3;
     var chartdatalist = [];
     var chartdataline, chartdatabar, chartdatapiesales, chartdatapieprofit;
+    var salesdatafortable;
+    var profitdatafortable;
+
     var branch = [];
     var salestotal = [];
     var profittotal = [];
@@ -106,13 +106,15 @@ function getData() {
     var piedatasale = [];
     var piedataprofit = [];
 
+    var localstoragedata = [];
+
     var from = $("#from").html();
     var to = $("#to").html();
     var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
-    console.log(startdate.format('YYYY-MM-DD').toString());
-    console.log(enddate.format('YYYY-MM-DD').toString());
+    //console.log(startdate.format('YYYY-MM-DD').toString());
+    //console.log(enddate.format('YYYY-MM-DD').toString());
 
     var uri = "https://localhost:44398/api/branchreport";
     var someJsonString = {
@@ -128,6 +130,7 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
+
             //manage data for bar chart
             for (var i = 0; i < data.length; i++) {
                 branch[i] = data[i].BranchName.replace('Auckland','').trim();
@@ -135,13 +138,16 @@ function getData() {
                 profittotal[i] = data[i].profitTotal;
                 transqty[i] = data[i].TransQty;
                 percent[i] = data[i].percent;
-                salesbycat[i] = JSON.stringify(data[i].salesbycat); //localstorage 只能存字符串， 要先tringify一下 ； 取值的时候要parse一下
-                localStorage.setItem(branch[i].toString(), salesbycat[i]);
+
+                localstoragedata[i] = JSON.stringify(data[i]);
+                localStorage.setItem(branch[i].toString(), localstoragedata[i]);
+                //salesbycat[i] = JSON.stringify(data[i].salesbycat); //localstorage 只能存字符串， 要先tringify一下 ； 取值的时候要parse一下
+                //localStorage.setItem(branch[i].toString(), salesbycat[i]);
+
                 //piechart data
                 piedatasale[i] = { 'value': salestotal[i], 'name': branch[i], 'percent': percent[i] };
                 piedataprofit[i] = { 'value': salestotal[i], 'name': branch[i]};
             }
-
             //manage data for chart
             chartdatabar = {
                 branch: branch,
@@ -157,15 +163,41 @@ function getData() {
                 piedataprofit: piedataprofit
             }
 
+            salesdatafortable = data;
+            for (var q = 0; q < salesdatafortable.length; q++) {
+                salesdatafortable[q].BranchName = salesdatafortable[q].BranchName.replace('Auckland', '').trim();
+                salesdatafortable[q].salesTotal = salesdatafortable[q].salesTotal.formatMoney();
+            }
+
+            profitdatafortable = data;
+            for (var q = 0; q < profitdatafortable.length; q++) {
+                profitdatafortable[q].BranchName = profitdatafortable[q].BranchName;//.replace('Auckland', '').trim();
+                profitdatafortable[q].profitTotal = profitdatafortable[q].profitTotal.formatMoney();
+            }
 
             chartdatalist = { chartdatabar, chartdatapiesales, chartdatapieprofit }
             drawchart(chartdatalist);
+
+            initTable(salesdatafortable, '#salestabledetail', 'salesTotal', 'percent')
+            initTable2(profitdatafortable, '#profittabledetail', 'profitTotal', 'profitpercent');
         },
         error: function (data) {
-            //if (data.status == 401)
-            //    $("#showloginModal").click();
+            if (data.status == 401)
+                $("#showloginModal").click();
         }
     });
+}
+function righthandshowdata(branchName) {
+    var mybranchDetail;
+
+    if (localStorage.getItem(branchName) != null){
+        mybranchDetail = localStorage.Albany;
+        $('sales').html = mybranchDetail.salesTotal;//.formatMoney();
+        $('profit').html = mybranchDetail.profitTotal;//.formatMoney();
+        $('transactions').html = mybranchDetail.TransQty;
+        $('average').html = mybranchDetail.consumPerTrans;//.formatMoney();
+    }
+
 }
 
 function drawchart(data) {
@@ -358,11 +390,14 @@ function drawchart(data) {
                 }
             });
             saleschartBar.on('mouseover', function (params) {
-                if (params.name) { console.log(JSON.stringify(params.name));}
-               
+                if (params.name) {
+
+                    righthandshowdata(params.name);
+                    console.log(JSON.stringify(params.name)
+
+                    );
+                } 
             });
-
-
             var optionBranchReportPieSales = '';
             optionBranchReportPieSales = {
                 //color: ['#ff7f50', '#87cefa', '#da70d6', '#32cd32', '#6495ed', '#ff69b4','#ff87a6'],
@@ -502,9 +537,6 @@ function drawchart(data) {
                                     fontWeight: 400,
                                     fontSize: 12   //文字的字体大小
                                 }
-
-              
-
                             }
                         },
                         labelLine: {
@@ -518,7 +550,6 @@ function drawchart(data) {
                 ]
             };
 
-
             saleschartBar.setOption(optionBranchreportBar);
             saleschartPieSales.setOption(optionBranchReportPieSales);
             saleschartPieProfit.setOption(optionBranchReportPieProfit);
@@ -528,4 +559,142 @@ function drawchart(data) {
                 saleschartPieSales.resize();
                 saleschartPieProfit.resize();
             });
+}
+function initTable(data, id, datafield) {
+    var myTableData;
+    myTableData = data;
+
+    var $table = $(id)
+    $table.bootstrapTable('destroy').bootstrapTable({
+        height: '100%',
+        resizable: true,
+        columns: [
+            {
+            //title: 'Index',
+            valign: 'middle',
+            align: 'center',
+            width: 0,
+            formatter: function (value, row, index) {
+                return index + 1;
+            }
+            },
+            {
+
+            field: 'BranchName',
+            title: 'Branch'
+
+            },
+            {
+            field: datafield, //'salesTotal',
+            title: 'Total Amount'
+
+        }, {
+            field: '',
+                title: 'Percent(%)'
+                ,
+            formatter: function (value, row, index) {
+                return progress(index);
+            }//格式化进度条
+        }],
+        data: myTableData
+    });
+
+    function progress(index) {//add progress bar
+        var percentage = myTableData[index].percent;
+        if (percentage >= 10 && percentage <= 20) {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar progress-bar-default" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+        else if (percentage > 20) {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+        else {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+    }
+
+    $(window).resize(function () {
+        $('#salestabledetail').bootstrapTable('resetView');
+        //$('#profittabledetail').bootstrapTable('resetView');
+    });
+}
+function initTable2(data, id, datafield) {
+    var myTableData;
+    myTableData = data;
+
+    var $table = $(id)
+    $table.bootstrapTable('destroy').bootstrapTable({
+        height: '100%',
+        resizable: true,
+        columns: [
+            {
+                //title: 'Index',
+                valign: 'middle',
+                align: 'center',
+                width: 0,
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },
+            {
+
+                field: 'BranchName',
+                title: 'Branch'
+
+            },
+            {
+                field: datafield, //'salesTotal',
+                title: 'Total Amount'
+
+            }, {
+                field: '',
+                title: 'Percent(%)'
+                ,
+                formatter: function (value, row, index) {
+                    return progress(index);
+                }//格式化进度条
+            }],
+        data: myTableData
+    });
+
+    function progress(index) {//add progress bar
+        var percentage = myTableData[index].profitpercent;//percent;
+        if (percentage >= 10 && percentage <= 20) {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar progress-bar-default" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+        else if (percentage > 20) {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+        else {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+    }
+
+    $(window).resize(function () {
+        //$('#salestabledetail').bootstrapTable('resetView');
+        $('#profittabledetail').bootstrapTable('resetView');
+    });
 }

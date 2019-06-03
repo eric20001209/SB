@@ -109,12 +109,13 @@ namespace SB.Controllers
                         };
 
             double total = (double)BranchInvoiceList.Sum(i => i.Total).Value;
+            double totalprofit = (double)sales.Select(s => Math.Round((double)s.CommitPrice - (double)s.SupplierPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value;
 
             var report = (from s in sales
                           group s by s.BranchName into g
                           select new
                           {
-         
+
                               BranchName = g.Key,
 
                               salesTotal = Math.Round((from s in g
@@ -125,23 +126,30 @@ namespace SB.Controllers
 
                               percent = Math.Round((from s in g
                                                     select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / total * 100, 0),
+                              profitpercent = Math.Round((from p in g
+                                                          select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value / totalprofit * 100, 2),
 
                               TransQty = (from tq in g
                                           select tq.InvoiceNumber).Distinct().Count(),
 
-                              salesbycat = (from s in g
-                                            group s by s.Cat into cg
-                                            select new
-                                            {
-                                                cat = cg.Key,
-                                                total = Math.Round((from sc in cg
-                                                                    select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2),
-                                                percent = Math.Round(((from sc in cg
-                                                                       select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum() / ((from s in g
-                                                                                                                                                 select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2) + "%"
-                                            }).OrderByDescending(o => o.total).Take(10)
+                              consumPerTrans = Math.Round((from s in g
+                                                           select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / (from tq in g
+                                                                                                                                       select tq.InvoiceNumber).Distinct().Count(), 2)
+
+                              //salesbycat = (from s in g
+                              //              group s by s.Cat into cg
+                              //              select new
+                              //              {
+                              //                  cat = cg.Key,
+                              //                  total = Math.Round((from sc in cg
+                              //                                      select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum().Value, 2),
+                              //                  percent = Math.Round(((from sc in cg
+                              //                                         select (double)sc.CommitPrice * (1 + sc.TaxRate) * sc.Quantity).Sum() / ((from s in g
+                              //                                                                                                                   select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2) + "%"
+                              //              }).OrderByDescending(o => o.total).Take(10)
 
                           });
+
             return Ok(report);
         }
     }
