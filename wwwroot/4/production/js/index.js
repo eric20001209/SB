@@ -113,6 +113,11 @@ function getData() {
     var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
+    var overalltotal;
+    var overallprofit;
+    var overalltrans;
+    var overallconsumPerTrans;
+
     //console.log(startdate.format('YYYY-MM-DD').toString());
     //console.log(enddate.format('YYYY-MM-DD').toString());
 
@@ -138,6 +143,11 @@ function getData() {
                 profittotal[i] = data[i].profitTotal;
                 transqty[i] = data[i].TransQty;
                 percent[i] = data[i].percent;
+                overalltotal = data[i].overalltotal.formatMoney();
+                overallprofit = data[i].overallprofit.formatMoney();
+                overalltrans = data[i].overalltrans;
+                overallconsumPerTrans = data[i].overallconsumPerTrans.formatMoney();
+
 
                 localstoragedata[i] = JSON.stringify(data[i]);
                 localStorage.setItem(branch[i].toString(), localstoragedata[i]);
@@ -178,6 +188,11 @@ function getData() {
             chartdatalist = { chartdatabar, chartdatapiesales, chartdatapieprofit }
             drawchart(chartdatalist);
 
+            $('#overalltotal').html(overalltotal);
+            $('#overallprofit').html(overallprofit);
+            $('#overallconsumPerTrans').html(overallconsumPerTrans);
+            document.getElementById("overalltrans").innerHTML = overalltrans;
+
             initTable(salesdatafortable, '#salestabledetail', 'salesTotal', 'percent')
             initTable2(profitdatafortable, '#profittabledetail', 'profitTotal', 'profitpercent');
         },
@@ -189,13 +204,16 @@ function getData() {
 }
 function righthandshowdata(branchName) {
     var mybranchDetail;
+    if (localStorage.getItem(branchName) != null) {
+        //alert('1111111');
+        mybranchDetail = JSON.parse(localStorage.getItem(branchName));
 
-    if (localStorage.getItem(branchName) != null){
-        mybranchDetail = localStorage.Albany;
-        $('sales').html = mybranchDetail.salesTotal;//.formatMoney();
-        $('profit').html = mybranchDetail.profitTotal;//.formatMoney();
-        $('transactions').html = mybranchDetail.TransQty;
-        $('average').html = mybranchDetail.consumPerTrans;//.formatMoney();
+        $('#branch').html(branchName);
+        document.getElementById("sales").innerHTML = "<h2>"+mybranchDetail.salesTotal.formatMoney()+"</h2>";
+        $('#profit').html("<h2>" + mybranchDetail.profitTotal.formatMoney() + "</h2>");
+        $('#transactions').html("<h2>" +mybranchDetail.TransQty + "</h2>");
+        $('#average').html("<h2>" +mybranchDetail.consumPerTrans.formatMoney() + "</h2>");
+        //alert(mybranchDetail);
     }
 
 }
@@ -393,9 +411,7 @@ function drawchart(data) {
                 if (params.name) {
 
                     righthandshowdata(params.name);
-                    console.log(JSON.stringify(params.name)
-
-                    );
+                    //console.log(JSON.stringify(params.name));
                 } 
             });
             var optionBranchReportPieSales = '';

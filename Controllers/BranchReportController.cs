@@ -108,8 +108,10 @@ namespace SB.Controllers
                             b.BranchName
                         };
 
-            double total = (double)BranchInvoiceList.Sum(i => i.Total).Value;
-            double totalprofit = (double)sales.Select(s => Math.Round((double)s.CommitPrice - (double)s.SupplierPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value;
+            double overalltotal = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value, 2); // Math.Round((double)BranchInvoiceList.Sum(i => i.Total).Value,2);
+            double overallprofit = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice - (double)s.SupplierPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value,2);
+            double overalltrans = BranchInvoiceList.Count()== 0 ? 1: BranchInvoiceList.Count();
+            double overallconsumPerTrans = Math.Round(overalltotal/ overalltrans, 2);
 
             var report = (from s in sales
                           group s by s.BranchName into g
@@ -125,17 +127,20 @@ namespace SB.Controllers
                                                         select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value, 2),
 
                               percent = Math.Round((from s in g
-                                                    select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / total * 100, 0),
+                                                    select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / overalltotal * 100, 0),
                               profitpercent = Math.Round((from p in g
-                                                          select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value / totalprofit * 100, 2),
+                                                          select ((double)p.CommitPrice - (double)p.SupplierPrice) * (1 + p.TaxRate) * p.Quantity).Sum().Value / overallprofit * 100, 2),
 
                               TransQty = (from tq in g
                                           select tq.InvoiceNumber).Distinct().Count(),
 
                               consumPerTrans = Math.Round((from s in g
                                                            select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / (from tq in g
-                                                                                                                                       select tq.InvoiceNumber).Distinct().Count(), 2)
-
+                                                                                                                                       select tq.InvoiceNumber).Distinct().Count(), 2),
+                              overalltotal,
+                              overallprofit,
+                              overalltrans,
+                              overallconsumPerTrans
                               //salesbycat = (from s in g
                               //              group s by s.Cat into cg
                               //              select new
