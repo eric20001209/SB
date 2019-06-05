@@ -25,7 +25,7 @@ namespace SB.Controllers
                 .Where(b => b.Activated == true).FirstOrDefault();
             return Ok(branches);
         }
-
+        [AllowAnonymous]
         [HttpPost("HourlyReport")]
         public IActionResult getHourlyReport([FromBody] FilterDto myfilter)
         {
@@ -42,7 +42,7 @@ namespace SB.Controllers
             //                 {
             //                     i.InvoiceNumber,
             //                     tl.Id,
-         
+
             //                 });
 
             var transList = _context.TranInvoice.Select
@@ -59,18 +59,21 @@ namespace SB.Controllers
                 (ti, i) => new
                 {
                     invoice_number = i.InvoiceNumber,
-                    tran_id = ti.TranId ,
+                    tran_id = ti.TranId,
                     i.CommitDate,
-                    amountApplied = ti.AmountApplied
+                    amountApplied = ti.AmountApplied,
+                    i.Branch
                 })
                 .Join(
                 _context.TranDetail
-                .Select(td =>new { tran_id = td.Id, td.PaymentMethod,td.CardId}),
-                tl=>tl.tran_id,
-                td=>td.tran_id,
-                (tl,td) => new {tl.CommitDate, tl.amountApplied, tl.invoice_number,td.PaymentMethod}).GroupBy(i=>i.CommitDate.Hour);
+                .Select(td => new {
+                    td.Id
+                }),
+                tl => tl.tran_id,
+                td => td.Id,
+                (tl, td) => new { tl.CommitDate, tl.amountApplied, tl.invoice_number,tl.Branch,td.Id});//.GroupBy(i=>i.CommitDate.Hour);
 
-            return Ok();
+            return Ok(transList);
         }
 
     }
