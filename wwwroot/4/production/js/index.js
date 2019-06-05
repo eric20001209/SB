@@ -113,10 +113,10 @@ function getData() {
     var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
-    var overalltotal;
-    var overallprofit;
-    var overalltrans;
-    var overallconsumPerTrans;
+    var overalltotal = '...';
+    var overallprofit= '...';
+    var overalltrans='...';
+    var overallconsumPerTrans= '...';
 
     //console.log(startdate.format('YYYY-MM-DD').toString());
     //console.log(enddate.format('YYYY-MM-DD').toString());
@@ -143,6 +143,7 @@ function getData() {
                 profittotal[i] = data[i].profitTotal;
                 transqty[i] = data[i].TransQty;
                 percent[i] = data[i].percent;
+                //alert('3333');
                 overalltotal = data[i].overalltotal.formatMoney();
                 overallprofit = data[i].overallprofit.formatMoney();
                 overalltrans = data[i].overalltrans;
@@ -188,9 +189,9 @@ function getData() {
             chartdatalist = { chartdatabar, chartdatapiesales, chartdatapieprofit }
             drawchart(chartdatalist);
 
-            $('#overalltotal').html(overalltotal);
-            $('#overallprofit').html(overallprofit);
-            $('#overallconsumPerTrans').html(overallconsumPerTrans);
+            document.getElementById("overalltotal").innerHTML = overalltotal;
+            document.getElementById("overallprofit").innerHTML = overallprofit;
+            document.getElementById("overallconsumPerTrans").innerHTML= overallconsumPerTrans;
             document.getElementById("overalltrans").innerHTML = overalltrans;
 
             initTable(salesdatafortable, '#salestabledetail', 'salesTotal', 'percent')

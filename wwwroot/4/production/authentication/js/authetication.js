@@ -195,7 +195,8 @@ function doAuthetication() {
         beforeSend: function (xhr) {
             if (localStorage.getItem("token") != null) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
-                document.getElementById("username").innerHTML= "Hello, " + localStorage.getItem("name");
+                document.getElementById("username").innerHTML = localStorage.getItem("name");
+                document.getElementById("username2").innerHTML = localStorage.getItem("name");
             }
             else {
                 //alert('invalid token, please re-login');
