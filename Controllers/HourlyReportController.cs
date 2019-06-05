@@ -33,33 +33,42 @@ namespace SB.Controllers
             var invoicesList = _context.Invoice.Where(i => myfilter.BranchId.ToString() == "-1" ? true : i.Branch == myfilter.BranchId)
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
-                .Select(i => new { i.InvoiceNumber }).ToList();
+                .Select(i => new { i.InvoiceNumber,i.Branch,i.CommitDate }).ToList();
 
 
-            //var transList = (from tl in _context.TranDetail
-            //                 join i in invoicesList on tl.InvoiceNumber equals i.InvoiceNumber
+            //var transList = (from tl in _context.TranInvoice
+            //                 join i in _context.Invoice on tl.InvoiceNumber equals i.InvoiceNumber
             //                 select new
             //                 {
-            //                     i.InvoiceNumber, tl.Id, tl.CardId, tl.PaymentMethod
+            //                     i.InvoiceNumber,
+            //                     tl.Id,
+         
             //                 });
 
-            //var transList = _context.TranDetail.Select
-            //    (td => new
-            //    {
-            //        td.Id,
-            //        td.InvoiceNumber,
-            //        td.CardId,
-            //        td.PaymentMethod
-            //    })
-            //    .Join( invoicesList,
-            //    td => td.InvoiceNumber,
-            //    i => i.InvoiceNumber,
-            //    (td, i) => new
-            //    {
-            //        invoice_number = i.InvoiceNumber,
-            //        tran_id = td.Id,
-            //        payment_method = td.PaymentMethod
-            //    });
+            var transList = _context.TranInvoice.Select
+                (ti => new
+                {
+                    ti.TranId,
+                    ti.InvoiceNumber,
+                    ti.AmountApplied
+                })
+                .Join(
+                invoicesList,
+                ti => ti.InvoiceNumber,
+                i => i.InvoiceNumber,
+                (ti, i) => new
+                {
+                    invoice_number = i.InvoiceNumber,
+                    tran_id = ti.TranId ,
+                    i.CommitDate,
+                    amountApplied = ti.AmountApplied
+                })
+                .Join(
+                _context.TranDetail
+                .Select(td =>new { tran_id = td.Id, td.PaymentMethod,td.CardId}),
+                tl=>tl.tran_id,
+                td=>td.tran_id,
+                (tl,td) => new {tl.CommitDate, tl.amountApplied, tl.invoice_number,td.PaymentMethod}).GroupBy(i=>i.CommitDate.Hour);
 
             return Ok();
         }
