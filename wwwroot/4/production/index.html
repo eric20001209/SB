@@ -41,7 +41,7 @@
     </style>
 </head>
 
-<body class="nav-md" onload="loaddata()">
+<body class="nav-md" onload="doAuthetication(),loaddata()">
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
@@ -84,7 +84,9 @@
                         <a data-toggle="tooltip" data-placement="top" title="Lock">
                             <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                        <!--<a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">  -->
+                        <a data-toggle="model" data-placement="top" data-target="#logoutModal" title="Logout" href="#">
+                            Logout
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -103,8 +105,10 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/img.jpg" alt="">John Doe
+                                    <img src="images/img.jpg" alt=""><label id="username"></label>
+
                                     <span class=" fa fa-angle-down"></span>
+
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="javascript:;"> Profile</a></li>
@@ -198,12 +202,12 @@
                         <span class="count_bottom"><i class="green">4% </i> From last Week</span>
                     </div>
                     <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i class="fa fa-clock-o"></i> Total Sales</span>
-                        <div class="count red" id="overalltotal">...</div>
+                        <span class="count_top"><i class="fa fa-money"></i> Total Sales</span>
+                        <div class="count blue" id="overalltotal">...</div>
                         <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span>
                     </div>
                     <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> Total Profit</span>
+                        <span class="count_top"><i class="fa fa-bank"></i> Total Profit</span>
                         <div class="count green" id="overallprofit">...</div>
                         <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
                     </div>
@@ -269,28 +273,31 @@
                                     </div>
                                     <div>
                                         <p>Profit</p>
-                                        <div id="profit"><h2>...</h2>
+                                        <div id="profit">
+                                            <h2>...</h2>
                                             <!--<div class="progress progress_sm" style="width: 76%;">
-        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="60"></div>
-    </div>-->
+                                                <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="60"></div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-sm-12 col-xs-6">
                                     <div>
                                         <p>Transactions</p>
-                                        <div class="" id="transactions"><h2>...</h2>
+                                        <div class="" id="transactions">
+                                            <h2>...</h2>
                                             <!--<div class="progress progress_sm" style="width: 76%;">
-        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="40"></div>
-    </div>-->
+                                                <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="40"></div>
+                                            </div>-->
                                         </div>
                                     </div>
                                     <div>
                                         <p>Consumption per trans </p>
-                                        <div class="" id="average"><h2>...</h2>
+                                        <div class="" id="average">
+                                            <h2>...</h2>
                                             <!--<div class="progress progress_sm" style="width: 76%;">
-        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-    </div>-->
+                                                <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -332,7 +339,7 @@
                             </div>
                             <div class="x_content">
                                 <div id="piechartsales" style="height:250px"></div>
-                                <div >
+                                <div>
                                     <!--table start-->
                                     <div class="table-responsive">
                                         <div id="salestable">
@@ -356,9 +363,9 @@
                                 </div>
                                 <!--table end-->
                             </div>
-                            </div>
                         </div>
-            
+                    </div>
+
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="x_panel tile">
                             <div class="x_title">
@@ -481,5 +488,6 @@
     <script src="js/all.js"></script>
     <script src="js/eChart/echarts.min.js"></script>
     <script src="js/index.js"></script>
+    <script src="authentication/js/authetication.js"></script>
 </body>
 </html>

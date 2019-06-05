@@ -19,7 +19,7 @@ namespace SB.Controllers
     {
         wucha_cloudContext _context = new wucha_cloudContext();
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost()]
         public IActionResult getBranchReport([FromBody] FilterDto myfilter)
         {

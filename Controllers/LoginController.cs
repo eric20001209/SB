@@ -100,7 +100,7 @@ namespace SB.Controllers
                 );
         }
         [AllowAnonymous]
-        [HttpPost("sendPw")]
+        [HttpPost("sendPw/{emailto}")]
         public IActionResult sendpw(string emailto)
         {
             //check if existing user

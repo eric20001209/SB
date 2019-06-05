@@ -198,7 +198,10 @@ function getData() {
         },
         error: function (data) {
             if (data.status == 401)
-                $("#showloginModal").click();
+                alert('Token Expired!! Redirect to login page!');
+                setTimeout("window.location.href='login.html'", 3000);
+            //    $("#showloginModal").click();
+
         }
     });
 }

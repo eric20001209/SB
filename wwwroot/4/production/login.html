@@ -1,103 +1,122 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>Gentelella Alela! | </title>
+    <title>SB Admin - Login</title>
+    <script src="authentication/vendor/jquery/jquery.min.js"></script>
+    <!-- Custom fonts for this template-->
+    <link href="authentication/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
-    <!-- Bootstrap -->
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="../vendors/animate.css/animate.min.css" rel="stylesheet">
+    <!--bootstrap css-->
+    <link href="authentication/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="authentication/js/bootstrap.min.js"></script>
 
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-  </head>
+    <!-- Custom styles for this template-->
+    <link href="authentication/css/sb-admin-2.css" rel="stylesheet">
+    <script src="authentication/js/popper.min.js"></script>
 
-  <body class="login">
-    <div>
-      <a class="hiddenanchor" id="signup"></a>
-      <a class="hiddenanchor" id="signin"></a>
+</head>
 
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <section class="login_content">
-            <form>
-              <h1>Login Form</h1>
-              <div>
-                <input type="text" class="form-control" placeholder="Username" required="" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="index.html">Log in</a>
-                <a class="reset_pass" href="#">Lost your password?</a>
-              </div>
+<body class="bg-dark">
+    <div class="container">
+        <div class="card card-login mx-auto mt-5">
+            <div class="card-header">Login</div>
+            <div class="card-body">
+                <form onsubmit="return doLogin();" action="index.html" target="nm_iframe" class="needs-validation" id="myform">
+                    <div id="errorPanel"><div class="badge badge-danger" style="font-size:inherit" id="error"></div></div>
+                    <div id="successPanel" style="align-self:center"><div class="badge badge-success" style="font-size:inherit" id="success"></div></div>
+                    <div style="height:10px"></div>
+                    <style>
+                        #errorPanel {
+                            display: none;
+                        }
 
-              <div class="clearfix"></div>
+                        #successPanel {
+                            display: none;
+                        }
+                    </style>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus"> <!-- onchange="checkemail(this.id)"-->
+                            <!--<label for="inputEmail">Email address</label>-->
+                            <!--<div class="valid-feedback">Valid.</div>-->
+                            <div class="invalid-feedback">Please fill out this field in email format</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required" autocomplete="on">
+                            <!--<label for="inputPassword">Password</label>-->
+                            <!--<div class="valid-feedback">Valid.</div>-->
+                            <div class="invalid-feedback">Please fill out this field.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="remember-me" id="remembermeckb">
+                                Remember Password
+                            </label>
+                        </div>
+                    </div>
+                    <!--<a class="btn btn-primary btn-block" href="#" onclick="doLogin()">Login</a>-->
+                    <button type="submit" class="btn btn-primary btn-block">Login</button> <!--"-->
+                    <hr>
+                    <a href="index.html" class="btn btn-google btn-user btn-block">
+                        <i class="fab fa-google fa-fw"></i> Login with Google
+                    </a>
 
-              <div class="separator">
-                <p class="change_link">New to site?
-                  <a href="#signup" class="to_register"> Create Account </a>
-                </p>
-
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                  <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
-                  <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
+                </form>
+                <div class="text-center">
+                    <a class="d-block small mt-3" href="register.html">Register an Account</a>
+                    <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
                 </div>
-              </div>
-            </form>
-          </section>
+            </div>
         </div>
-
-        <div id="register" class="animate form registration_form">
-          <section class="login_content">
-            <form>
-              <h1>Create Account</h1>
-              <div>
-                <input type="text" class="form-control" placeholder="Username" required="" />
-              </div>
-              <div>
-                <input type="email" class="form-control" placeholder="Email" required="" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="index.html">Submit</a>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="separator">
-                <p class="change_link">Already a member ?
-                  <a href="#signin" class="to_register"> Log in </a>
-                </p>
-
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                  <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
-                  <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
-                </div>
-              </div>
-            </form>
-          </section>
-        </div>
-      </div>
     </div>
-  </body>
+    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+    <script>
+        // Disable form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Get the forms we want to add validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        //if (document.getElementsById("inputPassword").value.length < 7) {
+                        //    alert('<7');
+                        //}                      
+
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="authentication/vendor/jquery/jquery.cookie.min.js"></script>
+    <script src="authentication/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!--<script src="vendor/bootstrap/js/bootstrap.js"></script>-->
+    <!--<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>-->
+    <script src="authentication/js/bootstrap.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="authentication/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="authentication/js/authetication.js"></script>
+</body>
+
 </html>
