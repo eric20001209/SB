@@ -32,6 +32,16 @@
     // Remove non-numeric chars (except decimal point/minus sign):
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
 });
+
+
+//jQuery(document).ready(function () {
+//    jQuery(window).load(function () {  //load函数
+//        jQuery("#loading").hide();
+//    });
+//});
+
+
+
 function loaddata() {
     getDate();
     initDateRange();
@@ -47,9 +57,6 @@ function getDate() {
 
         $('#from').html(start.format('DD-MM-YYYY'));
         $('#to').html(end.format('DD-MM-YYYY'));
-console.log($('#from').html());
-        console.log($('#to').html());
-
         function cb(start, end) {
             $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         }
@@ -71,13 +78,8 @@ console.log($('#from').html());
     });
 
     $('#reportrange').on('apply.daterangepicker', function (ev, picker) { //apply button onclick event
-
         $('#from').html(picker.startDate.format('DD-MM-YYYY'));
         $('#to').html(picker.endDate.format('DD-MM-YYYY'));
-
-        //console.log($('#from').html());
-        //console.log($('#to').html());
-
         $('#reportTitle').html(picker.startDate.format('MMMM D, YYYY') + ' - ' + picker.endDate.format('MMMM D, YYYY'));
 
         getData();
@@ -90,9 +92,8 @@ console.log($('#from').html());
 }
 function getData() {
 
-    var chart1, chart2, chart3;
     var chartdatalist = [];
-    var chartdataline, chartdatabar, chartdatapiesales, chartdatapieprofit;
+    var chartdatabar, chartdatapiesales, chartdatapieprofit;
     var salesdatafortable;
     var profitdatafortable;
 

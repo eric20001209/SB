@@ -1,4 +1,4 @@
-﻿var prefix = "https://localhost:44398/api";
+﻿
 var branchId = '';
 $(function () {
     ///货币符号转换
@@ -261,15 +261,18 @@ function drawchart(data) {
         //    ]
         //    ,
         chartLine = echarts.init(document.getElementById('myLineChart'));
-
         saleschartBar;// = echarts.init(document.getElementById('myBarChart'));
-
         saleschartPieSales;// = echarts.init(document.getElementById('piechartsales'),'macarons');
         saleschartPieProfit;// = echarts.init(document.getElementById('piechartprofit'), 'macarons');
 
         var optionHoulyLine = '';
         optionHoulyLine = {
 
+            title: {
+            show:true,
+            text: '11',
+            subtext: '22' 
+    },
         tooltip: [{
             trigger: 'axis'
             }
