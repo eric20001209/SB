@@ -7,7 +7,7 @@ namespace SB.Dto
 {
     public class FilterDto
     {
-        public int? BranchId { get; set; }
+        public int? BranchId { get; set; } 
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
 

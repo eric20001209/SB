@@ -42,7 +42,7 @@ function initDateRange() {
 };
 function getDate() {
     $(function () {
-        var start = moment().subtract(3, 'month').startOf('month');//moment().subtract(29, 'days');
+        var start = moment().subtract(1, 'month').startOf('month');//moment().subtract(29, 'days');
         var end = moment();
 
         $('#from').html(start.format('DD-MM-YYYY'));
@@ -121,17 +121,17 @@ function getData() {
     //console.log(startdate.format('YYYY-MM-DD').toString());
     //console.log(enddate.format('YYYY-MM-DD').toString());
 
-    var uri = "https://localhost:44398/api/branchreport";
+    var uri = "https://localhost:44398/api/branchreport" + "?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD');
     var someJsonString = {
         //"branchId": branchId,
         "start": startdate.format('YYYY-MM-DD'),
         "end": enddate.format('YYYY-MM-DD')
     };
     $.ajax({
-        type: "post",
+        type: "get",
         url: uri,
         async: true,
-        data: JSON.stringify(someJsonString),
+        //data: JSON.stringify(someJsonString),
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
@@ -144,10 +144,10 @@ function getData() {
                 transqty[i] = data[i].TransQty;
                 percent[i] = data[i].percent;
                 //alert('3333');
-                overalltotal = data[i].overalltotal.formatMoney();
-                overallprofit = data[i].overallprofit.formatMoney();
-                overalltrans = data[i].overalltrans;
-                overallconsumPerTrans = data[i].overallconsumPerTrans.formatMoney();
+                overalltotal = data[i].overallTotal.formatMoney();
+                overallprofit = data[i].overallProfit.formatMoney();
+                overalltrans = data[i].overallTrans;
+                overallconsumPerTrans = data[i].overallConsumPerTrans.formatMoney();
 
 
                 localstoragedata[i] = JSON.stringify(data[i]);
@@ -199,7 +199,7 @@ function getData() {
         },
         error: function (data) {
             if (data.status == 401)
-                alert('Token Expired!! Redirect to login page!');
+                //alert('Token Expired!! Redirect to login page!');
                 setTimeout("window.location.href='login.html'", 3000);
             //    $("#showloginModal").click();
 
@@ -349,7 +349,7 @@ function drawchart(data) {
                             },
 
                             interval: 0,
-                            rotate: 0
+                            rotate: 20
                         },
                         //boundaryGap: false,
                         data: mychartdataBar.branch

@@ -25,25 +25,134 @@ namespace SB.Controllers
                 .Where(b => b.Activated == true).FirstOrDefault();
             return Ok(branches);
         }
+        //today
+        [HttpGet("today")]
+        public IActionResult today([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.today();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //yesterday
+        [HttpGet("yesterday")]
+        public IActionResult yesterday([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.yesterday();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //seven_days
+        [HttpGet("seven_days")]
+        public IActionResult seven_days([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.seven_days();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //this month
+        [HttpGet("this_month")]
+        public IActionResult this_month([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.this_month();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //last_month
+        [HttpGet("last_month")]
+        public IActionResult last_month([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.last_month();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //last_3_month
+        [HttpGet("last_3_month")]
+        public IActionResult last_3_month([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.last_3_month();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //this_year
+        [HttpGet("this_year")]
+        public IActionResult this_year([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.this_year();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        //last_year
+        [HttpGet("last_year")]
+        public IActionResult last_year([FromQuery] int? branch)
+        {
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.last_year();
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
         [AllowAnonymous]
-        [HttpPost("HourlyReport")]
-        public IActionResult getHourlyReport([FromBody] FilterDto myfilter)
+        [HttpGet("DateRange")]
+        public IActionResult DateRange([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end)
+        {
+            if (start == null || end == null)
+                return BadRequest(ModelState);
+            //set up time filter
+            FilterDto myfilter = new FilterDto();
+            myfilter.Start = start;
+            myfilter.End = end.AddDays(1);
+            myfilter.BranchId = branch;
+            //get return
+            var finalReturn = getHourlyReport(myfilter);
+            return Ok(finalReturn);
+        }
+
+        public List<HourlyReportDto> getHourlyReport([FromBody] FilterDto myfilter)
         {
 
-            var invoicesList = _context.Invoice.Where(i => myfilter.BranchId.ToString() == "-1" ? true : i.Branch == myfilter.BranchId)
+            var invoicesList = _context.Invoice
+                .Where(i => myfilter.BranchId == null ? true : i.Branch == myfilter.BranchId)
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
                 .Select(i => new { i.InvoiceNumber,i.Branch,i.CommitDate }).ToList();
-
-
-            //var transList = (from tl in _context.TranInvoice
-            //                 join i in _context.Invoice on tl.InvoiceNumber equals i.InvoiceNumber
-            //                 select new
-            //                 {
-            //                     i.InvoiceNumber,
-            //                     tl.Id,
-
-            //                 });
 
             var transList = _context.TranInvoice.Select
                 (ti => new
@@ -63,17 +172,57 @@ namespace SB.Controllers
                     i.CommitDate,
                     amountApplied = ti.AmountApplied,
                     i.Branch
-                })
-                .Join(
-                _context.TranDetail
-                .Select(td => new {
-                    td.Id
-                }),
-                tl => tl.tran_id,
-                td => td.Id,
-                (tl, td) => new { tl.CommitDate, tl.amountApplied, tl.invoice_number,tl.Branch,td.Id});//.GroupBy(i=>i.CommitDate.Hour);
+                });
 
-            return Ok(transList);
+            var HourlyReports = (from i in transList
+                                group i by i.CommitDate.Hour into g
+                                select new HourlyReportDto
+                                {
+                                    hour = g.Key,
+                                    amount = Math.Round((from a in g
+                                                         select a.amountApplied).Sum(), 2),
+                                    transaction = (from a in g
+                                                   select a.invoice_number).Count()
+                                }).ToList();
+
+            List<HourlyReportDto> finalHourlyReports = new List<HourlyReportDto>();
+
+
+                for (int i = 0; i < 24; i++)
+                {
+                    foreach (HourlyReportDto hourReport in HourlyReports)
+                    {
+                        if (hourReport.hour == i)
+                        {
+                            var new_hourReport = new HourlyReportDto();
+                        new_hourReport = hourReport;
+                        new_hourReport.hour ++;
+                            finalHourlyReports.Add(new_hourReport);
+                            HourlyReports.Remove(hourReport);
+                            break;
+                        }
+                        else
+                        {
+                            var new_hourReport = new HourlyReportDto
+                            {
+                                hour = i+1,
+                                amount = 0,
+                                transaction = 0
+                            };
+                            finalHourlyReports.Add(new_hourReport);
+                            break; 
+                        }
+                    }
+                continue;
+                }
+
+            var returnList = (from i in finalHourlyReports
+                              select i).ToList();
+
+
+
+            return finalHourlyReports;
+
         }
 
     }

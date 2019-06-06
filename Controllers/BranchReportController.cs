@@ -19,15 +19,28 @@ namespace SB.Controllers
     {
         wucha_cloudContext _context = new wucha_cloudContext();
 
-       // [AllowAnonymous]
-        [HttpPost()]
-        public IActionResult getBranchReport([FromBody] FilterDto myfilter)
+         [AllowAnonymous]
+        [HttpGet()]
+        public IActionResult getBranchReportByDate([FromQuery] DateTime start, [FromQuery] DateTime end)
+        {
+            if (start == null || end == null)
+                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
+
+            //setup time filter
+            var myfilter = new FilterDto();
+            myfilter.Start = start;
+            myfilter.End = end.AddDays(1);
+
+            //get Result List
+            var myResult = getBranchReport(myfilter);
+            return Ok(myResult);
+        }
+
+        public List<BranchReportDto> getBranchReport([FromBody] FilterDto myfilter)
         {
             _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-
 
             var BranchInvoiceList = (from i in _context.Invoice
                                      join b in _context.Branch on i.Branch equals b.Id
@@ -62,35 +75,6 @@ namespace SB.Controllers
                 i => i.Branch,
                 (b, i) => new { i.InvoiceNumber, b.BranchName, i.CommitDate, i.Branch });
 
-                //.Join(
-                //_context.Sales.Select(s => new
-                //{
-                //    s.Code,
-                //    s.Name,
-                //    s.Cat,
-                //    s.CommitPrice,
-                //    s.SupplierPrice,
-                //    s.Quantity,
-                //    s.TaxRate,
-                //    s.InvoiceNumber
-                //}),
-                //bi => bi.InvoiceNumber,
-                //s => s.InvoiceNumber,
-                //(bi, s) => new
-                //{
-                //    s.Code,
-                //    s.Name,
-                //    s.Cat,
-                //    s.CommitPrice,
-                //    s.SupplierPrice,
-                //    s.Quantity,
-                //    s.TaxRate,
-                //    bi.CommitDate,
-                //    bi.InvoiceNumber,
-                //    bi.Branch,
-                //    bi.BranchName
-                //});
-
             var sales = from s in _context.Sales
                         join b in BranchInvoiceList on s.InvoiceNumber equals b.InvoiceNumber
                         select new
@@ -108,14 +92,14 @@ namespace SB.Controllers
                             b.BranchName
                         };
 
-            double overalltotal = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value, 2); // Math.Round((double)BranchInvoiceList.Sum(i => i.Total).Value,2);
+            double overalltotal = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value, 2); 
             double overallprofit = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice - (double)s.SupplierPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value,2);
             double overalltrans = BranchInvoiceList.Count()== 0 ? 1: BranchInvoiceList.Count();
             double overallconsumPerTrans = Math.Round(overalltotal/ overalltrans, 2);
 
             var report = (from s in sales
                           group s by s.BranchName into g
-                          select new
+                          select new BranchReportDto
                           {
 
                               BranchName = g.Key,
@@ -137,10 +121,10 @@ namespace SB.Controllers
                               consumPerTrans = Math.Round((from s in g
                                                            select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum().Value / (from tq in g
                                                                                                                                        select tq.InvoiceNumber).Distinct().Count(), 2),
-                              overalltotal,
-                              overallprofit,
-                              overalltrans,
-                              overallconsumPerTrans
+                              overallTotal = overalltotal,
+                              overallProfit = overallprofit,
+                              overallTrans = overalltrans,
+                              overallConsumPerTrans = overallconsumPerTrans
                               //salesbycat = (from s in g
                               //              group s by s.Cat into cg
                               //              select new
@@ -153,9 +137,9 @@ namespace SB.Controllers
                               //                                                                                                                   select (double)s.CommitPrice * (1 + s.TaxRate) * s.Quantity).Sum()) * 100).Value, 2) + "%"
                               //              }).OrderByDescending(o => o.total).Take(10)
 
-                          });
+                          }).ToList();
 
-            return Ok(report);
+            return report;
         }
     }
 }
