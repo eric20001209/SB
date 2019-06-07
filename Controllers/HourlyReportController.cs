@@ -21,8 +21,9 @@ namespace SB.Controllers
         public IActionResult getBranches()
         {
             var branches = _context.Branch
-                .Where(b => b.Id != 1)
-                .Where(b => b.Activated == true).FirstOrDefault();
+                //.Where(b => b.Id != 1)
+                .Where(b => b.Activated == true)
+                .Select(b=>new { b.Name, b.Id});
             return Ok(branches);
         }
         //today
@@ -145,7 +146,7 @@ namespace SB.Controllers
             return Ok(finalReturn);
         }
 
-        public List<HourlyReportDto> getHourlyReport([FromBody] FilterDto myfilter)
+        public List<List<HourlyReportDto>> getHourlyReport([FromBody] FilterDto myfilter)
         {
 
             var invoicesList = _context.Invoice
@@ -153,6 +154,8 @@ namespace SB.Controllers
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
                 .Select(i => new { i.InvoiceNumber,i.Branch,i.CommitDate }).ToList();
+
+            var days = myfilter.End.Subtract(myfilter.Start).TotalDays;
 
             var transList = _context.TranInvoice.Select
                 (ti => new
@@ -180,9 +183,15 @@ namespace SB.Controllers
                                 {
                                     hour = g.Key,
                                     amount = Math.Round((from a in g
-                                                         select a.amountApplied).Sum(), 2),
-                                    transaction = (from a in g
-                                                   select a.invoice_number).Count()
+                                                         select a.amountApplied).Sum()/ (from a in g
+                                                                                         select a.invoice_number).Count(), 2),
+                                    transaction = Math.Round((from a in g
+                                                   select a.invoice_number).Count()/days,2),
+                                    total_amount = Math.Round((from a in g
+                                                               select a.amountApplied).Sum(),2),
+                                    total_transaction = (from a in g
+                                                         select a.invoice_number).Count()
+
                                 }).ToList();
 
             List<HourlyReportDto> finalHourlyReports = new List<HourlyReportDto>();
@@ -190,38 +199,39 @@ namespace SB.Controllers
 
                 for (int i = 0; i < 24; i++)
                 {
-                    foreach (HourlyReportDto hourReport in HourlyReports)
+                    var new_hourReport = new HourlyReportDto
                     {
-                        if (hourReport.hour == i)
-                        {
-                            var new_hourReport = new HourlyReportDto();
-                        new_hourReport = hourReport;
-                        new_hourReport.hour ++;
-                            finalHourlyReports.Add(new_hourReport);
-                            HourlyReports.Remove(hourReport);
-                            break;
-                        }
-                        else
-                        {
-                            var new_hourReport = new HourlyReportDto
-                            {
-                                hour = i+1,
-                                amount = 0,
-                                transaction = 0
-                            };
-                            finalHourlyReports.Add(new_hourReport);
-                            break; 
-                        }
-                    }
-                continue;
+                        hour = i + 1,
+                        amount = 0,
+                        transaction = 0
+                    };
+                    finalHourlyReports.Add(new_hourReport);
                 }
 
+            foreach (var fr in finalHourlyReports)
+            {
+                foreach (var r in HourlyReports)
+                {
+                    if (fr.hour == r.hour + 1)
+                    {
+                        fr.amount = r.amount;
+                        fr.transaction = r.transaction;
+                        fr.total_amount = r.total_amount;
+                        fr.total_transaction = r.total_transaction;
+                        break;
+                    }
+                }
+                continue;
+            }
             var returnList = (from i in finalHourlyReports
-                              select i).ToList();
+                              select i).ToList().OrderBy(i=>i.hour).ToList();
 
+            var rushhour = (from i in finalHourlyReports
+                               select i).ToList().OrderByDescending(i => i.transaction).Take(3).ToList();
 
+            List<List<HourlyReportDto>> finallist = new List<List<HourlyReportDto>>(){ returnList, rushhour };
 
-            return finalHourlyReports;
+            return finallist;
 
         }
 

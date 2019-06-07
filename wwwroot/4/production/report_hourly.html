@@ -38,6 +38,24 @@
             overflow-x: auto;
             overflow-y: hidden;
         }
+
+        
+        .va {
+            vertical-align: middle;
+        }
+
+        .branch {
+            font-size: 15px;
+            margin: 10px auto;
+            border: 0px dashed #000;
+            text-align: center;
+        }
+
+        .inline {
+            display: inline;
+            font-size: 12px;
+            border: 1px dashed #000;
+        }
     </style>
 </head>
 
@@ -218,16 +236,6 @@
                         <div class="count" id="overallconsumPerTrans">...</div>
                         <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span>
                     </div>
-                    <!--<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> Total Collections</span>
-                        <div class="count">2,315</div>
-                        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-                    </div>
-                    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> Total Connections</span>
-                        <div class="count">7,325</div>
-                        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-                    </div>-->
                 </div>
                 <!-- /top tiles -->
 
@@ -236,21 +244,37 @@
                         <div class="dashboard_graph">
 
                             <div class="row x_title">
-                                <div class="col-md-8 col-sm-7">
-                                    <h3 id="reportTitle">Date Range  <small>...</small></h3>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
                                     <div id="from" hidden></div>
                                     <div id="to" hidden></div>
-                                </div>
-                                <div class="col-md-4 col-sm-5">
-                                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-                                        <i class="fa fa-calendar"></i>&nbsp;
-                                        <span></span> <i class="fa fa-caret-down"></i>
+                                    <!--<h3 id="reportTitle">Date Range  <small>...</small></h3>-->
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <!--branch filter start-->
+                                            <div class="row">
+                                                <div class="branch col-xs-3 col-sm-3 col-md-3 col-lg-3" style="text-align:center;vertical-align:middle">Branch:</div>
+                                                <div class="branch col-xs-9 col-sm-9 col-md-9 col-lg-9" id="branchlist"></div>
+                                                <!--<div class="branch col-xs-6 col-sm-6 col-md-6 col-lg-6"></div>-->
+                                            </div>                       
+                                            <!--branch filter end-->
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-md-8 col-sm-8 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div class="row">
+                                                <div class="branch col-xs-3 col-sm-3 col-md-3 col-lg-3" style="text-align:center;vertical-align:middle">Date Range:</div>
+                                                <div id="reportrange" class="pull-right branch col-xs-3 col-sm-3 col-md-3 col-lg-3" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 75%">
+                                                    <i class="fa fa-calendar"></i>&nbsp;<span></span> <i class="fa fa-caret-down"></i>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                <!--<div id="chart_plot_01" class="demo-placeholder"></div>-->
                                 <div id="myLineChart" style="height:350px"></div>
                             </div>
 
@@ -261,114 +285,37 @@
                 </div>
                 <br />
 
-                <!--<div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel tile">
-                            <div class="x_title">
-                                <h2>PIE CHART SALES</h2>
-                                <ul class="nav navbar-right panel_toolbox">
-                                    <li>
-                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li>
-                                                <a href="#">Settings 1</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Settings 2</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a class="close-link"><i class="fa fa-close"></i></a>
-                                    </li>
-                                </ul>
-                                <div class="clearfix"></div>
-                            </div>
                             <div class="x_content">
-                                <div id="piechartsales" style="height:250px"></div>
-                                <div>
+                                
                                     <!--table start-->
-                <div class="table-responsive">
-                    <div id="salestable">
-                        <table id="salestabledetail"
+                            <div class="table-responsive">
+                             <div id="salestable">
+                             <table id="salestabledetail"
                                data-addrbar="true"
                                data-page-list="[5,10]"
                                data-locale="en-US"
                                data-pagination="true">
                             <thead>
                                 <tr>
-                                    <th data-field="Index" data-sortable="false">Index</th>
-                                    <th data-field="BranchName" data-sortable="false">Branch</th>
-                                    <th data-field="salesTotal" data-sortable="true">Amount</th>
-                                    <th data-field="percent" data-sortable="false">(%)</th>
+                                    <th data-field="Index" data-sortable="false" hidden>Index</th>
+                                    <th data-field="BranchName" data-sortable="false"hidden>Branch</th>
+                                    <th data-field="salesTotal" data-sortable="true"hidden>Amount</th>
+                                    <th data-field="percent" data-sortable="false"hidden>(%)</th>
                                 </tr>
                             </thead>
 
                         </table>
                     </div>
                 </div>
-            </div>
             <!--table end-->
         </div>
     </div>
     </div>
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="x_panel tile">
-            <div class="x_title">
-                <h2>PIE CHART PRPFIT</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <li>
-                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a href="#">Settings 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Settings 2</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                </ul>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <div id="piechartprofit" style="height:250px"></div>
-                <div style="height:100%">
-                    <!--table start-->
-                    <div class="table-responsive">
-                        <div id="profittable">
 
-                            <table id="profittabledetail"
-                                   data-addrbar="true"
-                                   data-page-list="[5,10]"
-                                   data-locale="en-US"
-                                   data-pagination="true">
-                                <thead>
-                                    <tr>
-                                        <th data-field="Index" data-sortable="false">Index</th>
-                                        <th data-field="BranchName" data-sortable="false">Branch</th>
-                                        <th data-field="profitTotal" data-sortable="true">Amount</th>
-                                        <th data-field="percent" data-sortable="false">(%)</th>
-                                    </tr>
-                                </thead>
-
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    </div>-->
     </div>
     <!-- /page content -->
     <!-- footer content -->

@@ -19,7 +19,7 @@ namespace SB.Controllers
     {
         wucha_cloudContext _context = new wucha_cloudContext();
 
-         [AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet()]
         public IActionResult getBranchReportByDate([FromQuery] DateTime start, [FromQuery] DateTime end)
         {

@@ -9,6 +9,8 @@ namespace SB.Dto
     {
         public int hour { get; set; }
         public decimal amount { get; set; }
-        public int transaction { get; set; }
+        public double transaction { get; set; }
+        public decimal total_amount { get; set; }
+        public double total_transaction { get; set; }
     }
 }

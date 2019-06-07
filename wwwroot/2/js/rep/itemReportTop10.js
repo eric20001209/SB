@@ -140,7 +140,7 @@ function getdata()
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
     var branchId = $("#bran").find("option:selected").attr("branid");
-
+    alert(branchId);
     var chartdataDayofWeek;
     var chartdataMonth;
     var chartdatalist = [];
@@ -271,8 +271,8 @@ function drawchart(data)
                     left: '10px'
                 },
                 legend: {
-                    show: false,
-                    data: ['Sales']
+                    show: true,
+                    data: ['sales']
                 },
                 toolbox: {
                     show: false,
