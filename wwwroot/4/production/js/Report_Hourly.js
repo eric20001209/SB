@@ -119,6 +119,9 @@ function getData() {
     var hour = [];
     var amount = [];
     var transaction = [];
+    var total_amount = [];
+    var total_transaction = [];
+
 
     var branch = [];
     var salestotal = [];
@@ -174,7 +177,8 @@ function getData() {
                 hour[i] = returnList[i].hour;
                 amount[i] = returnList[i].amount;
                 transaction[i] = returnList[i].transaction;
-
+                total_amount[i] = returnList[i].total_amount;
+                total_transaction[i] = returnList[i].total_transaction;
 
                 //piechart data
                 piedatasale[i] = { 'value': salestotal[i], 'name': branch[i], 'percent': percent[i] };
@@ -184,7 +188,9 @@ function getData() {
             chartdataline = {
                 hour: hour,
                 amount: amount,
-                transaction: transaction
+                transaction: transaction,
+                total_amount: total_amount,
+                total_transaction: total_transaction
             }
 
             chartdatalist = { chartdataline, chartdatabar, chartdatapiesales, chartdatapieprofit }
@@ -203,22 +209,39 @@ function getData() {
     });
 }
 
+function righthandshowdata(time) {
+    var mybranchDetail;
+    if (localStorage.getItem(branchName) != null) {
+        mybranchDetail = JSON.parse(localStorage.getItem(branchName));
+        $('#branch').html(branchName);
+        document.getElementById("sales").innerHTML = "<h2>" + mybranchDetail.salesTotal.formatMoney() + "</h2>";
+        $('#profit').html("<h2>" + mybranchDetail.profitTotal.formatMoney() + "</h2>");
+        $('#transactions').html("<h2>" + mybranchDetail.TransQty + "</h2>");
+        $('#average').html("<h2>" + mybranchDetail.consumPerTrans.formatMoney() + "</h2>");
+        //alert(mybranchDetail);
+    }
+
+}
+
 function drawchart(data, daterange, branch) {
 
     //get data for chart
     var mychartdataLine = data.chartdataline;
-    var mychartdataBar = data.chartdatabar;
-    var mychartdataPieSales = data.chartdatapiesales;
-    var mychartdataPieProfit = data.chartdatapieprofit;
-
     //renew container
-    var chartLine, saleschartBar, saleschartPieSales, saleschartPieProfit;
-
+    var chartLine;
         if (chartLine != null && chartLine != "" && chartLine != undefined) {
             chartLine.dispose();
         }
+    chartLine = echarts.init(document.getElementById('myLineChart'));
 
-        chartLine = echarts.init(document.getElementById('myLineChart'));
+    chartLine.on('mouseover', function (params) {
+        //if (params.name) {
+        if (params.name) {
+
+            //righthandshowdata(params.name);
+            console.log(JSON.stringify(params.name));
+        }
+    });
 
         var optionHoulyLine = '';
         optionHoulyLine = {
@@ -235,12 +258,14 @@ function drawchart(data, daterange, branch) {
             },
         tooltip: {
                 trigger: 'axis',
-             formatter: function (params) {
-                var res = '' // '<div><p>Time： ' + params[0].name + '</p></div>'
+            formatter:
+                function (params) {
+                var res = '' 
                 res += '<p>' + 'Avg amount per trans' + ': ' + params[0].data.formatMoney() + '</p>'
-                res += '<p>' + 'Avg trans' + ': ' + params[1].data + '</p>'
+                    res += '<p>' + 'Avg trans' + ': ' + params[1].data + '</p>'
+                    //console.log(params[0].name)
                 return res;
-                }
+                },
             }
             ,
         xAxis: {
@@ -262,8 +287,8 @@ function drawchart(data, daterange, branch) {
             //areaStyle: { normal: {}},
             type: 'line'
         }
-            ,
-                {
+        ,
+        {
                 name:'transaction',
                 data: mychartdataLine.transaction, //[125, 96, 556, 9, 415, 987, 654],
                 //color: 'rgba(245,125,152, 0.8)',
@@ -272,16 +297,40 @@ function drawchart(data, daterange, branch) {
             animation: true,
             type: 'line',
             smooth: true
-        }]
+                }
+                ,
+                {
+                    symbolSize: 0, // symbol的大小设置为0
+                    showSymbol: false, // 不显示symbol
+                    lineStyle: {
+                        width: 0, // 线宽是0
+                        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
+                    },
+
+                    name: 'total_amount',
+                    data: mychartdataLine.total_amount, 
+                    type: 'bar'
+                },
+                {
+                    symbolSize: 0, // symbol的大小设置为0
+                    showSymbol: false, // 不显示symbol
+                    lineStyle: {
+                        width: 0, // 线宽是0
+                        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
+                    },
+
+                    name: 'total_transaction',
+                    data: mychartdataLine.total_transaction,
+                    type: 'bar'
+                }
+            ]
     };
-
         chartLine.setOption(optionHoulyLine);
-
-
         window.addEventListener("resize", () => {
             chartLine.resize();
         });
-    }
+}
+
     function initTable(data, id, datafield) {
         var myTableData;
         myTableData = data;

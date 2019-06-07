@@ -177,6 +177,7 @@ namespace SB.Controllers
                     i.Branch
                 });
 
+
             var HourlyReports = (from i in transList
                                 group i by i.CommitDate.Hour into g
                                 select new HourlyReportDto
