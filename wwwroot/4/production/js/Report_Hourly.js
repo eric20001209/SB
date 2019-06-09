@@ -195,6 +195,8 @@ function getData() {
 
             chartdatalist = { chartdataline, chartdatabar, chartdatapiesales, chartdatapieprofit }
             drawchart(chartdatalist, daterange, branchName);
+            $('#overalltransperday').html(total_transaction[0]);
+            $('#overalltotalperday').html(total_amount[0].formatMoney());
 
             //initTable(salesdatafortable, '#salestabledetail', 'salesTotal', 'percent')
             //initTable2(profitdatafortable, '#profittabledetail', 'profitTotal', 'profitpercent');
@@ -296,33 +298,33 @@ function drawchart(data, daterange, branch) {
                 //areaStyle: { normal: {} },
             animation: true,
             type: 'line',
-            smooth: true
+            smooth: false
                 }
-                ,
-                {
-                    symbolSize: 0, // symbol的大小设置为0
-                    showSymbol: false, // 不显示symbol
-                    lineStyle: {
-                        width: 0, // 线宽是0
-                        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
-                    },
+                //,
+                //{
+                //    symbolSize: 0, // symbol的大小设置为0
+                //    showSymbol: false, // 不显示symbol
+                //    lineStyle: {
+                //        width: 0, // 线宽是0
+                //        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
+                //    },
 
-                    name: 'total_amount',
-                    data: mychartdataLine.total_amount, 
-                    type: 'bar'
-                },
-                {
-                    symbolSize: 0, // symbol的大小设置为0
-                    showSymbol: false, // 不显示symbol
-                    lineStyle: {
-                        width: 0, // 线宽是0
-                        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
-                    },
+                //    name: 'total_amount',
+                //    data: mychartdataLine.total_amount, 
+                //    type: 'line'
+                //},
+                //{
+                //    symbolSize: 0, // symbol的大小设置为0
+                //    showSymbol: false, // 不显示symbol
+                //    lineStyle: {
+                //        width: 0, // 线宽是0
+                //        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
+                //    },
 
-                    name: 'total_transaction',
-                    data: mychartdataLine.total_transaction,
-                    type: 'bar'
-                }
+                //    name: 'total_transaction',
+                //    data: mychartdataLine.total_transaction,
+                //    type: 'line'
+                //}
             ]
     };
         chartLine.setOption(optionHoulyLine);

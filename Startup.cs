@@ -52,7 +52,7 @@ namespace SB
                     castedResolver.NamingStrategy = null;
                  }}).AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()));
 
-            services.AddTransient<LocalMailService>();
+            services.AddTransient<iMailService,LocalMailService>();
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

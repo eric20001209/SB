@@ -195,16 +195,29 @@ namespace SB.Controllers
 
                                 }).ToList();
 
+            decimal total_amount_overall=0;
+            decimal total_transaction_overall =0;
+
+            foreach (var i in HourlyReports)
+            {
+                total_amount_overall = total_amount_overall + i.total_amount ;
+                total_transaction_overall = total_transaction_overall + (decimal)i.total_transaction;
+            }
+            var total_amount_per_day = Math.Round(total_amount_overall / (decimal)days,2);
+            var total_transaction_per_day = Math.Round((double)total_transaction_overall / days, 2);
+
             List<HourlyReportDto> finalHourlyReports = new List<HourlyReportDto>();
 
 
                 for (int i = 0; i < 24; i++)
                 {
-                    var new_hourReport = new HourlyReportDto
-                    {
-                        hour = i + 1,
-                        amount = 0,
-                        transaction = 0
+                var new_hourReport = new HourlyReportDto
+                {
+                    hour = i + 1,
+                    amount = 0,
+                    transaction = 0,
+                    total_amount = total_amount_per_day,
+                    total_transaction = total_transaction_per_day
                     };
                     finalHourlyReports.Add(new_hourReport);
                 }
@@ -217,8 +230,8 @@ namespace SB.Controllers
                     {
                         fr.amount = r.amount;
                         fr.transaction = r.transaction;
-                        fr.total_amount = r.total_amount;
-                        fr.total_transaction = r.total_transaction;
+                        //fr.total_amount = total_amount_per_day;// r.total_amount;
+                        //fr.total_transaction = total_transaction_per_day; // r.total_transaction;
                         break;
                     }
                 }

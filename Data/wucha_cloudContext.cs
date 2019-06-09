@@ -26,14 +26,14 @@ namespace SB.Data
         public virtual DbSet<TranDetail> TranDetail { get; set; }
         public virtual DbSet<TranInvoice> TranInvoice { get; set; }
         public virtual DbSet<Trans> Trans { get; set; }
-
+        public virtual DbSet<EnumTable> EnumTable { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True");
- //               optionsBuilder.UseSqlServer("Server=LAPTOP-69SGD41T;Database=wucha_cloud;User Id=eznz;password=9seqxtf7;Trusted_Connection=True;");
+//               optionsBuilder.UseSqlServer("Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-69SGD41T;Database=wucha_cloud;User Id=eznz;password=9seqxtf7;Trusted_Connection=True;");
             }
         }
 
@@ -1830,6 +1830,49 @@ namespace SB.Data
                 entity.Property(e => e.TransBankId).HasColumnName("trans_bank_id");
 
                 entity.Property(e => e.TransDate).HasColumnName("trans_date");
+            });
+
+            modelBuilder.Entity<EnumTable>(entity =>
+            {
+                entity.HasKey(e => new { e.Class, e.Id });
+
+                entity.ToTable("enum");
+
+                entity.HasIndex(e => e.Class)
+                    .HasName("IDX_enum_class");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("IDX_enum_class_id");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("IDX_enum_name");
+
+                entity.Property(e => e.Class)
+                    .HasColumnName("class")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ClassType)
+                    .HasColumnName("class_type")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ShortName)
+                    .HasColumnName("short_name")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Updated)
+                    .IsRequired()
+                    .HasColumnName("updated")
+                    .HasDefaultValueSql("((1))");
             });
         }
     }

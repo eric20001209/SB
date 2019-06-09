@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using SB.Models;
 using System.Net.Mail;
 using System.Net;
+using SB.Services;
 
 namespace SB.Controllers
 {
@@ -25,6 +26,13 @@ namespace SB.Controllers
     public class LoginController : ControllerBase
     {
         wucha_cloudContext _context = new wucha_cloudContext();
+        //LocalMailService _localMailService = new LocalMailService();
+        iMailService _imailService;
+
+        public LoginController(iMailService mailService)
+        {
+            _imailService = mailService;
+        }
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -99,6 +107,8 @@ namespace SB.Controllers
                 new { error = "Account not exists!!" }
                 );
         }
+
+
         [AllowAnonymous]
         [HttpPost("sendPw/{emailto}")]
         public IActionResult sendpw(string emailto)
@@ -125,26 +135,9 @@ namespace SB.Controllers
 
                 _context.Card.Update(this_card);
                 _context.SaveChanges();
-
                 try
                 {
-                    MailMessage message = new MailMessage();
-                    SmtpClient smtp = new SmtpClient();
-                    message.From = new MailAddress("eric2000.c@gmail.com");
-                    message.To.Add(new MailAddress(emailto));
-                    message.Subject = "Test";
-                    message.IsBodyHtml = true; //to make message body as html  
-                    message.Body = "Hi, this is your new password";
-                    message.Body += " (" + new_pw + ") !!";
-                    smtp.Port = 587;
-                    smtp.Host = "smtp.gmail.com"; //for gmail host  
-                    smtp.UseDefaultCredentials = false;
-                    smtp.EnableSsl = true;
-                    smtp.Credentials = new NetworkCredential("eric2000.c@gmail.com", "rfibgxxwgnlrdbyg");
-
-                    //smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-                    smtp.Send(message);
+                    _imailService.sendEmail(emailto, new_pw);
                     return Ok(new
                     {
                         pw = new_pw,
@@ -155,6 +148,33 @@ namespace SB.Controllers
                 {
                     return BadRequest(e);
                 }
+
+                //try
+                //{
+                //    MailMessage message = new MailMessage();
+                //    SmtpClient smtp = new SmtpClient();
+                //    message.From = new MailAddress("eric2000.c@gmail.com");
+                //    message.To.Add(new MailAddress(emailto));
+                //    message.Subject = "Test";
+                //    message.IsBodyHtml = true; //to make message body as html  
+                //    message.Body = "Hi, this is your new password";
+                //    message.Body += " (" + new_pw + ") !!";
+                //    smtp.Port = 587;
+                //    smtp.Host = "smtp.gmail.com"; //for gmail host  
+                //    smtp.UseDefaultCredentials = false;
+                //    smtp.EnableSsl = true;
+                //    smtp.Credentials = new NetworkCredential("eric2000.c@gmail.com", "rfibgxxwgnlrdbyg");
+                //    smtp.Send(message);
+                //    return Ok(new
+                //    {
+                //        pw = new_pw,
+                //        md5password = md5password
+                //    });
+                //}
+                //catch (Exception e)
+                //{
+                //    return BadRequest(e);
+                //}
             }
             else
                 return NotFound(); ;
