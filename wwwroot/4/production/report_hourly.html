@@ -29,6 +29,7 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <!--import sidebar-->
     <link rel="import" href="sidebar.html" id="mysidebar" />
+    <link rel="import" href="footer.html" id="myfooter" />
     <link rel="import" href="liveon.html" id="myliveon" />
     <!--bootstrap-datatables-->
     <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
@@ -39,7 +40,7 @@
             overflow-y: hidden;
         }
 
-        
+
         .va {
             vertical-align: middle;
         }
@@ -235,16 +236,6 @@
                         </div>
                     </div>
 
-                    <!--<div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-bank"></i> Total Profit</span>
-        <div class="count green" id="overallprofit">...</div>
-        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-    </div>
-    <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> Consumption per trans</span>
-        <div class="count" id="overallconsumPerTrans">...</div>
-        <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span>
-    </div>-->
                 </div>
                 <!-- /top tiles -->
 
@@ -264,7 +255,7 @@
                                                 <div class="branch col-xs-3 col-sm-3 col-md-3 col-lg-3" style="text-align:center;vertical-align:middle">Branch:</div>
                                                 <div class="branch col-xs-9 col-sm-9 col-md-9 col-lg-9" id="branchlist"></div>
                                                 <!--<div class="branch col-xs-6 col-sm-6 col-md-6 col-lg-6"></div>-->
-                                            </div>                       
+                                            </div>
                                             <!--branch filter end-->
                                         </div>
                                     </div>
@@ -278,9 +269,9 @@
                                                     <i class="fa fa-calendar"></i>&nbsp;<span></span> <i class="fa fa-caret-down"></i>
                                                 </div>
                                             </div>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
                             </div>
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -293,64 +284,32 @@
 
                 </div>
                 <br />
-
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="x_panel tile">
-                            <div class="x_content">
-                                
-                                    <!--table start-->
-                            <div class="table-responsive">
-                             <table id="salestabledetail"
-                               data-addrbar="true"
-                               data-page-list="[5,10]"
-                               data-locale="en-US"
-                               data-pagination="true">
-                            <thead>
-                                <tr>
-                                    <th data-field="Index" data-sortable="false" hidden>Index</th>
-                                    <th data-field="BranchName" data-sortable="false"hidden>Branch</th>
-                                    <th data-field="salesTotal" data-sortable="true"hidden>Amount</th>
-                                    <th data-field="percent" data-sortable="false"hidden>(%)</th>
-                                </tr>
-                            </thead>
-                        </table>
-                </div>
-            <!--table end-->
-        </div>
-    </div>
-    </div>
-
-    </div>
-    </div>
-    <!-- /page content -->
-    <!-- footer content -->
-    <footer>
-        <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-        </div>
-        <div class="clearfix"></div>
-    </footer>
-    <!-- /footer content -->
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html" onclick="doLogout()">Logout</a>
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            <script>
+                document.write(myfooter.import.body.innerHTML);
+            </script>
+            <!-- /footer content -->
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-primary" href="login.html" onclick="doLogout()">Logout</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 
     <div class="modal">

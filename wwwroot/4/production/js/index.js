@@ -457,7 +457,11 @@ function drawchart(data) {
                         type: 'pie',
                         radius: '90%',
                         center: ['50%', '50%'],
-                        color: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
+                        color: ['#BDC3C7', '#9B59B6', '#E74C3C', '#26B99A', '#3498DB', "#CFD4D8",
+                            "#B370CF",
+                            "#E95E4F",
+                            "#36CAAB",
+                            "#49A9EA"],
                         data: mychartdataPieSales.piedatasale,
                         label: {
                             normal: {

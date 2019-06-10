@@ -29,6 +29,7 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <!--import sidebar-->
     <link rel="import" href="sidebar.html" id="mysidebar" />
+    <link rel="import" href="footer.html" id="myfooter" />
     <link rel="import" href="liveon.html" id="myliveon" />
     <!--bootstrap-datatables-->
     <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
@@ -65,8 +66,8 @@
 
                     <!--loading--->
                     <!--<div id="loading">
-                        <img src="js/css/FhHRx.gif" alt="loading.." />
-                    </div>-->
+                <img src="js/css/FhHRx.gif" alt="loading.." />
+            </div>-->
                     <!-- /menu profile quick info -->
 
                     <br />
@@ -224,15 +225,15 @@
                         <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span>
                     </div>
                     <!--<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> Total Collections</span>
-                        <div class="count">2,315</div>
-                        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-                    </div>
-                    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i class="fa fa-user"></i> Total Connections</span>
-                        <div class="count">7,325</div>
-                        <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
-                    </div>-->
+                <span class="count_top"><i class="fa fa-user"></i> Total Collections</span>
+                <div class="count">2,315</div>
+                <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Total Connections</span>
+                <div class="count">7,325</div>
+                <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
+            </div>-->
                 </div>
                 <!-- /top tiles -->
 
@@ -248,14 +249,14 @@
                                 </div>
                                 <div class="col-md-4 col-sm-5">
                                     <!--<div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                                    <span>...</span> <b class="caret"></b>    </div>-->
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                            <span>...</span> <b class="caret"></b>    </div>-->
                                     <!--<div class='input-group date'>
-                                        <input type='text' id="datefrom" class="form-control" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>-->
+                                <input type='text' id="datefrom" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>-->
                                     <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
                                         <i class="fa fa-calendar"></i>&nbsp;
                                         <span></span> <i class="fa fa-caret-down"></i>
@@ -283,8 +284,8 @@
                                         <div id="profit">
                                             <h2>...</h2>
                                             <!--<div class="progress progress_sm" style="width: 76%;">
-                                                <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="60"></div>
-                                            </div>-->
+                                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="60"></div>
+                                    </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -294,8 +295,8 @@
                                         <div class="" id="transactions">
                                             <h2>...</h2>
                                             <!--<div class="progress progress_sm" style="width: 76%;">
-                                                <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="40"></div>
-                                            </div>-->
+                                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="40"></div>
+                                    </div>-->
                                         </div>
                                     </div>
                                     <div>
@@ -303,8 +304,8 @@
                                         <div class="" id="average">
                                             <h2>...</h2>
                                             <!--<div class="progress progress_sm" style="width: 76%;">
-                                                <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-                                            </div>-->
+                                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
+                                    </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -430,12 +431,9 @@
             </div>
             <!-- /page content -->
             <!-- footer content -->
-            <footer>
-                <div class="pull-right">
-                    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-                </div>
-                <div class="clearfix"></div>
-            </footer>
+            <script>
+                document.write(myfooter.import.body.innerHTML);
+            </script>
             <!-- /footer content -->
             <!-- Logout Modal-->
             <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

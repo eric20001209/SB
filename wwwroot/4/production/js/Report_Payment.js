@@ -390,21 +390,21 @@ function drawtable(data) {
         //mytable += mypercent[i];
         if (mypercent[i] >= 10 && mypercent[i] <= 20) {
             mytable += "<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + mypercent[i] + "%</div><div class='progress'>"
-                + '<div class="progress-bar progress-bar-default" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="100">'
+                + '<div class="progress-bar progress-bar-default" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="90">'
                 + '<span class="sr-only">Complete (danger)</span>'
                 + '</div>'
                 + "</div>";
         }
         else if (mypercent[i] > 20) {
             mytable += "<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + mypercent[i] + "%</div><div class='progress'>"
-                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="100">'
+                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="90">'
                 + '<span class="sr-only">Complete (danger)</span>'
                 + '</div>'
                 + "</div>";
         }
         else {
             mytable += "<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + mypercent[i] + "%</div><div class='progress'>"
-            + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="100">'
+            + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="90">'
             + '<span class="sr-only">Complete (danger)</span>'
             + '</div>'
             + "</div>";
