@@ -63,11 +63,13 @@ namespace SB.Controllers
             var InvoiceList_branch_first =
                 _context.Branch
                 .Where(b => myfilter.BranchId == null ? true : b.Id == myfilter.BranchId)
+
                 .Select(b => new { branchName = b.Name, branchId = b.Id })
                 .Join(
                     _context.Invoice
                         .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                         .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
+
                         .Select(i => new { branchId = i.Branch, i.InvoiceNumber }),
                     b => b.branchId,
                     i => i.branchId,
@@ -79,6 +81,7 @@ namespace SB.Controllers
                 .Where(i => myfilter.BranchId == null ? true : i.Branch == myfilter.BranchId)
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
+
                 .Select(i => new { branchId = i.Branch, i.InvoiceNumber })
                 .Join(
                 _context.Branch
