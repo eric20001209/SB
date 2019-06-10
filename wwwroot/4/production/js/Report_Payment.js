@@ -37,7 +37,6 @@ function loaddata() {
     getDate();
     getData();
 }
-
 function getBranchList() {
     var uri = "https://localhost:44398/api/payment/Branches";
     var xhr = new XMLHttpRequest();
@@ -59,7 +58,6 @@ function getBranchList() {
     }
     xhr.send(null);
 }
-
 function getDate() {
     $(function () {
         var start = moment().subtract(1, 'month').startOf('month');//moment().subtract(29, 'days');
@@ -116,6 +114,8 @@ function getData() {
     var paymentbyclass_amount = [];
 
     var payment = [];
+    var salesamount = [];
+    var percent = [];
 
     var piedataouter = [];
     var piedatainner = [];
@@ -127,6 +127,8 @@ function getData() {
 
     var branchId = $("#bran").find("option:selected").attr("branid");
     var branchName = $("#bran").find("option:selected").attr("value");
+
+    var total = 0;
 
     if (branchId == undefined)
         branchId = '';
@@ -157,21 +159,14 @@ function getData() {
 
             var bypayment = data[0];
             var byclass = data[1];
+
             //manage data for pie chart
-            for (var i = 0; i < bypayment.length; i++) {
 
-                payment_method[i] = bypayment[i].payment_method;
-                paymentbymethod_amount[i] = bypayment[i].amount;
-
-                //outer piechart data - payment_method 
-                piedataouter[i] = { 'value': paymentbymethod_amount[i], 'name': payment_method[i]  };
-          
-            }
             for (var i = 0; i < byclass.length; i++) {
 
                 payment_class[i] = byclass[i].payment_method;
                 paymentbyclass_amount[i] = byclass[i].amount;
-
+                total += byclass[i].amount;
                 //inner piechart data - payment_class
                 if (i == 0)
                     piedatainner[i] = { 'value': paymentbyclass_amount[i], 'name': payment_class[i], selected:true };
@@ -179,8 +174,22 @@ function getData() {
                     piedatainner[i] = { 'value': paymentbyclass_amount[i], 'name': payment_class[i] };
             }
 
+            console.log(total.toString());
+            for (var i = 0; i < bypayment.length; i++) {
+
+                payment_method[i] = bypayment[i].payment_method;
+                paymentbymethod_amount[i] = bypayment[i].amount;
+                percent[i] = (bypayment[i].amount / total * 100).toFixed(2); 
+                //outer piechart data - payment_method 
+                piedataouter[i] = { 'value': paymentbymethod_amount[i], 'name': payment_method[i] };
+
+            }
+
             payment = payment_method.concat(payment_class);
-            console.log(payment);
+            salesamount = paymentbymethod_amount.concat(paymentbyclass_amount);
+
+            //console.log(payment);
+            //console.log(salesamount);
 
             //manage data for chart
             chartdatapie = {
@@ -188,12 +197,17 @@ function getData() {
                 piedataouter: piedataouter,
                 piedatainner: piedatainner,
             }
-
-            chartdatalist = { chartdatapie}
+            chartdatalist = {chartdatapie}
             drawchart(chartdatalist, daterange, branchName);
 
+            //manage data for table
+            payment = payment_method.concat('Total');
+            salesamount = paymentbymethod_amount.concat(total);//.concat(paymentbyclass_amount);
+            
+            var datafortable = {payment, salesamount, percent};
+
+            drawtable(datafortable);
             //initTable(salesdatafortable, '#salestabledetail', 'salesTotal', 'percent')
-            //initTable2(profitdatafortable, '#profittabledetail', 'profitTotal', 'profitpercent');
         },
         error: function (data) {
             if (data.status == 401)
@@ -204,7 +218,6 @@ function getData() {
         }
     });
 }
-
 function drawchart(data, daterange, branch) {
 
     //get data for chart
@@ -257,6 +270,7 @@ function drawchart(data, daterange, branch) {
             {
                 name: 'payment type',
                 type: 'pie',
+                center: ['55%', '60%'],
                 selectedMode: 'single',
                 radius: [0, '30%'],
                 label: {
@@ -281,6 +295,7 @@ function drawchart(data, daterange, branch) {
             {
                 name: 'payment method',
                 type: 'pie',
+                center: ['55%', '60%'],
                 radius: ['40%', '55%'],
                 label: {
                     normal: {
@@ -345,6 +360,77 @@ function drawchart(data, daterange, branch) {
     window.addEventListener("resize", () => {
         chart.resize();
     });
+}
+function drawtable(data) {
+    var table = $('#tablepayment');
+    if (table != null && table != "" && table != undefined) {
+        
+    }
+
+    var mytable = '<tr width=100%>';
+    var mydtheader = data.payment;
+    var mydata = data.salesamount;
+    var mypercent = data.percent;
+
+    console.log(mydtheader);
+    console.log(mydata);
+
+    for (var i = 0; i < mydtheader.length; i++) {
+        mytable += '<th>' + mydtheader[i] + '</th>';
+    }
+    mytable += "</tr><tr>";
+
+    for (var i = 0; i < mydata.length; i++) {
+        mytable += '<td>' + mydata[i].formatMoney() + '</td>';
+    }
+    mytable += "</tr><tr>";
+
+    for (var i = 0; i < mypercent.length; i++) {
+        mytable += '<td>';
+        //mytable += mypercent[i];
+        if (mypercent[i] >= 10 && mypercent[i] <= 20) {
+            mytable += "<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + mypercent[i] + "%</div><div class='progress'>"
+                + '<div class="progress-bar progress-bar-default" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>";
+        }
+        else if (mypercent[i] > 20) {
+            mytable += "<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + mypercent[i] + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>";
+        }
+        else {
+            mytable += "<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + mypercent[i] + "%</div><div class='progress'>"
+            + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + mypercent[i] + '%"; aria-valuenow :"' + mypercent[i] + '"; aria-valuemax="100">'
+            + '<span class="sr-only">Complete (danger)</span>'
+            + '</div>'
+            + "</div>";
+    }
+        mytable += '</td>';
+    }
+    mytable += '</tr>';
+    mytable += '<br><style>';
+    mytable += 'table,th,td {';
+    mytable += 'border: 1px solid black; text-align:center;';
+    mytable += '#tablepayment{';
+    mytable += ' overflow-x: hidden; ';
+    mytable += ' overflow-y: auto; ';
+    mytable += '} ';
+    mytable += '} ';
+    mytable += '</style>';
+    table.html(mytable);
+
+    //$table.bootstrapTable('destroy').bootstrapTable({
+    //    height: '100%',
+    //    resizable: true,
+    //    columns: [
+
+    //    ],
+    //    data: data
+    //});
 }
 
 function initTable(data, id, datafield) {

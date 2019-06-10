@@ -389,7 +389,7 @@ function drawchart(data) {
                         //stack: '总量',
                         itemStyle: {
                             normal: {
-                                color: 'rgba(5,105,105, 0.8)',
+                                color: 'rgba(155, 89, 182, 0.8)',
                                 label: {
                                     normal: {
                                         show: true,
@@ -419,6 +419,7 @@ function drawchart(data) {
                     //console.log(JSON.stringify(params.name));
                 } 
             });
+
             var optionBranchReportPieSales = '';
             optionBranchReportPieSales = {
                 //color: ['#ff7f50', '#87cefa', '#da70d6', '#32cd32', '#6495ed', '#ff69b4','#ff87a6'],
@@ -456,6 +457,7 @@ function drawchart(data) {
                         type: 'pie',
                         radius: '90%',
                         center: ['50%', '50%'],
+                        color: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
                         data: mychartdataPieSales.piedatasale,
                         label: {
                             normal: {
@@ -565,6 +567,11 @@ function drawchart(data) {
                                 show: false
                             }
                         },
+                        color: ['#BDC3C7', '#9B59B6', '#E74C3C', '#26B99A', '#3498DB', "#CFD4D8",
+                            "#B370CF",
+                            "#E95E4F",
+                            "#36CAAB",
+                            "#49A9EA"],
                         data:
                             mychartdataPieProfit.piedataprofit
                     }

@@ -32,6 +32,7 @@ namespace SB
         public void ConfigureServices(IServiceCollection services)
         {
             //manage my services container
+
             //add jwt authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             { options.TokenValidationParameters = new TokenValidationParameters{
@@ -39,7 +40,6 @@ namespace SB
             ValidateIssuerSigningKey = true,
             ValidIssuer = "http//localhost:44398",
             ValidAudience = "http//localhost:44398",
-                //IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("time@123abc456789"))};
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Startup.Configuration["TokenSecretKey"]))
             };
             });
