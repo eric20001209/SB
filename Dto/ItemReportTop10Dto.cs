@@ -15,6 +15,8 @@ namespace SB.Dto
         //public string ss_cat { get; set; }
         //public decimal selling_price { get; set; }
         //public decimal cost { get; set; }
+        public double sales { get; set; }
+        public double profit { get; set; }
         public double quantity { get; set; }
     }
 }

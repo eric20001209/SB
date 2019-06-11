@@ -44,11 +44,9 @@ namespace SB.Controllers
         }
 
 
-        public List<ItemReportTop10Dto> createItemReport([FromBody] ItemReportFilterDto myfilter)
+        public List<List<ItemReportTop10Dto>> createItemReport([FromBody] ItemReportFilterDto myfilter)
         {
-            List<ItemReportTop10Dto> myReport = new List<ItemReportTop10Dto>();
-
-            var test = (from b in _context.Branch.Where(b => myfilter.BranchId == null ? true :  b.Id ==  myfilter.BranchId)
+            var salesList = (from b in _context.Branch.Where(b => myfilter.BranchId == null ? true :  b.Id ==  myfilter.BranchId)
                         join i in _context.Invoice
                         .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                         .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
@@ -56,29 +54,50 @@ namespace SB.Controllers
                         join s in _context.Sales on i.InvoiceNumber equals s.InvoiceNumber
                         join c in _context.CodeRelations.Where(c=>c.Cat != "ServiceItem") on s.Code equals c.Code
                         select new {
-                            //s.Code,
                             Name = c.NameCn,
+                            s.CommitPrice,
+                            s.TaxRate,
+                            s.SupplierPrice,
                             s.Quantity,
-                            //s.Cat,
-                            //s.SCat,
-                            //s.SsCat,
-                            //s.CommitPrice,
-                            //s.TaxRate,
-                            //s.InvoiceNumber,
-                            //BranchId = b.Id,
-                            //BranchName = b.Name
                         }).ToList();
 
-            myReport = (from i in test
+            //top 10 by Sales qty
+            List<ItemReportTop10Dto> myReportByQty = new List<ItemReportTop10Dto>();
+            myReportByQty = (from i in salesList
                         group i by i.Name into g
                         select new ItemReportTop10Dto {
                             description = g.Key,
                             quantity = (from i in g
                                         select i.Quantity).Sum()
-
                         }).OrderByDescending(i=>i.quantity).Take(10).OrderBy(i=>i.quantity).ToList();
 
+            //top 10 by Sales revenue
+            List<ItemReportTop10Dto> myReportByRevenue = new List<ItemReportTop10Dto>();
+            myReportByRevenue = (from i in salesList
+                             group i by i.Name into g
+                             select new ItemReportTop10Dto
+                             {
+                                 description = g.Key,
+                                 sales = (from i in g
+                                          select (double)i.CommitPrice *(1+ Convert.ToDouble(i.TaxRate))  * i.Quantity).Sum(),
+                             }).OrderByDescending(i => i.quantity).Take(10).OrderBy(i => i.quantity).ToList();
 
+            List<ItemReportTop10Dto> myReportByProfit = new List<ItemReportTop10Dto>();
+            myReportByProfit = (from i in salesList
+                                 group i by i.Name into g
+                                 select new ItemReportTop10Dto
+                                 {
+                                     description = g.Key,
+                                     profit = (from i in g
+                                              select (double)(i.CommitPrice-i.SupplierPrice) * (1 + Convert.ToDouble(i.TaxRate)) * i.Quantity).Sum(),
+                                 }).OrderByDescending(i => i.quantity).Take(10).OrderBy(i => i.quantity).ToList();
+
+            List<List<ItemReportTop10Dto>> myListGroup = new List<List<ItemReportTop10Dto>>()
+            {
+                myReportByQty,
+                myReportByRevenue,
+                myReportByProfit
+            };
             //var InvoiceList_branch_first =
             //    _context.Branch
             //    .Where(b => myfilter.BranchId == null ? true : b.Id == myfilter.BranchId)
@@ -169,7 +188,7 @@ namespace SB.Controllers
             //        bi.branchName
             //    }).GroupBy(bi => bi.branchName);
 
-            return myReport;
+            return myListGroup;
         }
     }
 }

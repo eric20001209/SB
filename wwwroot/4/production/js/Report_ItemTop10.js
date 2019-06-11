@@ -149,7 +149,7 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            var returnList = data;
+            var returnList = data[0];
             //manage data for line chart
             for (var i = 0; i < returnList.length; i++) {
                 des[i] = returnList[i].description;
@@ -230,6 +230,12 @@ function drawchart(data, daterange, branch) {
                 name: 'Quantity',
                 type: 'bar',
                 barWidth: '60%',
+                label: {
+                    normal: {
+                        position: 'right',
+                        show: true
+                            }
+                },
                 data: 
                 mychartdataBar.quantity
 //              [10, 52, 200, 334, 390, 330, 220]
