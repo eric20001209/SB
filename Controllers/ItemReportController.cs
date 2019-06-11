@@ -28,11 +28,11 @@ namespace SB.Controllers
             myfilter.End = end;
 
             //get return list
-            return Ok(CreateItemReport(myfilter));
+            return Ok(createItemReport(myfilter));
         }
 
 
-        public List<ItemReportDto> CreateItemReport([FromBody] ItemReportFilterDto myfilter)
+        public List<ItemReportDto> createItemReport([FromBody] ItemReportFilterDto myfilter)
         {
             List<ItemReportDto> myReport = new List<ItemReportDto>();
 
@@ -91,10 +91,38 @@ namespace SB.Controllers
                 (i, b) => new { b.branchId, b.branchName, i.InvoiceNumber }
                 );
 
-            var mylist = 
+            var mylist_branch_first =
+                    InvoiceList_branch_first
+                    .Join(
+                _context.Sales
+                .Select(s => new
+                {
+                    s.Code,
+                    s.Cat,
+                    s.SCat,
+                    s.SsCat,
+                    s.CommitPrice,
+                    s.TaxRate,
+                    s.InvoiceNumber
+                }).ToList(),
+                bi => bi.InvoiceNumber,
+                s => s.InvoiceNumber,
+                (bi, s) => new
+                {
+                    s.Code,
+                    s.Cat,
+                    s.SCat,
+                    s.SsCat,
+                    s.CommitPrice,
+                    s.TaxRate,
+                    s.InvoiceNumber,
+                    bi.branchId,
+                    bi.branchName
+                }).GroupBy(bi => bi.branchName);
 
-                InvoiceList_branch_first
-        //      InvoiceList_invoice_first
+
+            var mylist_invoice_first = 
+                    InvoiceList_invoice_first
                 .Join(
                 _context.Sales
                 .Select(s => new
