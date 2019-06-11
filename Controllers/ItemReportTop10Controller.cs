@@ -54,7 +54,7 @@ namespace SB.Controllers
                         .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
                         on b.Id equals i.Branch
                         join s in _context.Sales on i.InvoiceNumber equals s.InvoiceNumber
-                        join c in _context.CodeRelations on s.Code equals c.Code
+                        join c in _context.CodeRelations.Where(c=>c.Cat != "ServiceItem") on s.Code equals c.Code
                         select new {
                             //s.Code,
                             Name = c.NameCn,
