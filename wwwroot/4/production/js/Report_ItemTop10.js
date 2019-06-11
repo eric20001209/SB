@@ -196,7 +196,7 @@ function drawchart(data, daterange, branch) {
             text: branch,
                 subtext: daterange
             },
-        color: ['#3398DB'],
+        color: ['rgba(5,125,255, 0.8)'],
         tooltip: {
             trigger: 'axis',
             axisPointer: {            // 坐标轴指示器，坐标轴触发有效
