@@ -33,11 +33,11 @@ audio, canvas, progress, video {
 }
 
 a {
-    background-color: transparent
+    background-color: transparent;
 }
 
     a:active, a:hover {
-        outline: 0
+        outline: 0;
     }
 
 abbr[title] {

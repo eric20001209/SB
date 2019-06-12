@@ -28,7 +28,7 @@ namespace SB.Controllers
         }
 
         [HttpGet()]
-        public IActionResult getItemReport([FromQuery] int? branch, [FromQuery] string keyword, [FromQuery] DateTime start, [FromQuery] DateTime end)
+        public IActionResult getItemReport([FromQuery] int? branch, [FromQuery] string keyword, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] string type)
         {
             if (start == null || end == null)
                 return BadRequest(ModelState);
@@ -40,11 +40,11 @@ namespace SB.Controllers
             myfilter.End = end;
 
             //get return list
-            return Ok(createItemReport(myfilter));
+            return Ok(createItemReport(myfilter, type));
         }
 
 
-        public List<List<ItemReportTop10Dto>> createItemReport([FromBody] ItemReportFilterDto myfilter)
+        public List<List<ItemReportTop10Dto>> createItemReport([FromBody] ItemReportFilterDto myfilter, string type)
         {
             var salesList = (from b in _context.Branch.Where(b => myfilter.BranchId == null ? true :  b.Id ==  myfilter.BranchId)
                         join i in _context.Invoice
@@ -78,9 +78,9 @@ namespace SB.Controllers
                              select new ItemReportTop10Dto
                              {
                                  description = g.Key,
-                                 sales = (from i in g
-                                          select (double)i.CommitPrice *(1+ Convert.ToDouble(i.TaxRate))  * i.Quantity).Sum(),
-                             }).OrderByDescending(i => i.quantity).Take(10).OrderBy(i => i.quantity).ToList();
+                                 sales = Math.Round((from i in g
+                                          select (double)i.CommitPrice *(1+ Convert.ToDouble(i.TaxRate))  * i.Quantity).Sum(),2),
+                             }).OrderByDescending(i => i.sales).Take(10).OrderBy(i => i.sales).ToList();
 
             List<ItemReportTop10Dto> myReportByProfit = new List<ItemReportTop10Dto>();
             myReportByProfit = (from i in salesList
@@ -88,16 +88,17 @@ namespace SB.Controllers
                                  select new ItemReportTop10Dto
                                  {
                                      description = g.Key,
-                                     profit = (from i in g
-                                              select (double)(i.CommitPrice-i.SupplierPrice) * (1 + Convert.ToDouble(i.TaxRate)) * i.Quantity).Sum(),
-                                 }).OrderByDescending(i => i.quantity).Take(10).OrderBy(i => i.quantity).ToList();
+                                     profit = Math.Round((from i in g
+                                              select (double)(i.CommitPrice-i.SupplierPrice) * (1 + Convert.ToDouble(i.TaxRate)) * i.Quantity).Sum(),2),
+                                 }).OrderByDescending(i => i.profit).Take(10).OrderBy(i => i.profit).ToList();
 
-            List<List<ItemReportTop10Dto>> myListGroup = new List<List<ItemReportTop10Dto>>()
+            List<List<ItemReportTop10Dto>> myReturnListGroup = new List<List<ItemReportTop10Dto>>()
             {
                 myReportByQty,
                 myReportByRevenue,
                 myReportByProfit
             };
+
             //var InvoiceList_branch_first =
             //    _context.Branch
             //    .Where(b => myfilter.BranchId == null ? true : b.Id == myfilter.BranchId)
@@ -188,7 +189,7 @@ namespace SB.Controllers
             //        bi.branchName
             //    }).GroupBy(bi => bi.branchName);
 
-            return myListGroup;
+            return myReturnListGroup;
         }
     }
 }

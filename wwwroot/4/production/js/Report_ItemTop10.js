@@ -35,7 +35,7 @@
 function loaddata() {
     getBranchList();
     getDate();
-    initDateRange();
+    //initDateRange();
     getData();
 }
 function initDateRange() {
@@ -95,11 +95,6 @@ function getDate() {
         $('#from').html(picker.startDate.format('DD-MM-YYYY'));
         $('#to').html(picker.endDate.format('DD-MM-YYYY'));
 
-        //console.log($('#from').html());
-        //console.log($('#to').html());
-
-        //$('#reportTitle').html(picker.startDate.format('MMMM D, YYYY') + ' - ' + picker.endDate.format('MMMM D, YYYY'));
-
         getData();
     });
 
@@ -111,10 +106,12 @@ function getDate() {
 
 function getData() {
     var chartdatalist = [];
-    var chartdataline, chartdatabar, chartdatapie;
+    var chartdataline, chartdatabar, chartdatapie, chartdataqty, chartdatasales, chartdataprofit;
 
     var des = [];
     var quantity = [];
+    var sales = [];
+    var profit = [];
 
     var from = $("#from").html();
     var to = $("#to").html();
@@ -149,18 +146,47 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            var returnList = data[0];
-            //manage data for line chart
-            for (var i = 0; i < returnList.length; i++) {
-                des[i] = returnList[i].description;
-                quantity[i] = returnList[i].quantity;
+
+            var returnListqty = data[0];
+            var returnListsales = data[1];
+            var returnListprofit = data[2];
+  
+            //manage data for chart
+            for (var i = 0; i < returnListqty.length; i++) {
+                des[i] = returnListqty[i].description;
+                quantity[i] = returnListqty[i].quantity;
             }
-            //manage data for barchart
-            chartdatabar = {
+            //manage data sorted by qty for barchart
+            chartdataqty = {
                 des: des,
-                quantity: quantity,
+                value: quantity,
             }
-            chartdatalist = {chartdatabar}
+
+            //manage data for chart
+            for (var i = 0; i < returnListsales.length; i++) {
+                des[i] = returnListsales[i].description;
+                sales[i] = returnListsales[i].sales;
+            }
+            //manage data sorted by sales for barchart
+            chartdatasales = {
+                des: des,
+                value: sales,
+            }
+            for (var i = 0; i < returnListprofit.length; i++) {
+                des[i] = returnListprofit[i].description;
+                profit[i] = returnListprofit[i].profit;
+            }
+            //manage data sorted by profit for barchart
+            chartdataprofit = {
+                des: des,
+                value: profit,
+            }
+            chartdatalist = { chartdataqty, chartdatasales, chartdataprofit }
+
+            //alert(JSON.stringify(chartdataqty));
+            //alert(JSON.stringify(chartdatasales));
+            //alert(JSON.stringify(chartdataprofit));
+
             drawchart(chartdatalist, daterange, branchName);
         },
         error: function (data) {
@@ -175,22 +201,40 @@ function getData() {
 function drawchart(data, daterange, branch) {
 
     //get data for chart
-    var mychartdataBar = data.chartdatabar;
-    //renew container
-    var chartBar;
-    if (chartBar != null && chartBar != "" && chartBar != undefined) {
-        chartBar.dispose();
-        }
-    chartBar = echarts.init(document.getElementById('myBarChart'));
+    var mychartdataqty, mychartdatasales, mychartdataprofit;
 
-    chartBar.on('mouseover', function (params) {
+    mychartdataqty = data.chartdataqty;
+    mychartdatasales = data.chartdatasales;
+    mychartdataprofit = data.chartdataprofit;
+
+    //alert(JSON.stringify(mychartdataqty));
+    //alert(JSON.stringify(mychartdatasales));
+    //alert(JSON.stringify(mychartdataprofit));
+
+    //renew container
+    var chartBarQty, chartBarSales, chartBarProfit;
+
+    if (chartBarQty != null && chartBarQty != "" && chartBarQty != undefined) {
+        chartBarQty.dispose();
+    }
+    if (chartBarSales != null && chartBarSales != "" && chartBarSales != undefined) {
+        chartBarSales.dispose();
+    }
+    if (chartBarProfit != null && chartBarProfit != "" && chartBarProfit != undefined) {
+        chartBarProfit.dispose();
+    }
+    chartBarQty = echarts.init(document.getElementById('myBarChartQty'));
+    chartBarSales = echarts.init(document.getElementById('myBarChartRevenue'));
+    chartBarProfit = echarts.init(document.getElementById('myBarChartProfit'));
+
+
+    chartBarQty.on('mouseover', function (params) {
         if (params.name) {
             console.log(JSON.stringify(params.name));
         }
     });
 
-        var option = '';
-        option = {
+        var optiongoupbyqty = {
             title: {
             show:true,
             text: branch,
@@ -204,16 +248,15 @@ function drawchart(data, daterange, branch) {
             }
         },
         grid: {
-            left: '3%',
-            right: '4%',
+            left: '0%',
+            right: '6%',
             bottom: '3%',
             containLabel: true
         },
         yAxis: [
             {
                 type: 'category',
-                data:mychartdataBar.des,
-                 
+                data: mychartdataqty.des,
 //               ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 axisTick: {
                     alignWithLabel: true
@@ -237,83 +280,140 @@ function drawchart(data, daterange, branch) {
                             }
                 },
                 data: 
-                mychartdataBar.quantity
+                    mychartdataqty.value
 //              [10, 52, 200, 334, 390, 330, 220]
             }
         ]
     };
-        chartBar.setOption(option);
-        window.addEventListener("resize", () => {
-            chartBar.resize();
-        });
-}
-
-    function initTable(data, id, datafield) {
-        var myTableData;
-        myTableData = data;
-
-        var $table = $(id)
-        $table.bootstrapTable('destroy').bootstrapTable({
-            height: '100%',
-            resizable: true,
-            columns: [
-                {
-                    //title: 'Index',
-                    valign: 'middle',
-                    align: 'center',
-                    width: 0,
-                    formatter: function (value, row, index) {
-                        return index + 1;
+        var optiongoupbysales = {
+        title: {
+            show: true,
+            text: branch,
+            subtext: daterange
+        },
+        color: ['rgba(5,125,255, 0.8)'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '0%',
+            right: '6%',
+            bottom: '3%',
+            containLabel: true
+        },
+        yAxis: [
+            {
+                type: 'category',
+                data: mychartdatasales.des,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        xAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: 'Sales',
+                type: 'bar',
+                barWidth: '60%',
+                label: {
+                    normal: {
+                        position: 'right',
+                        show: true,
+                        formatter: function (params) {
+                            var res = params['value'].formatMoney();
+                            return res;
+                        }
                     }
                 },
-                {
-
-                    field: 'BranchName',
-                    title: 'Branch'
-
+                data:
+                    mychartdatasales.value
+            }
+        ]
+    };
+        var optiongoupbyprofit = {
+        title: {
+            show: true,
+            text: branch,
+            subtext: daterange
+        },
+        color: ['rgba(5,125,255, 0.8)'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '0%',
+            right: '6%',
+            bottom: '3%',
+            containLabel: true
+        },
+        yAxis: [
+            {
+                type: 'category',
+                data: mychartdataprofit.des,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        xAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: 'Profit',
+                type: 'bar',
+                barWidth: '60%',
+                label: {
+                    normal: {
+                        position: 'right',
+                        show: true,
+                        formatter: function (params) {
+                            var res = params['value'].formatMoney();
+                            return res;
+                        }
+                    }
                 },
-                {
-                    field: datafield, //'salesTotal',
-                    title: 'Total Amount'
+                data:
+                    mychartdataprofit.value
+            }
+        ]
+    };
 
-                }, {
-                    field: '',
-                    title: 'Percent(%)'
-                    ,
-                    formatter: function (value, row, index) {
-                        return progress(index);
-                    }//格式化进度条
-                }],
-            data: myTableData
+
+    chartBarQty.setOption(optiongoupbyqty);
+    chartBarSales.setOption(optiongoupbysales);
+    chartBarProfit.setOption(optiongoupbyprofit);
+
+    var charts = [];
+    charts.push(chartBarQty);
+    charts.push(chartBarSales);
+    charts.push(chartBarProfit);
+
+        window.addEventListener("resize", () => {
+            chartBarQty.resize();
+            chartBarSales.resize();
+            chartBarProfit.resize();
         });
-
-        function progress(index) {//add progress bar
-            var percentage = myTableData[index].percent;
-            if (percentage >= 10 && percentage <= 20) {
-                return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                    + '<div class="progress-bar progress-bar-default" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                    + '<span class="sr-only">Complete (danger)</span>'
-                    + '</div>'
-                    + "</div>"];
-            }
-            else if (percentage > 20) {
-                return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                    + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                    + '<span class="sr-only">Complete (danger)</span>'
-                    + '</div>'
-                    + "</div>"];
-            }
-            else {
-                return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                    + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                    + '<span class="sr-only">Complete (danger)</span>'
-                    + '</div>'
-                    + "</div>"];
-            }
+    //tab
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        for (var i = 0; i < charts.length; i++) {
+            charts[i].resize();
         }
+    });
 
-        $(window).resize(function () {
-            $('#salestabledetail').bootstrapTable('resetView');
-            //$('#profittabledetail').bootstrapTable('resetView');
-        });
-    }
+}
+
+
