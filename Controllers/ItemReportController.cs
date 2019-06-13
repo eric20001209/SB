@@ -32,34 +32,30 @@ namespace SB.Controllers
         [HttpGet("cat")]
         public IActionResult getCategories()
         {
-            var categries = _context.CodeRelations
+            var categries = _context.Sales
                 .Where(c => c.Cat.Trim().ToLower() != "serviceitem")
                 .Where(c => c.Cat.Trim().ToLower() != "service fee")
                 .Where(c => c.Cat.Trim().ToLower() != "whole sale")
                 .Where(c => c.Cat.Trim().ToLower() != "")
+                .Where(c => c.Cat.Trim().ToLower() != null)
                 .Select(c=>new { c.Cat})
                 .GroupBy(c=>c.Cat.Trim())
                 .Select(group => group.First()).ToList();
             return Ok(categries);
         }
 
-        [HttpGet("scat/{cat}")]
-        public IActionResult getSubCategories(string cat)
+        [HttpGet("item/{cat}")]
+        public IActionResult getCategoryitems(string cat)
         {
-            var subcategries = _context.CodeRelations
-                .Where(c=>c.Cat.Trim() ==cat.Trim())
-                //.Where(c => c.Cat.Trim().ToLower() != "serviceitem")
-                //.Where(c => c.Cat.Trim().ToLower() != "service fee")
-                //.Where(c => c.Cat.Trim().ToLower() != "whole sale")
-                //.Where(c => c.Cat.Trim().ToLower() != "")
-                .Select(c => new { c.SCat })
-                .GroupBy(c => c.SCat.Trim())
-                .Select(group => group.First()).ToList();
-            return Ok(subcategries);
+            var Categoryitems = _context.Sales
+                .Where(c => c.Cat.Trim() == cat.Trim())
+                .Select(c => new { c.Code, c.NameCn }).ToList();
+
+            return Ok(Categoryitems);
         }
 
         [HttpGet()]
-        public IActionResult getItemReport([FromQuery] int branch, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] string cat, [FromQuery] string code )
+        public IActionResult getItemReport([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] string cat, [FromQuery] string code )
         {
             //setup filter
             var myfilter = new ItemReportFilterDto();
@@ -75,8 +71,105 @@ namespace SB.Controllers
 
         public List<ItemReportDto> createItemReport(ItemReportFilterDto myfilter)
         {
-            List<ItemReportDto> mylist = new List<ItemReportDto>();
-            return mylist;
+            var myinvoicelist = _context.Invoice
+                .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
+                .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
+                .Where(i => myfilter.BranchId == null ? true : i.Branch == myfilter.BranchId)
+                .Select(i=> new { i.InvoiceNumber, i.Branch})
+                .Join(
+                    _context.Branch
+                    .Where(b=>b.Activated == true)
+                    .Select(b=>new { b.Name,b.Id}),
+                    i=>i.Branch,
+                    b=>b.Id,
+                    (i,b) => new { i.InvoiceNumber, b.Name}
+                    );
+
+            var myitemlist = (from i in myinvoicelist
+                              join s in _context.Sales
+                             .Where(s => s.Cat.Trim().ToLower() != "serviceitem")
+                             .Where(s => s.Cat.Trim().ToLower() != "")
+                             .Where(s => myfilter.cat == null ? true : s.Cat == myfilter.cat)
+                             .Where(s => myfilter.code == null ? true : s.Code.ToString() == myfilter.code)
+                             .Select(s => new
+                             {
+                                 s.InvoiceNumber,
+                                 s.Name,
+                                 s.Code,
+                                 s.Cat,
+                                 s.CommitPrice,
+                                 s.Quantity,
+                                 s.TaxRate,
+                                 s.SupplierPrice
+                             }) on i.InvoiceNumber equals s.InvoiceNumber
+                              join c in _context.CodeRelations on s.Code equals c.Code
+                              select new
+                              {
+                                  Name = c.NameCn,  
+                                  s.Code,
+                                  s.Cat,
+                                  s.CommitPrice,
+                                  s.Quantity,
+                                  s.TaxRate,
+                                  s.SupplierPrice
+                              }).ToList();
+
+            var myreturnlist = new List<ItemReportDto>();
+            myreturnlist = (from i in myitemlist
+                            group i by i.Code into g
+                            select new ItemReportDto {
+                                code = g.Key,
+                                description = (from i in g
+                                               select i.Name).FirstOrDefault(),
+                                qty = (from i in g
+                                      select i.Quantity).Sum(),
+                                sales = Math.Round((from i in g
+                                                    select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                profit = Math.Round((from i in g
+                                                    select (double)(i.CommitPrice-i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                            }).ToList();
+
+            return myreturnlist;
+            //var myitemlist = myinvoicelist.Select(i=>i)
+            //    .Join(
+            //    _context.Sales
+            //    .Where(s => s.Cat.Trim().ToLower() != "serviceitem")
+            //    .Where(s => myfilter.cat != null ? s.Cat.Trim().ToLower() == myfilter.cat.Trim().ToLower(): true)
+            //    .Where(s => myfilter.code != null ? s.Code.ToString() == myfilter.code : true)
+            //    .Select(s => new {
+            //        s.InvoiceNumber,
+            //        s.Code, 
+            //        s.Cat,
+            //        s.CommitPrice,
+            //        s.Quantity,
+            //        s.TaxRate,
+            //        s.SupplierPrice}),
+            //    i=>i.InvoiceNumber,
+            //    s => s.InvoiceNumber,
+            //    (i,s) => new {
+            //        s.Code,
+            //        s.Cat,
+            //        s.CommitPrice,
+            //        s.Quantity,
+            //        s.TaxRate,
+            //        s.SupplierPrice
+            //    }).ToList()
+            //    .Join(_context.CodeRelations.Select(c=> new { c.Code, c.Name, c.NameCn}),
+            //    s=>s.Code,
+            //    c=>c.Code,
+            //    (s,c) => new {
+            //        c.Name,
+            //        s.Code,
+            //        s.Cat,
+            //        s.CommitPrice,
+            //        s.Quantity,
+            //        s.TaxRate,
+            //        s.SupplierPrice
+            //    })
+            //    .GroupBy(s=>s.Code);
+
+
         }
     }
 }
