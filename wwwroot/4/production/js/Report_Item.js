@@ -35,20 +35,12 @@
 
 
 $(function () {
-    $('.input-daterange input').each(function () {
-        $(this).datepicker('clearDates');
+    $('.input-daterange').datepicker({
+        autoclose: true,
+        format: 'dd/mm/yyyy'
     });
-    
-    var today = new Date();
-
-    var date = today.getDate();
-    var year = today.getFullYear();
-    var month = today.getMonth();
-
-    today = date + '/' + month + '/' + year;
-
-    $('#start').val(today);
-    $('#end').val(today);
+    $('#start').datepicker('setDate', moment().format('DD/MM/YYYY'));
+    $('#end').datepicker('setDate', moment().format('DD/MM/YYYY'));
 
 });
 

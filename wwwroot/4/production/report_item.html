@@ -27,6 +27,9 @@
     <!--bootstrap-datatimepicker-->
     <link href="js/css/bootstrap-datepicker.min.css" rel="stylesheet" />
 
+    <!--bootstrap-datapicker-->
+    <link href="js/css/bootstrap-datepicker3.min.css" rel="stylesheet" />
+
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <!--import sidebar-->
@@ -57,6 +60,9 @@
             display: inline;
             font-size: 12px;
             border: 1px dashed #000;
+        }
+
+        .search {
         }
 
         .mya {
@@ -249,7 +255,7 @@
                             <div class="row x_title">
                                 <div id="from" hidden></div><div id="to" hidden></div>
 
-                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-8 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                             <!--branch filter start-->
@@ -263,25 +269,43 @@
                                 </div>
 
                                 <!--datepicker start-->
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="container"> 
+                                <!--<div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="container">
                                         <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4 control-label" style="text-align:center;vertical-align:middle">Date:</div>
                                         <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>
                                             <div class='input-group input-daterange'>
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
-                                                <input type="text" class="form-control" id="start" autocomplete="off"  readonly="readonly">
+                                                <input type="text" class="form-control" id="start" readonly="readonly">
                                                 <div class="input-group-addon">to</div>
-                                                <input type="text" class="form-control" id="end" autocomplete="off"  readonly="readonly">
+                                                <input type="text" class="form-control" id="end" readonly="readonly">
                                                 <div class="input-group-addon" style="background-color:dodgerblue;color:white" ">search</div>
                                             </div>
                                         </div>
-                                    </div>   
+                                    </div>
+                                </div>-->
+
+                                <div class="col-md-8 col-sm-12 col-xs-12">
+                                    <div class="container">
+                                        <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4 control-label" style="text-align:center;vertical-align:middle">Date:</div>
+                                        <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>
+                                            <div class="input-daterange input-group" id="datepicker">
+                                                <span class="input-group-addon">
+                                                    <!--<i class="fa fa-calendar"></i>-->
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </span>
+                                                <input type="text" class="input-sm form-control" id="start" name="from" placeholder="From date" />
+                                                <span class="input-group-addon">to</span>
+                                                <input type="text" class="input-sm form-control" id="end" name="to" placeholder="To date" />
+                                                <div class="input-group-addon" style="background-color:rebeccapurple;color:white">search</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                               
+
                                 <!--datepicker end-->
-                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-8 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
