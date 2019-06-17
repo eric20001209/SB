@@ -42,6 +42,8 @@ $(function () {
 
 });
 
+var reporttype;
+
 function loaddata() {
     getBranchList();
     getDate();
@@ -102,8 +104,6 @@ function getitemlist() {
     else {
         $('#itemlistcontainer').show();
     }
-
-
     var uri = prefix + "/item/item?cat=" + cat;
     //alert(uri);
     var xhr = new XMLHttpRequest();
@@ -129,19 +129,15 @@ function getitemlist() {
 
 function reporttype() {
     var type = $('#reporttype').prop('checked');
-    var text;
     if (type) {
-        text = 'Category Report';
+        //reporttype = 'Category Report';
         $('#itemlistcontainer').hide();
     }
     else {
-        text = 'Item Report';
+        //reporttype = 'Item Report';
         getitemlist();
         //$('#itemlistcontainer').show();
     }
-
-
-    //alert(text);
 }
 
 function getDate() {
@@ -183,10 +179,6 @@ function getDate() {
     $('#reportrange').on('cancel.daterangepicker', function (ev, picker) { //cancel button onclick event
         $('#reportrange').val('');
     });
-
-}
-
-function getDate1() {
 
 }
 
@@ -287,15 +279,11 @@ function getData() {
 function drawchart(data, daterange, branch) {
 
     //get data for chart
-    var mychartdataqty, mychartdatasales, mychartdataprofit;
+    var mychartdataAllCategories, mychartdataOneCategory, mychartdataCategoryItme, mychartdataOneItme;
 
     mychartdataqty = data.chartdataqty;
     mychartdatasales = data.chartdatasales;
     mychartdataprofit = data.chartdataprofit;
-
-    //alert(JSON.stringify(mychartdataqty));
-    //alert(JSON.stringify(mychartdatasales));
-    //alert(JSON.stringify(mychartdataprofit));
 
     //renew container
     var chartBarQty, chartBarSales, chartBarProfit;

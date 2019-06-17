@@ -59,7 +59,7 @@ namespace SB.Controllers
         }
 
         [HttpGet()]
-        public IActionResult getItemReport([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] string cat, [FromQuery] string code )
+        public IActionResult getItemReport([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] string cat, [FromQuery] string code, [FromQuery] string type)
         {
             //setup filter
             var myfilter = new ItemReportFilterDto();
@@ -70,26 +70,26 @@ namespace SB.Controllers
             myfilter.code = code;
 
             //get return list
-            return Ok(createItemReport(myfilter));
+            return Ok(createItemReport(myfilter, type));
         }
 
-        public List<ItemReportDto> createItemReport(ItemReportFilterDto myfilter)
+        public List<ItemReportDto> createItemReport(ItemReportFilterDto myfilter, string type)
         {
             var myinvoicelist = _context.Invoice
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
                 .Where(i => myfilter.BranchId == null ? true : i.Branch == myfilter.BranchId)
-                .Select(i=> new { i.InvoiceNumber, i.Branch})
+                .Select(i => new { i.InvoiceNumber, i.Branch })
                 .Join(
                     _context.Branch
-                    .Where(b=>b.Activated == true)
-                    .Select(b=>new { b.Name,b.Id}),
-                    i=>i.Branch,
-                    b=>b.Id,
-                    (i,b) => new { i.InvoiceNumber, b.Name}
+                    .Where(b => b.Activated == true)
+                    .Select(b => new { b.Name, b.Id }),
+                    i => i.Branch,
+                    b => b.Id,
+                    (i, b) => new { i.InvoiceNumber, b.Name }
                     );
-
-            var myitemlist = (from i in myinvoicelist
+ 
+           var myitemlist = (from i in myinvoicelist
                               join s in _context.Sales
                              .Where(s => s.Cat.Trim().ToLower() != "serviceitem")
                              .Where(s => s.Cat.Trim().ToLower() != "")
