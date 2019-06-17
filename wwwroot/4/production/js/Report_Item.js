@@ -31,14 +31,17 @@
 
     // Remove non-numeric chars (except decimal point/minus sign):
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
-});
+});//货币换算
 $(function () {
     $('.input-daterange').datepicker({
         autoclose: true,
         format: 'dd/mm/yyyy'
     });
-    $('#start').datepicker('setDate', moment().format('DD/MM/YYYY'));
+    $('#start').datepicker('setDate', moment().add(-1,'months').format('DD/MM/YYYY'));
     $('#end').datepicker('setDate', moment().format('DD/MM/YYYY'));
+
+    //var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
+    //var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
 });
 

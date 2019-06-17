@@ -9,6 +9,7 @@ namespace SB.Dto
     {
         public int code { get; set; }
         public string description { get; set; }
+        public string cat { get; set; }
         public double qty { get; set; }
         public double sales { get; set; }
         public double profit { get; set; }

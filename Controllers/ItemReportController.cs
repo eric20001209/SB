@@ -119,20 +119,44 @@ namespace SB.Controllers
                               }).ToList();
 
             var myreturnlist = new List<ItemReportDto>();
-            myreturnlist = (from i in myitemlist
-                            group i by i.Code into g
-                            select new ItemReportDto {
-                                code = g.Key,
-                                description = (from i in g
-                                               select i.Name).FirstOrDefault(),
-                                qty = (from i in g
-                                      select i.Quantity).Sum(),
-                                sales = Math.Round((from i in g
-                                                    select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-                                profit = Math.Round((from i in g
-                                                    select (double)(i.CommitPrice-i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
 
-                            }).ToList();
+            if (type == "OneItem")
+            {
+                myreturnlist = (from i in myitemlist
+                                group i by i.Code into g
+                                select new ItemReportDto
+                                {
+                                    code = g.Key,
+                                    description = (from i in g
+                                                   select i.Name).FirstOrDefault(),
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).ToList();
+            }
+            else if (type == "AllItem")
+            {
+                myreturnlist = (from i in myitemlist
+                                group i by i.Code into g
+                                select new ItemReportDto
+                                {
+                                    code = g.Key,
+                                    description = (from i in g
+                                                   select i.Name).FirstOrDefault(),
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).ToList();
+            }
+
 
             return myreturnlist;
             //var myitemlist = myinvoicelist.Select(i=>i)
