@@ -44,13 +44,17 @@ namespace SB.Controllers
             return Ok(categries);
         }
 
-        [HttpGet("item/{cat}")]
-        public IActionResult getCategoryitems(string cat)
+        [HttpGet("item")]
+        public IActionResult getCategoryitems([FromQuery] string cat)
         {
             var Categoryitems = _context.Sales
-                .Where(c => c.Cat.Trim() == cat.Trim())
-                .Select(c => new { c.Code, c.NameCn }).ToList();
-
+                .Where(c => cat == null? true : c.Cat == cat)
+                .Select(s => new { s.Code })
+                .Join(_context.CodeRelations.Select(c => new { c.Code, c.NameCn }),
+                s => s.Code,
+                c => c.Code,
+                (s, c) => new { s.Code, Name = c.NameCn }).GroupBy(c => c.Code)
+                .Select(g => g.FirstOrDefault()).ToList() ;
             return Ok(Categoryitems);
         }
 

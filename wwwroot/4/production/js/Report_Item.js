@@ -32,8 +32,6 @@
     // Remove non-numeric chars (except decimal point/minus sign):
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
 });
-
-
 $(function () {
     $('.input-daterange').datepicker({
         autoclose: true,
@@ -91,6 +89,39 @@ function getCategoryList() {
         $('#categorylist').html(content);
     }
     xhr.send(null);
+}
+
+function getitemlist() {
+    var cat = $("#categorylist").find("option:selected").attr("value");
+    //alert(cat);
+
+    var uri = prefix + "/item/item?cat=" + cat;
+    //alert(uri);
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", uri, true);
+    xhr.onload = function () {
+        var resp = JSON.parse(xhr.responseText);
+        var code = '';
+        var name = '';
+        var content = "";
+        for (var i = 0; i < resp.length; i++) {
+            code = resp[i].Code;
+            name = resp[i].Name;
+            content = content + "<option value='" + name + "' code='" + code + "'>" + name + "</option>";
+        }
+        var prefix = "<select data-plugin-selectTwo class='form-control populate' id='myitem'>";
+        prefix += "<option value = 'ALL' selected = 'selected' code='-99' >ALL</option> ";
+        content = prefix + content + "</select>";
+        $('#itemlist').html(content);
+        $('#labelitemlist').html('Items:');
+    }
+    xhr.send(null);
+}
+
+function reporttype() {
+    var type = $('#reporttype').val();
+    alert(type);
+
 }
 
 function getDate() {

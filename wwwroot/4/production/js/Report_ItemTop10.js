@@ -249,7 +249,7 @@ function drawchart(data, daterange, branch) {
         },
         grid: {
             left: '0%',
-            right: '6%',
+            right: '10%',
             bottom: '3%',
             containLabel: true
         },
@@ -300,7 +300,7 @@ function drawchart(data, daterange, branch) {
         },
         grid: {
             left: '0%',
-            right: '6%',
+            right: '10%',
             bottom: '3%',
             containLabel: true
         },
@@ -353,7 +353,7 @@ function drawchart(data, daterange, branch) {
         },
         grid: {
             left: '0%',
-            right: '6%',
+            right: '10%',
             bottom: '3%',
             containLabel: true
         },
