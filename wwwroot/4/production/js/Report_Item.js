@@ -94,6 +94,15 @@ function getCategoryList() {
 function getitemlist() {
     var cat = $("#categorylist").find("option:selected").attr("value");
     //alert(cat);
+    var type = $('#reporttype').prop('checked');
+    if (type) {
+        text = 'Category Report';
+        $('#itemlistcontainer').hide();
+    }
+    else {
+        $('#itemlistcontainer').show();
+    }
+
 
     var uri = prefix + "/item/item?cat=" + cat;
     //alert(uri);
@@ -121,11 +130,18 @@ function getitemlist() {
 function reporttype() {
     var type = $('#reporttype').prop('checked');
     var text;
-    if (type == 'true')
+    if (type) {
         text = 'Category Report';
-    else
+        $('#itemlistcontainer').hide();
+    }
+    else {
         text = 'Item Report';
-    alert(text);
+        getitemlist();
+        //$('#itemlistcontainer').show();
+    }
+
+
+    //alert(text);
 }
 
 function getDate() {
