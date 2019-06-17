@@ -119,9 +119,13 @@ function getitemlist() {
 }
 
 function reporttype() {
-    var type = $('#reporttype').val();
-    alert(type);
-
+    var type = $('#reporttype').prop('checked');
+    var text;
+    if (type == 'true')
+        text = 'Category Report';
+    else
+        text = 'Item Report';
+    alert(text);
 }
 
 function getDate() {
