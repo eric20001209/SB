@@ -37,7 +37,7 @@ $(function () {
         autoclose: true,
         format: 'dd/mm/yyyy'
     });
-    $('#from').datepicker('setDate', moment().add(-1,'months').format('DD/MM/YYYY'));
+    $('#from').datepicker('setDate', moment().add(-3,'months').format('DD/MM/YYYY'));
     $('#to').datepicker('setDate', moment().format('DD/MM/YYYY'));
 
 });
@@ -188,7 +188,7 @@ function getData(type) {
         chartdataqty, chartdatasales, chartdataprofit;
 
     var keys = [];
-    var cat = [];
+    var category = [];
     var des = [];
     var quantity = [];
     var sales = [];
@@ -246,7 +246,8 @@ function getData(type) {
   
             //manage data for chart
             for (var i = 0; i < data.length; i++) {
-                cat[i] = data[i].key;
+                category[i] = data[i].cat;
+                //alert(data[i].cat);
                 quantity[i] = data[i].quantity;
                 sales[i] = data[i].sales;
                 profit[i] = data[i].profit;
@@ -254,22 +255,28 @@ function getData(type) {
 
             //manage data sorted by qty for barchart
             chartdataqty = {
-                cat: cat,
+                cat: category,
                 value: quantity
             }
+            alert(JSON.stringify(chartdataqty));
 
             //manage data sorted by sales for barchart
             chartdatasales = {
-                cat: cat,
+                cat: category,
                 value: sales
             }
+            //alert(JSON.stringify(chartdatasales));
 
             //manage data sorted by profit for barchart
             chartdataprofit = {
-                cat: cat,
+                cat: category,
                 value: profit
             }
+            //alert(JSON.stringify(chartdataprofit));
+
             chartdatalist = { chartdataqty, chartdatasales, chartdataprofit }
+
+            drawchart(chartdatalist, daterange, branchName);
 
         },
         error: function (data) {
@@ -284,7 +291,7 @@ function getData(type) {
 function drawchart(data, daterange, branch) {
 
     //get data for chart
-    var mychartdataAllCategories, mychartdataOneCategory, mychartdataCategoryItme, mychartdataOneItme;
+    var mychartdataqty, mychartdatasales, mychartdataprofit, mychartdataAllCategories, mychartdataOneCategory, mychartdataCategoryItme, mychartdataOneItme;
 
     mychartdataqty = data.chartdataqty;
     mychartdatasales = data.chartdatasales;
@@ -302,10 +309,10 @@ function drawchart(data, daterange, branch) {
     if (chartBarProfit != null && chartBarProfit != "" && chartBarProfit != undefined) {
         chartBarProfit.dispose();
     }
-    chartBarQty = echarts.init(document.getElementById('myBarChartQty'));
-    chartBarSales = echarts.init(document.getElementById('myBarChartRevenue'));
-    chartBarProfit = echarts.init(document.getElementById('myBarChartProfit'));
 
+    chartBarSales = echarts.init(document.getElementById('chart1'));
+    chartBarProfit = echarts.init(document.getElementById('chart2'));
+    chartBarQty = echarts.init(document.getElementById('chart3'));
 
     chartBarQty.on('mouseover', function (params) {
         if (params.name) {
@@ -335,7 +342,7 @@ function drawchart(data, daterange, branch) {
         yAxis: [
             {
                 type: 'category',
-                data: mychartdataqty.des,
+                data: mychartdataqty.cat,
 //               ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 axisTick: {
                     alignWithLabel: true
@@ -378,21 +385,42 @@ function drawchart(data, daterange, branch) {
             }
         },
         grid: {
-            left: '0%',
+            left: '6%',
             right: '6%',
             bottom: '3%',
             containLabel: true
         },
-        yAxis: [
+        xAxis: [
             {
                 type: 'category',
-                data: mychartdatasales.des,
+                data: mychartdatasales.cat,
+                axisLabel: {
+                    clickable: true,
+                    formatter: function (params) {
+                        var newParamsName = "";
+                        var paramsNameNumber = params.length;
+                        var provideNumber = 9;
+                        if (paramsNameNumber > provideNumber) {
+                            var tempStr = "";
+
+                            tempStr = params.substring(0, provideNumber);
+                            newParamsName = tempStr + "..."
+                        } else {
+                            newParamsName = params;
+                        }
+                        return newParamsName
+                    },
+
+                    interval: 0,
+                    rotate: 45
+                },
+
                 axisTick: {
                     alignWithLabel: true
                 }
             }
         ],
-        xAxis: [
+        yAxis: [
             {
                 type: 'value'
             }
@@ -404,8 +432,9 @@ function drawchart(data, daterange, branch) {
                 barWidth: '60%',
                 label: {
                     normal: {
-                        position: 'right',
-                        show: true,
+                        position: 'top',
+                        show: false,
+                        rotate: 0,
                         formatter: function (params) {
                             var res = params['value'].formatMoney();
                             return res;

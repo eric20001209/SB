@@ -186,7 +186,7 @@ namespace SB.Controllers
                                 group i by i.Cat into g
                                 select new ItemReportDto
                                 {
-                                    key = g.Key,
+                                    cat = g.Key,
 
                                     qty = (from i in g
                                            select i.Quantity).Sum(),

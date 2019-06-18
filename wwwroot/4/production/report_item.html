@@ -97,6 +97,17 @@
             .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
             .toggle.ios .toggle-handle { border-radius: 20px; }
 
+            .tab-content {
+                border-left: 1px solid #ddd;
+                border-right: 1px solid #ddd;
+                border-bottom: 1px solid #ddd;
+                padding: 10px;
+            }
+
+            .nav-tabs {
+                margin-bottom: 0;
+            }
+
     </style>
 </head>
 
@@ -318,7 +329,6 @@
                                     </div>
                                 </div>
                                 <!--itemlist end-->
-
                                 <!--datepicker start-->
                                 <div class="col-md-8 col-sm-12 col-xs-12">
                                     <div class="container">
@@ -344,41 +354,34 @@
                             </div>
 
 
-                            <!--<ul class="nav nav-pills pull-right">
-                                <li class="active"><a data-toggle="pill" href="#menu6">QUANTITY</a></li>
-                                <li><a data-toggle="pill" href="#menu4">SALES</a></li>
-                                <li><a data-toggle="pill" href="#menu5">PROFIT</a></li>
+                            <ul id="myTab" class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#Sales" data-toggle="tab">
+                                        <h4 style="color:cornflowerblue">Sales Report</h4>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#Profit" data-toggle="tab">
+                                        <h4 style="color:cornflowerblue">Profit Report</h4>
+</a>
+                                </li>
+                                <li>
+                                    <a href="#Quantity" data-toggle="tab">
+                                        <h4 style="color:cornflowerblue">Quantity Report</h4>
+</a>
+                                </li>
                             </ul>
-
-                            <div class="tab-content" hidden>
-
-                                <div id="menu6" class="tab-pane fade in active">
-                                    <h3 style="color:cornflowerblue">Top 10 Best Sale Items By Quantity</h3>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div id="myBarChartQty" style="height:550px"></div>
-                                        </div>
-                                    </div>
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane fade in active" id="Sales">
+                                   <div id="chart1" style="height:400px"></div>
                                 </div>
-
-                                <div id="menu4" class="tab-pane fade">
-                                    <h3 style="color:cornflowerblue">Top 10 Best Sale Items By Revenue</h3>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div id="myBarChartRevenue" style="height:550px"></div>
-                                        </div>
-                                    </div>
+                                <div class="tab-pane fade" id="Profit">
+                                    <div id="chart2" style="height:400px"></div>
                                 </div>
-
-                                <div id="menu5" class="tab-pane fade">
-                                    <h3 style="color:cornflowerblue">Top 10 Best Sale Items By Profit</h3>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div id="myBarChartProfit" style="height:550px"></div>
-                                        </div>
-                                    </div>
+                                <div class="tab-pane fade" id="Quantity">
+                                    <div id="chart3" style="height:400px"></div>
                                 </div>
-                            </div>-->
+                            </div>
 
                         </div>
                     </div>
