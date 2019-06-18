@@ -260,9 +260,6 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="dashboard_graph">
                             <div class="row x_title">
-                                <div id="from" hidden></div><div id="to" hidden></div>
-
-
                                 <div class="col-md-8 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -271,7 +268,7 @@
                                                 <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4" style="text-align:center;vertical-align:middle"></div>
                                                 <div class="branch col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                                     <!--<input id="reporttype" type="checkbox" checked data-toggle="toggle" data-on="Category Report" data-off="Item Report" data-onstyle="warning" data-offstyle="primary" data-style="ios" onchange="reporttype()">-->
-                                                    <input id="reporttype" type="checkbox" checked data-toggle="toggle" data-on="Category Report" data-off="Item Report" data-onstyle="danger" data-offstyle="success" onchange="reporttype()">
+                                                    <input id="reporttype" type="checkbox" checked data-toggle="toggle" data-on="Category Report" data-off="Item Report" data-onstyle="danger" data-offstyle="success" onchange="getreporttype()">
                                                 </div>
 
                                             </div>
@@ -332,11 +329,11 @@
                                                     <!--<i class="fa fa-calendar"></i>-->
                                                     <span class="glyphicon glyphicon-th"></span>
                                                 </span>
-                                                <input type="text" class="form-control" id="start" name="from" autocomplete="off" placeholder="From date" />
+                                                <input type="text" class="form-control" id="from" name="from" autocomplete="off" placeholder="From date" />
                                                 <span class="input-group-addon">to</span>
-                                                <input type="text" class="form-control" id="end" name="to" autocomplete="off" placeholder="To date" />
+                                                <input type="text" class="form-control" id="to" name="to" autocomplete="off" placeholder="To date" />
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button" onclick="">Search</button>
+                                                    <button class="btn btn-primary" type="button" onclick="getData()">Search</button>
                                                 </span>
                                                 <!--<div class="input-group-addon" style="background-color:rebeccapurple;color:white">search</div>-->
                                             </div>

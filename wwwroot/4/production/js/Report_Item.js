@@ -37,21 +37,19 @@ $(function () {
         autoclose: true,
         format: 'dd/mm/yyyy'
     });
-    $('#start').datepicker('setDate', moment().add(-1,'months').format('DD/MM/YYYY'));
-    $('#end').datepicker('setDate', moment().format('DD/MM/YYYY'));
-
-    //var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
-    //var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
+    $('#from').datepicker('setDate', moment().add(-1,'months').format('DD/MM/YYYY'));
+    $('#to').datepicker('setDate', moment().format('DD/MM/YYYY'));
 
 });
 
-var reporttype;
+var reporttype = 'AllCategory';
 
 function loaddata() {
     getBranchList();
     getDate();
     getCategoryList();
-    //getData();
+
+    getData(reporttype);
 }
 
 function getBranchList() {
@@ -89,7 +87,7 @@ function getCategoryList() {
             content = content + "<option value='" + cat + "'>" + cat + "</option>";
         }
         var prefix = "<select data-plugin-selectTwo class='form-control populate' id='mycat'>";
-        prefix += "<option value = 'Total' selected = 'selected' branid='' >Total</option> ";
+        prefix += "<option value = 'Total' selected = 'selected' >Total</option> ";
         content = prefix + content + "</select>";
         $('#categorylist').html(content);
     }
@@ -122,7 +120,7 @@ function getitemlist() {
             content = content + "<option value='" + name + "' code='" + code + "'>" + name + "</option>";
         }
         var prefix = "<select data-plugin-selectTwo class='form-control populate' id='myitem'>";
-        prefix += "<option value = 'ALL' selected = 'selected' code='-99' >ALL</option> ";
+        prefix += "<option value = 'ALL' selected = 'selected' code='' >ALL</option> ";
         content = prefix + content + "</select>";
         $('#itemlist').html(content);
         $('#labelitemlist').html('Items:');
@@ -130,16 +128,15 @@ function getitemlist() {
     xhr.send(null);
 }
 
-function reporttype() {
+function getreporttype() {
     var type = $('#reporttype').prop('checked');
     if (type) {
-        //reporttype = 'Category Report';
+        reporttype = 'AllCategory';
         $('#itemlistcontainer').hide();
     }
     else {
-        //reporttype = 'Item Report';
+        reporttype = 'Item Report';
         getitemlist();
-        //$('#itemlistcontainer').show();
     }
 }
 
@@ -185,35 +182,54 @@ function getDate() {
 
 }
 
-function getData() {
+function getData(type) {
     var chartdatalist = [];
-    var chartdataline, chartdatabar, chartdatapie, chartdataqty, chartdatasales, chartdataprofit;
+    var chartdataline, chartdatabar, chartdatapie,
+        chartdataqty, chartdatasales, chartdataprofit;
 
+    var keys = [];
+    var cat = [];
     var des = [];
     var quantity = [];
     var sales = [];
     var profit = [];
 
-    var from = $("#from").html();
-    var to = $("#to").html();
+    var from = $("#from").val();
+    var to = $("#to").val();
+
+    //alert(from.toString());
+    //alert(to.toString());
+
     var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
     var branchId = $("#bran").find("option:selected").attr("branid");
     var branchName = $("#bran").find("option:selected").attr("value");
 
+    var cat = $("#mycat").find("option:selected").attr("value");
+    var code = $("#myitem").find("option:selected").attr("code");
+
     if (branchId == undefined)
         branchId = '';
     if (branchName == undefined)
         branchName = 'All Branches';
+
+    if (cat == undefined)
+        cat = '';
+    if (code == undefined)
+        code = '';
+
 
     var daterange = '';
     if (from == to)
         daterange = startdate.format('DD/MM/YYYY').toString();
     else
         daterange = startdate.format('DD/MM/YYYY').toString() + " - " + moment(to, 'DD/MM/YYYY').add(0, 'days').format('DD/MM/YYYY').toString();
-    var uri = prefix + "/Itemtop10" + "?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
- //   alert(uri);
+
+    var uri = prefix + "/item?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
+    uri += "&cat=" + cat + "&code=" + code + "&type=" + type;
+    alert(uri);
+
     var someJsonString = {
         "branchId": branchId,
         "start": startdate.format('YYYY-MM-DD'),
@@ -227,48 +243,34 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-
-            var returnListqty = data[0];
-            var returnListsales = data[1];
-            var returnListprofit = data[2];
   
             //manage data for chart
-            for (var i = 0; i < returnListqty.length; i++) {
-                des[i] = returnListqty[i].description;
-                quantity[i] = returnListqty[i].quantity;
-            }
-            //manage data sorted by qty for barchart
-            chartdataqty = {
-                des: des,
-                value: quantity,
+            for (var i = 0; i < data.length; i++) {
+                cat[i] = data[i].key;
+                quantity[i] = data[i].quantity;
+                sales[i] = data[i].sales;
+                profit[i] = data[i].profit;
             }
 
-            //manage data for chart
-            for (var i = 0; i < returnListsales.length; i++) {
-                des[i] = returnListsales[i].description;
-                sales[i] = returnListsales[i].sales;
+            //manage data sorted by qty for barchart
+            chartdataqty = {
+                cat: cat,
+                value: quantity
             }
+
             //manage data sorted by sales for barchart
             chartdatasales = {
-                des: des,
-                value: sales,
+                cat: cat,
+                value: sales
             }
-            for (var i = 0; i < returnListprofit.length; i++) {
-                des[i] = returnListprofit[i].description;
-                profit[i] = returnListprofit[i].profit;
-            }
+
             //manage data sorted by profit for barchart
             chartdataprofit = {
-                des: des,
-                value: profit,
+                cat: cat,
+                value: profit
             }
             chartdatalist = { chartdataqty, chartdatasales, chartdataprofit }
 
-            //alert(JSON.stringify(chartdataqty));
-            //alert(JSON.stringify(chartdatasales));
-            //alert(JSON.stringify(chartdataprofit));
-
-            //drawchart(chartdatalist, daterange, branchName);
         },
         error: function (data) {
             if (data.status == 401)

@@ -149,6 +149,7 @@ namespace SB.Controllers
                                 select new ItemReportDto
                                 {
                                     code = g.Key,
+
                                     description = (from i in g
                                                    select i.Name).FirstOrDefault(),
                                     qty = (from i in g
@@ -162,15 +163,46 @@ namespace SB.Controllers
             }
             else if (type == "OneCategory")
             {
+                myreturnlist = (from i in myitemlist
+                                group i by (i.CommitDate.Month.ToString() + '-' + i.CommitDate.Year.ToString()) into g
+                                select new ItemReportDto
+                                {
+                                    key = g.Key,
 
+                                    cat = myfilter.cat,
+                                    
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).ToList();
             }
             else if (type == "AllCategory")
             {
+                myreturnlist = (from i in myitemlist
+                                group i by i.Cat into g
+                                select new ItemReportDto
+                                {
+                                    key = g.Key,
 
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).OrderBy(g=>g.key).ToList();
             }
 
 
             return myreturnlist;
+
+
             //var myitemlist = myinvoicelist.Select(i=>i)
             //    .Join(
             //    _context.Sales

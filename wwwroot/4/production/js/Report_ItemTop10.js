@@ -115,6 +115,7 @@ function getData() {
 
     var from = $("#from").html();
     var to = $("#to").html();
+
     var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
 
@@ -132,7 +133,7 @@ function getData() {
     else
         daterange = startdate.format('DD/MM/YYYY').toString() + " - " + moment(to, 'DD/MM/YYYY').add(0, 'days').format('DD/MM/YYYY').toString();
     var uri = prefix + "/Itemtop10" + "?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
- //   alert(uri);
+    alert(uri);
     var someJsonString = {
         "branchId": branchId,
         "start": startdate.format('YYYY-MM-DD'),
