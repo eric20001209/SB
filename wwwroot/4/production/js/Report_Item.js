@@ -256,7 +256,7 @@ function getData() {
     if(cat != '')
         chartTitle += ' - ' + cat;
 
-    var daterange = '';
+    var daterange = '' ;
     if (from == to)
         daterange = startdate.format('DD/MM/YYYY').toString();
     else
