@@ -33,7 +33,8 @@ namespace SB.Data
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer(Startup.Configuration["sqlconnection"]);//("Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True");
-//                optionsBuilder.UseSqlServer("Server=LAPTOP-69SGD41T;Database=wucha_cloud;User Id=eznz;password=9seqxtf7;Trusted_Connection=True;");
+
+                //base.OnConfiguring(optionsBuilder);                                                                    //                optionsBuilder.UseSqlServer("Server=LAPTOP-69SGD41T;Database=wucha_cloud;User Id=eznz;password=9seqxtf7;Trusted_Connection=True;");
             }
         }
 

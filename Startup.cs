@@ -16,6 +16,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using SB.Services;
+using SB.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SB
 {
@@ -53,6 +55,9 @@ namespace SB
                  }}).AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()));
 
             services.AddTransient<iMailService,LocalMailService>();
+
+            string connectionString = @"Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True";
+            services.AddDbContext<wucha_cloudContext>(option => option.UseSqlServer(connectionString));  //dependency injection
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

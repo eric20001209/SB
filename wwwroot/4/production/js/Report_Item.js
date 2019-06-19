@@ -241,6 +241,7 @@ function getData() {
 
     var cat = $("#mycat").find("option:selected").attr("value");
     var code = $("#myitem").find("option:selected").attr("code");
+    var product = $("#myitem").find("option:selected").attr("value");
 
     if (branchId == undefined)
         branchId = '';
@@ -251,10 +252,14 @@ function getData() {
         cat = '';
     if (code == undefined)
         code = '';
+    if (product == undefined || product == 'ALL')
+        product = '';
 
     var chartTitle = branchName;
     if(cat != '')
         chartTitle += ' - ' + cat;
+    if (product != '')
+        chartTitle += ' - ' + product;
 
     var daterange = '' ;
     if (from == to)
