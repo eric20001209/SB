@@ -7,7 +7,7 @@ namespace SB.Dto
 {
     public class ItemReportDto
     {
-        public string key { get; set; }
+        public string keys { get; set; }
         public int? code { get; set; }
         public string description { get; set; }
         public string cat { get; set; }

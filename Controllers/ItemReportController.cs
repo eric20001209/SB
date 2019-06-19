@@ -124,10 +124,10 @@ namespace SB.Controllers
             if (type == "OneItem")
             {
                 myreturnlist = (from i in myitemlist
-                                group i by i.CommitDate.Month.ToString() into g
+                                group i by (i.CommitDate.Month.ToString() + '-' + i.CommitDate.Year.ToString()) into g
                                 select new ItemReportDto
                                 {
-                                    key = g.Key,
+                                    keys = g.Key,
 
                                     code = myfilter.code,
 
@@ -145,10 +145,10 @@ namespace SB.Controllers
             else if (type == "CategoryItem")
             {
                 myreturnlist = (from i in myitemlist
-                                group i by i.Code into g
+                                group i by (i.Code + '-' +i.Name) into g
                                 select new ItemReportDto
                                 {
-                                    code = g.Key,
+                                    keys = g.Key.ToString(),
 
                                     description = (from i in g
                                                    select i.Name).FirstOrDefault(),
@@ -167,7 +167,7 @@ namespace SB.Controllers
                                 group i by (i.CommitDate.Month.ToString() + '-' + i.CommitDate.Year.ToString()) into g
                                 select new ItemReportDto
                                 {
-                                    key = g.Key,
+                                    keys = g.Key,
 
                                     cat = myfilter.cat,
                                     
@@ -186,7 +186,7 @@ namespace SB.Controllers
                                 group i by i.Cat into g
                                 select new ItemReportDto
                                 {
-                                    cat = g.Key,
+                                    keys = g.Key,
 
                                     qty = (from i in g
                                            select i.Quantity).Sum(),
@@ -196,7 +196,7 @@ namespace SB.Controllers
                                     profit = Math.Round((from i in g
                                                          select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
 
-                                }).OrderBy(g=>g.key).ToList();
+                                }).OrderBy(g=>g.keys).ToList();
             }
 
 

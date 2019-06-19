@@ -128,18 +128,6 @@ function getitemlist() {
     xhr.send(null);
 }
 
-function getreporttype() {
-    var type = $('#reporttype').prop('checked');
-    if (type) {
-        reporttype = 'AllCategory';
-        $('#itemlistcontainer').hide();
-    }
-    else {
-        reporttype = 'Item Report';
-        getitemlist();
-    }
-}
-
 function getDate() {
     $(function () {
         var start = moment().subtract(1, 'month').startOf('month');//moment().subtract(29, 'days');
@@ -182,10 +170,58 @@ function getDate() {
 
 }
 
-function getData(type) {
+function getreporttype() {
+    var type = $('#reporttype').prop('checked');
+    if (type) {
+        //var catValue = $("#categorylist").find("option:selected").attr("value");
+        //if (catValue == 'Total') {
+            reporttype = 'AllCategory';
+        //}
+        //else { reporttype ='OneCategory'}
+        $('#itemlistcontainer').hide();
+    }
+    else {
+        reporttype = 'CategoryItem';
+        getitemlist();
+    }
+
+
+}
+
+function getData() {
     var chartdatalist = [];
-    var chartdataline, chartdatabar, chartdatapie,
-        chartdataqty, chartdatasales, chartdataprofit;
+    var chartdataline, chartdatabar, chartdatapie,chartdataqty, chartdatasales, chartdataprofit;
+    var chartType;
+
+    var type = $('#reporttype').prop('checked');
+    var catValue = $("#categorylist").find("option:selected").attr("value");
+    var itemValue = $("#itemlist").find("option:selected").attr("value");
+    //alert(catValue);
+    //get report type
+    if (type && (catValue == 'Total' || catValue == undefined)) {
+        reporttype = 'AllCategory';
+        chartType = 'bar';
+    }
+    else if (type && catValue != 'Total') {
+        reporttype = 'OneCategory';
+        chartType = 'line'
+    }
+    else if (!type && (catValue == 'Total' || catValue == undefined))
+    {
+        alert('Please select one category first!');
+        return;
+    }
+    else if (!type && (catValue != 'Total' && catValue != undefined) && itemValue == 'ALL')
+    {
+        reporttype = 'CategoryItem';
+        chartType = 'bar';
+    }
+    else if (!type && catValue != 'Total' && itemValue != 'Total')
+    {
+        reporttype = 'OneItem';
+        chartType = 'line';
+    }
+
 
     var keys = [];
     var category = [];
@@ -196,9 +232,6 @@ function getData(type) {
 
     var from = $("#from").val();
     var to = $("#to").val();
-
-    //alert(from.toString());
-    //alert(to.toString());
 
     var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
     var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
@@ -214,11 +247,14 @@ function getData(type) {
     if (branchName == undefined)
         branchName = 'All Branches';
 
-    if (cat == undefined)
+    if (cat == undefined || cat == 'Total')
         cat = '';
     if (code == undefined)
         code = '';
 
+    var chartTitle = branchName;
+    if(cat != '')
+        chartTitle += ' - ' + cat;
 
     var daterange = '';
     if (from == to)
@@ -227,8 +263,9 @@ function getData(type) {
         daterange = startdate.format('DD/MM/YYYY').toString() + " - " + moment(to, 'DD/MM/YYYY').add(0, 'days').format('DD/MM/YYYY').toString();
 
     var uri = prefix + "/item?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
-    uri += "&cat=" + cat + "&code=" + code + "&type=" + type;
-    alert(uri);
+    uri += "&cat=" + cat + "&code=" + code + "&type=" + reporttype;
+
+    //alert(uri);
 
     var someJsonString = {
         "branchId": branchId,
@@ -246,37 +283,36 @@ function getData(type) {
   
             //manage data for chart
             for (var i = 0; i < data.length; i++) {
-                category[i] = data[i].cat;
-                //alert(data[i].cat);
-                quantity[i] = data[i].quantity;
+                keys[i] = data[i].keys;
+                quantity[i] = data[i].qty;
                 sales[i] = data[i].sales;
                 profit[i] = data[i].profit;
             }
 
             //manage data sorted by qty for barchart
             chartdataqty = {
-                cat: category,
+                keys: keys,
                 value: quantity
             }
-            alert(JSON.stringify(chartdataqty));
+            //alert(JSON.stringify(chartdataqty));
 
             //manage data sorted by sales for barchart
             chartdatasales = {
-                cat: category,
+                keys: keys,
                 value: sales
             }
             //alert(JSON.stringify(chartdatasales));
 
             //manage data sorted by profit for barchart
             chartdataprofit = {
-                cat: category,
+                keys: keys,
                 value: profit
             }
             //alert(JSON.stringify(chartdataprofit));
 
             chartdatalist = { chartdataqty, chartdatasales, chartdataprofit }
 
-            drawchart(chartdatalist, daterange, branchName);
+            drawchart(chartdatalist, daterange, chartTitle, chartType);
 
         },
         error: function (data) {
@@ -288,7 +324,7 @@ function getData(type) {
     });
 }
 
-function drawchart(data, daterange, branch) {
+function drawchart(data, daterange, branch, chartType) {
 
     //get data for chart
     var mychartdataqty, mychartdatasales, mychartdataprofit, mychartdataAllCategories, mychartdataOneCategory, mychartdataCategoryItme, mychartdataOneItme;
@@ -314,70 +350,19 @@ function drawchart(data, daterange, branch) {
     chartBarProfit = echarts.init(document.getElementById('chart2'));
     chartBarQty = echarts.init(document.getElementById('chart3'));
 
-    chartBarQty.on('mouseover', function (params) {
-        if (params.name) {
-            console.log(JSON.stringify(params.name));
-        }
-    });
+    //chartBarQty.on('mouseover', function (params) {
+    //    if (params.name) {
+    //        console.log(JSON.stringify(params.name));
+    //    }
+    //});
 
-        var optiongoupbyqty = {
-            title: {
-            show:true,
-            text: branch,
-                subtext: daterange
-            },
-        color: ['rgba(5,125,255, 0.8)'],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
-        grid: {
-            left: '0%',
-            right: '6%',
-            bottom: '3%',
-            containLabel: true
-        },
-        yAxis: [
-            {
-                type: 'category',
-                data: mychartdataqty.cat,
-//               ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                axisTick: {
-                    alignWithLabel: true
-                }
-            }
-        ],
-        xAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: 'Quantity',
-                type: 'bar',
-                barWidth: '60%',
-                label: {
-                    normal: {
-                        position: 'right',
-                        show: true
-                            }
-                },
-                data: 
-                    mychartdataqty.value
-//              [10, 52, 200, 334, 390, 330, 220]
-            }
-        ]
-    };
-        var optiongoupbysales = {
+    var optiongoupbysales = {
         title: {
             show: true,
             text: branch,
             subtext: daterange
         },
-        color: ['rgba(5,125,255, 0.8)'],
+            color: ['rgba(9,135,235, 0.8)'],
         tooltip: {
             trigger: 'axis',
             axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -393,7 +378,7 @@ function drawchart(data, daterange, branch) {
         xAxis: [
             {
                 type: 'category',
-                data: mychartdatasales.cat,
+                data: mychartdatasales.keys,
                 axisLabel: {
                     clickable: true,
                     formatter: function (params) {
@@ -428,7 +413,7 @@ function drawchart(data, daterange, branch) {
         series: [
             {
                 name: 'Sales',
-                type: 'bar',
+                type: chartType, //'bar',
                 barWidth: '60%',
                 label: {
                     normal: {
@@ -446,13 +431,13 @@ function drawchart(data, daterange, branch) {
             }
         ]
     };
-        var optiongoupbyprofit = {
+    var optiongoupbyprofit = {
         title: {
             show: true,
             text: branch,
             subtext: daterange
         },
-        color: ['rgba(5,125,255, 0.8)'],
+        color: ['rgba(255,125,6, 0.8)'],
         tooltip: {
             trigger: 'axis',
             axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -460,7 +445,7 @@ function drawchart(data, daterange, branch) {
             }
         },
         grid: {
-            left: '0%',
+            left: '3%',
             right: '6%',
             bottom: '3%',
             containLabel: true
@@ -468,7 +453,7 @@ function drawchart(data, daterange, branch) {
         yAxis: [
             {
                 type: 'category',
-                data: mychartdataprofit.des,
+                data: mychartdataprofit.keys,
                 axisTick: {
                     alignWithLabel: true
                 }
@@ -482,7 +467,7 @@ function drawchart(data, daterange, branch) {
         series: [
             {
                 name: 'Profit',
-                type: 'bar',
+                type: chartType , //'bar',
                 barWidth: '60%',
                 label: {
                     normal: {
@@ -496,6 +481,80 @@ function drawchart(data, daterange, branch) {
                 },
                 data:
                     mychartdataprofit.value
+            }
+        ]
+    };
+    var optiongoupbyqty = {
+        title: {
+            show: true,
+            text: branch,
+            subtext: daterange
+        },
+        color: ['rgba(135,5,255, 0.7)'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '6%',
+            right: '6%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: mychartdataqty.keys,
+                axisLabel: {
+                    clickable: true,
+                    formatter: function (params) {
+                        var newParamsName = "";
+                        var paramsNameNumber = params.length;
+                        var provideNumber = 9;
+                        if (paramsNameNumber > provideNumber) {
+                            var tempStr = "";
+
+                            tempStr = params.substring(0, provideNumber);
+                            newParamsName = tempStr + "..."
+                        } else {
+                            newParamsName = params;
+                        }
+                        return newParamsName
+                    },
+
+                    interval: 0,
+                    rotate: 45
+                },
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: 'Quantity',
+                type: chartType, //'bar',
+                barWidth: '60%',
+                label: {
+                    normal: {
+                        position: 'top',
+                        show: true,
+                        rotate: 0,
+                        formatter: function (params) {
+                            var res = params['value'];
+                            return res;
+                        }
+                    }
+                },
+                data:
+                    mychartdataqty.value
             }
         ]
     };
@@ -516,7 +575,7 @@ function drawchart(data, daterange, branch) {
             chartBarProfit.resize();
         });
     //tab
-    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         for (var i = 0; i < charts.length; i++) {
             charts[i].resize();
         }
