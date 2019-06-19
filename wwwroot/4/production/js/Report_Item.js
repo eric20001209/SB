@@ -418,7 +418,7 @@ function drawchart(data, daterange, branch, chartType) {
                 label: {
                     normal: {
                         position: 'top',
-                        show: false,
+                        show: true,
                         rotate: 0,
                         formatter: function (params) {
                             var res = params['value'].formatMoney();
