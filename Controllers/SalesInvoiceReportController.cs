@@ -45,9 +45,9 @@ namespace SB.Controllers
                 return report;
 
             var list = _context.Invoice
-                //.Where(i => myfilter.BranchId.ToString() == null ? true: i.Branch == myfilter.BranchId)
-                //.Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
-                //.Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
+                .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId :true )
+                .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
+                .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
                 //.Where(i => myfilter.start_time.TimeOfDay == null ? true : i.CommitDate.TimeOfDay >= myfilter.start_time.TimeOfDay)
                 //.Where(i => myfilter.end_time.TimeOfDay == null ? true : i.CommitDate.TimeOfDay <= myfilter.end_time.TimeOfDay)
                 //.Where(i=> myfilter.invoice_number.ToString() == null ? true : i.InvoiceNumber == myfilter.invoice_number)
