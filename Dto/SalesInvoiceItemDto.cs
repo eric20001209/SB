@@ -7,6 +7,7 @@ namespace SB.Dto
 {
     public class SalesInvoiceItemDto
     {
+        public int? invoice_number { get; set; }
         public int code { get; set; }
         public string name { get; set; }
         public string name_cn { get; set; }

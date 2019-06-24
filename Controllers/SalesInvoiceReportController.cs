@@ -21,7 +21,7 @@ namespace SB.Controllers
 
         [HttpGet()]
         public IActionResult getSalesInvoiceReport([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end
-            , [FromQuery] DateTime start_time, [FromQuery] DateTime end_time, [FromQuery] int? invoice_number, [FromQuery] decimal amount)
+            , [FromQuery] TimeSpan start_time, [FromQuery] TimeSpan end_time, [FromQuery] int? invoice_number, [FromQuery] decimal amount)
         {
             //setup filter
             var myfilter = new SalesInvoiceReportFilterDto();
@@ -38,30 +38,32 @@ namespace SB.Controllers
             return Ok(returnlist);
         }
 
-        private List<SalesInvoiceItemDto> CreateSalesInvoiceReport(SalesInvoiceReportFilterDto myfilter) 
+        private List<IGrouping<int?, SalesInvoiceItemDto>> CreateSalesInvoiceReport(SalesInvoiceReportFilterDto myfilter) 
         {
-            List<SalesInvoiceItemDto> report = new List<SalesInvoiceItemDto>();
+            List<IGrouping<int?, SalesInvoiceItemDto >> report = new List<IGrouping<int?, SalesInvoiceItemDto>>();
             if (myfilter.Start == null || myfilter.End == null)
                 return report;
 
             var list = _context.Invoice
-                .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId :true )
+                .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId : true)
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
-                //.Where(i => myfilter.start_time.TimeOfDay == null ? true : i.CommitDate.TimeOfDay >= myfilter.start_time.TimeOfDay)
-                //.Where(i => myfilter.end_time.TimeOfDay == null ? true : i.CommitDate.TimeOfDay <= myfilter.end_time.TimeOfDay)
-                //.Where(i=> myfilter.invoice_number.ToString() == null ? true : i.InvoiceNumber == myfilter.invoice_number)
+                .Where(i => myfilter.start_time == null ? true : i.CommitDate.TimeOfDay >= myfilter.start_time)
+                .Where(i => myfilter.end_time == null ? true : i.CommitDate.TimeOfDay <= myfilter.end_time)
+                .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
 
                 .Select(i => new { i.InvoiceNumber, BranchId = i.Branch, i.CommitDate, i.Total })
                 .Join(_context.Branch.Select(b => new { BranchId = b.Id, BranchName = b.Name }),
                 i => i.BranchId,
                 b => b.BranchId,
                 (i, b) => new { BranchName = b.BranchName, i.InvoiceNumber, i.CommitDate, i.Total })
-                .Join(_context.Sales.Select(s=>new { s.InvoiceNumber, s.Code, s.NameCn,s.Name, s.CommitPrice,s.Quantity,s.SalesTotal}),
-                (ib=>ib.InvoiceNumber),
-                (s=>s.InvoiceNumber),
-                (ib,s)=>new SalesInvoiceItemDto { code=s.Code, name_cn = s.NameCn, name=s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total= s.SalesTotal }).ToList()
-                ;
+                .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.SalesTotal }),
+                (ib => ib.InvoiceNumber),
+                (s => s.InvoiceNumber),
+                (ib, s) => new SalesInvoiceItemDto { invoice_number = s.InvoiceNumber, code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = s.SalesTotal })
+                .GroupBy(ibs => ibs.invoice_number)
+                .ToList();
+                
 
             return list;
         }
