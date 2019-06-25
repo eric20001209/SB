@@ -336,7 +336,6 @@
                                     </div>
                                 </div>
                                 <!--itemlist end-->
-
                                 <!--datepicker start-->
                                 <div class="col-md-8 col-sm-12 col-xs-12">
                                     <div class="container">
@@ -359,61 +358,48 @@
                                     </div>
                                 </div>
                                 <!--datepicker end-->
-                                <!--timepicker start-->
-                                <div class="col-md-8 col-sm-12 col-xs-12">
-                                    <div class="container">
-                                        <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4 control-label" style="text-align:center;vertical-align:middle">Time:</div>
-                                        <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>
-                                            <div class="input-daterange input-group" id="timepicker">
-                                                <!--<div class="input-group date" id="timepicker">-->
-                                                    <span class="input-group-addon">
-                                                        <!--<i class="fa fa-calendar"></i>-->
-                                                        <span class="glyphicon glyphicon-time"></span>
-                                                    </span>
-                                                    <input type="text" class="form-control" id="timefrom" name="timefrom" autocomplete="off" placeholder="From time" />
-                                                    <span class="input-group-addon">to</span>
-                                                    <input type="text" class="form-control" id="timeto" name="timeto" autocomplete="off" placeholder="To time" />
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-primary" type="button" onclick="getData()">Search</button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </div>
-                                <!--timepicker end-->
-
+                                <!--timepicker start--
+        <div class="col-md-8 col-sm-12 col-xs-12">
+            <div class="container">
+                <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4 control-label" style="text-align:center;vertical-align:middle">Time:</div>
+                <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>
+                    <div class="input-daterange input-group" id="timepicker">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                            <input type="text" class="form-control" id="timefrom" name="timefrom" autocomplete="off" placeholder="From time" />
+                            <span class="input-group-addon">to</span>
+                            <input type="text" class="form-control" id="timeto" name="timeto" autocomplete="off" placeholder="To time" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" onclick="getData()">Search</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <!--timepicker end-->
                             </div>
+                            <div class="table-responsive">
+                                <div id="222">
 
+                                    <table id="invoicelist"
+                                           data-addrbar="true"
+                                           data-page-list="[5,10]"
+                                           data-locale="en-US"
+                                           data-pagination="true">
+                                        <!--<thead>
+                                            <tr>
+                                                <th data-field="BranchName" data-sortable="false">Branch</th>
+                                                <th data-field="InvoiceNumber" data-sortable="false">Invoice#</th>
+                                                <th data-field="CommitDate" data-sortable="true">Amount</th>
+                                                <th data-field="Total" data-sortable="false">Total</th>
+                                                <th data-sortable="false">Action</th>
+                                            </tr>
+                                        </thead>-->
 
-                            <ul id="myTab" class="nav nav-tabs">
-                                <li class="active">
-                                    <a href="#Sales" data-toggle="tab">
-                                        <h4 style="color:cornflowerblue">Sales </h4>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#Profit" data-toggle="tab">
-                                        <h4 style="color:cornflowerblue">Profit </h4>
-</a>
-                                </li>
-                                <li>
-                                    <a href="#Quantity" data-toggle="tab">
-                                        <h4 style="color:cornflowerblue">Quantity </h4>
-</a>
-                                </li>
-                            </ul>
-                            <div id="myTabContent" class="tab-content">
-                                <div class="tab-pane fade in active" id="Sales">
-                                   <div id="chart1" style="height:500px"></div>
-                                </div>
-                                <div class="tab-pane fade" id="Profit">
-                                    <div id="chart2" style="height:500px"></div>
-                                </div>
-                                <div class="tab-pane fade" id="Quantity">
-                                    <div id="chart3" style="height:500px"></div>
+                                    </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -502,9 +488,10 @@
     <script src="js/bootstrap-tables/bootstrap-table-locale-all.min.js"></script>
     <script src="js/bootstrap-tables/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="js/bootstrap-tables/extensions/addrbar/bootstrap-table-addrbar.min.js"></script>
+
     <!--bootstrap switch button-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.js" rel="stylesheet" />
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
     <!-- index.js -->
     <script src="js/all.js"></script>
     <script src="js/eChart/echarts.min.js"></script>

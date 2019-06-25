@@ -75,6 +75,7 @@ namespace SB.Controllers
 
         public List<ItemReportDto> createItemReport(ItemReportFilterDto myfilter, string type)
         {
+            _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
             var myinvoicelist = _context.Invoice
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)

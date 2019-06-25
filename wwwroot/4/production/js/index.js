@@ -592,6 +592,7 @@ function drawchart(data) {
                 saleschartPieProfit.resize();
             });
 }
+
 function initTable(data, id, datafield) {
     var myTableData;
     myTableData = data;

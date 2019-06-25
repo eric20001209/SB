@@ -10,6 +10,5 @@ namespace SB.Dto
         public int? invoice_number { get; set; }
         public TimeSpan start_time { get; set; } = new TimeSpan(0, 0, 0);
         public TimeSpan end_time { get; set; } = new TimeSpan(23, 59, 59);
-        public decimal amount { get; set; }
     }
 }

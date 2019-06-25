@@ -55,7 +55,7 @@ function loaddata() {
     getBranchList();
     getDate();
     //getCategoryList();
-    //getData(reporttype);
+    getData();
 }
 
 function getBranchList() {
@@ -204,37 +204,6 @@ function getData() {
     var itemValue = $("#itemlist").find("option:selected").attr("value");
     //alert(catValue);
     //get report type
-    if (type && (catValue == 'Total' || catValue == undefined)) {
-        reporttype = 'AllCategory';
-        chartType = 'bar';
-    }
-    else if (type && catValue != 'Total') {
-        reporttype = 'OneCategory';
-        chartType = 'line'
-    }
-    else if (!type && (catValue == 'Total' || catValue == undefined))
-    {
-        alert('Please select one category first!');
-        return;
-    }
-    else if (!type && (catValue != 'Total' && catValue != undefined) && itemValue == 'ALL')
-    {
-        reporttype = 'CategoryItem';
-        chartType = 'bar';
-    }
-    else if (!type && catValue != 'Total' && itemValue != 'Total')
-    {
-        reporttype = 'OneItem';
-        chartType = 'line';
-    }
-
-
-    var keys = [];
-    var category = [];
-    var des = [];
-    var quantity = [];
-    var sales = [];
-    var profit = [];
 
     var from = $("#from").val();
     var to = $("#to").val();
@@ -273,8 +242,7 @@ function getData() {
     else
         daterange = startdate.format('DD/MM/YYYY').toString() + " - " + moment(to, 'DD/MM/YYYY').add(0, 'days').format('DD/MM/YYYY').toString();
 
-    var uri = prefix + "/item?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
-    uri += "&cat=" + cat + "&code=" + code + "&type=" + reporttype;
+    var uri = prefix + "/salesinvoice/invoicelist?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
 
     //alert(uri);
 
@@ -291,40 +259,7 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-  
-            //manage data for chart
-            for (var i = 0; i < data.length; i++) {
-                keys[i] = data[i].keys;
-                quantity[i] = data[i].qty;
-                sales[i] = data[i].sales;
-                profit[i] = data[i].profit;
-            }
-
-            //manage data sorted by qty for barchart
-            chartdataqty = {
-                keys: keys,
-                value: quantity
-            }
-            //alert(JSON.stringify(chartdataqty));
-
-            //manage data sorted by sales for barchart
-            chartdatasales = {
-                keys: keys,
-                value: sales
-            }
-            //alert(JSON.stringify(chartdatasales));
-
-            //manage data sorted by profit for barchart
-            chartdataprofit = {
-                keys: keys,
-                value: profit
-            }
-            //alert(JSON.stringify(chartdataprofit));
-
-            chartdatalist = { chartdataqty, chartdatasales, chartdataprofit }
-
-            drawchart(chartdatalist, daterange, chartTitle, chartType);
-
+            initTable(data[0],'#invoicelist','')
         },
         error: function (data) {
             if (data.status == 401)
@@ -592,6 +527,99 @@ function drawchart(data, daterange, branch, chartType) {
         }
     });
 
+}
+
+function initTable(data, id, datafield) {
+    var myTableData;
+    myTableData = data;
+
+    var $table = $(id)
+    $table.bootstrapTable('destroy').bootstrapTable({
+        height: '100%',
+        resizable: true,
+        columns: [
+            {
+                //title: 'Index',
+                valign: 'middle',
+                align: 'center',
+                width: 0,
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },
+            {
+
+                field: 'BranchName',
+                title: 'Branch'
+
+            },
+            {
+
+                field: 'InvoiceNumber',
+                sortable: true,
+                title: 'Invoice Number'
+
+            },
+            {
+
+                field: 'CommitDate',
+                sortable: true,
+                title: 'Date'
+
+            }
+            //,
+            //{
+            //    field: 'Total', //'salesTotal',
+            //    title: 'Amount'
+
+            //}
+            , {
+                field: '',
+                title: 'Amount'
+                ,
+                formatter: function (value, row, index) {
+                    return currency(index);
+                }//格式化进度条
+            }
+        ],
+        data: myTableData
+    });
+
+    function currency(index) {
+        var amount = myTableData[index].Total,
+            amount = amount.formatMoney();
+        return amount;
+    }
+
+    function progress(index) {//add progress bar
+        var percentage = myTableData[index].percent;
+        if (percentage >= 10 && percentage <= 20) {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar progress-bar-default" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+        else if (percentage > 20) {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+        else {
+            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
+                + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
+                + '<span class="sr-only">Complete (danger)</span>'
+                + '</div>'
+                + "</div>"];
+        }
+    }
+
+    $(window).resize(function () {
+        $('#invoicelist').bootstrapTable('resetView');
+        //$('#profittabledetail').bootstrapTable('resetView');
+    });
 }
 
 
