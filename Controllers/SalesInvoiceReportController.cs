@@ -35,16 +35,17 @@ namespace SB.Controllers
                 .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId : true)
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
-                .Where(i => myfilter.start_time == null ? true : i.CommitDate.TimeOfDay >= myfilter.start_time)
-                .Where(i => myfilter.end_time == null ? true : i.CommitDate.TimeOfDay <= myfilter.end_time)
+                //.Where(i => myfilter.start_time == null ? true : i.CommitDate.TimeOfDay >= myfilter.start_time)
+                //.Where(i => myfilter.end_time == null ? true : i.CommitDate.TimeOfDay <= myfilter.end_time)
                 .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
                 .Join(_context.Branch
-                .Select(b => new { b.Name,b.Id}),
-                i=>i.Branch,
-                b=>b.Id,
+                .Select(b => new { b.Name, b.Id }),
+                i => i.Branch,
+                b => b.Id,
                 //(i,b) => new {BranchName = b.Name, i.InvoiceNumber, BranchId = i.Branch, CommitDate = i.CommitDate.Date + "/"+i.CommitDate.Month + "/" + i.CommitDate.Year + " " + i.CommitDate.Hour + ":" + i.CommitDate.Minute + ":" + i.CommitDate.Second, i.Total })
-                (i, b) => new { BranchName = b.Name, i.InvoiceNumber, BranchId = i.Branch, CommitDate = i.CommitDate.Date.ToShortDateString() + "   " + i.CommitDate.Date.ToLongTimeString() , i.Total })
+                (i, b) => new { BranchName = b.Name, i.InvoiceNumber, BranchId = i.Branch, CommitDate = i.CommitDate.Date.ToShortDateString() + "   " + i.CommitDate.Date.ToLongTimeString(), i.Total })
                 .OrderByDescending(i => i.InvoiceNumber)
+                //.Contains()
                 .GroupBy(ib => ib.BranchId)
                 .ToList();
 

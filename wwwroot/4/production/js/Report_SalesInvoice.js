@@ -213,6 +213,7 @@ function getData() {
 
     var branchId = $("#bran").find("option:selected").attr("branid");
     var branchName = $("#bran").find("option:selected").attr("value");
+    var invoiceNumber = $("#invoice").val();
 
     var cat = $("#mycat").find("option:selected").attr("value");
     var code = $("#myitem").find("option:selected").attr("code");
@@ -243,7 +244,7 @@ function getData() {
         daterange = startdate.format('DD/MM/YYYY').toString() + " - " + moment(to, 'DD/MM/YYYY').add(0, 'days').format('DD/MM/YYYY').toString();
 
     var uri = prefix + "/salesinvoice/invoicelist?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
-
+    uri += "&invoice_number=" + invoiceNumber;
     //alert(uri);
 
     var someJsonString = {
