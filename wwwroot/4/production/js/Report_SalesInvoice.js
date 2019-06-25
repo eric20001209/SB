@@ -260,7 +260,7 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            initTable(data[0],'#invoicelist','')
+            initTable(data,'#invoicelist','')
         },
         error: function (data) {
             if (data.status == 401)
@@ -558,7 +558,7 @@ function initTable(data, id, datafield) {
 
                 field: 'InvoiceNumber',
                 sortable: true,
-                title: 'Invoice Number'
+                title: 'Invoice'
 
             },
             {

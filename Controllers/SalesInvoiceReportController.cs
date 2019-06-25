@@ -45,7 +45,7 @@ namespace SB.Controllers
                 //(i,b) => new {BranchName = b.Name, i.InvoiceNumber, BranchId = i.Branch, CommitDate = i.CommitDate.Date + "/"+i.CommitDate.Month + "/" + i.CommitDate.Year + " " + i.CommitDate.Hour + ":" + i.CommitDate.Minute + ":" + i.CommitDate.Second, i.Total })
                 (i, b) => new { BranchName = b.Name, i.InvoiceNumber, BranchId = i.Branch, CommitDate = i.CommitDate.ToShortDateString() + "  " + i.CommitDate.ToShortTimeString(), i.Total })
                 .OrderByDescending(i => i.InvoiceNumber)
-                .GroupBy(ib => ib.BranchId)
+                //.GroupBy(ib => ib.BranchId)
                 .ToList();
 
             return Ok(returnlist);
