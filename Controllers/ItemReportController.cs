@@ -140,7 +140,7 @@ namespace SB.Controllers
                                     profit = Math.Round((from i in g
                                                          select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
 
-                                }).ToList();
+                                }).OrderBy(g => g.keys).ToList();
             }
             else if (type == "CategoryItem")
             {
@@ -178,7 +178,7 @@ namespace SB.Controllers
                                     profit = Math.Round((from i in g
                                                          select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
 
-                                }).ToList();
+                                }).OrderBy(g=>g.keys).ToList();
             }
             else if (type == "AllCategory")
             {
