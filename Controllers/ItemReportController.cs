@@ -75,6 +75,7 @@ namespace SB.Controllers
 
         public List<ItemReportDto> createItemReport(ItemReportFilterDto myfilter, string type)
         {
+            _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
             var myinvoicelist = _context.Invoice
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
                 .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
@@ -121,7 +122,66 @@ namespace SB.Controllers
 
             var myreturnlist = new List<ItemReportDto>();
 
-            if (type == "OneItem")
+
+
+            if (type == "AllCategory")
+            {
+                myreturnlist = (from i in myitemlist
+                                group i by i.Cat into g
+                                select new ItemReportDto
+                                {
+                                    keys = g.Key,
+
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).OrderBy(g => g.keys).ToList();
+            }
+
+            else if (type == "OneCategory")
+            {
+                myreturnlist = (from i in myitemlist
+                                group i by (i.CommitDate.Month.ToString() + '-' + i.CommitDate.Year.ToString()) into g
+                                select new ItemReportDto
+                                {
+                                    keys = g.Key,
+
+                                    cat = myfilter.cat,
+                                    
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).ToList();
+            }
+            else if (type == "CategoryItem")
+            {
+                myreturnlist = (from i in myitemlist
+                                group i by (i.Code + '-' + i.Name) into g
+                                select new ItemReportDto
+                                {
+                                    keys = g.Key.ToString(),
+
+                                    description = (from i in g
+                                                   select i.Name).FirstOrDefault(),
+                                    qty = (from i in g
+                                           select i.Quantity).Sum(),
+                                    sales = Math.Round((from i in g
+                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+                                    profit = Math.Round((from i in g
+                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
+
+                                }).OrderBy(g=>g.keys).ToList();
+            }
+            else if (type == "OneItem")
             {
                 myreturnlist = (from i in myitemlist
                                 group i by (i.CommitDate.Month.ToString() + '-' + i.CommitDate.Year.ToString()) into g
@@ -140,66 +200,8 @@ namespace SB.Controllers
                                     profit = Math.Round((from i in g
                                                          select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
 
-                                }).OrderBy(g => g.keys).ToList();
-            }
-            else if (type == "CategoryItem")
-            {
-                myreturnlist = (from i in myitemlist
-                                group i by (i.Code + '-' +i.Name) into g
-                                select new ItemReportDto
-                                {
-                                    keys = g.Key.ToString(),
-
-                                    description = (from i in g
-                                                   select i.Name).FirstOrDefault(),
-                                    qty = (from i in g
-                                           select i.Quantity).Sum(),
-                                    sales = Math.Round((from i in g
-                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-                                    profit = Math.Round((from i in g
-                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-
                                 }).ToList();
             }
-            else if (type == "OneCategory")
-            {
-                myreturnlist = (from i in myitemlist
-                                group i by (i.CommitDate.Month.ToString() + '-' + i.CommitDate.Year.ToString()) into g
-                                select new ItemReportDto
-                                {
-                                    keys = g.Key,
-
-                                    cat = myfilter.cat,
-                                    
-                                    qty = (from i in g
-                                           select i.Quantity).Sum(),
-                                    sales = Math.Round((from i in g
-                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-                                    profit = Math.Round((from i in g
-                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-
-                                }).OrderBy(g=>g.keys).ToList();
-            }
-            else if (type == "AllCategory")
-            {
-                myreturnlist = (from i in myitemlist
-                                group i by i.Cat into g
-                                select new ItemReportDto
-                                {
-                                    keys = g.Key,
-
-                                    qty = (from i in g
-                                           select i.Quantity).Sum(),
-
-                                    sales = Math.Round((from i in g
-                                                        select (double)i.CommitPrice * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-                                    profit = Math.Round((from i in g
-                                                         select (double)(i.CommitPrice - i.SupplierPrice) * (1 + i.TaxRate) * i.Quantity).Sum().Value, 2),
-
-                                }).OrderBy(g=>g.keys).ToList();
-            }
-
-
             return myreturnlist;
 
 

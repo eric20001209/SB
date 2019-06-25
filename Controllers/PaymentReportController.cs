@@ -79,7 +79,7 @@ namespace SB.Controllers
                                  payment_method = g.Key,
                                  amount = Math.Round((from i in g
                                           select i.amount).Sum(),2)
-                             }).ToList();
+                             }).Take(6).ToList();
 
 
             var groupbyclass = (from i in mylist
