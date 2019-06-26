@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SB.Data;
 using SB.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SB.Controllers
 {
@@ -52,6 +53,7 @@ namespace SB.Controllers
             return Ok(returnlist);
         }
 
+        [AllowAnonymous]
         [HttpGet()]
         public IActionResult getSalesInvoiceReport([FromQuery] int? invoice_number)
         {
@@ -83,7 +85,7 @@ namespace SB.Controllers
                 .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.TaxRate, s.SalesTotal }),
                 (ib => ib.InvoiceNumber),
                 (s => s.InvoiceNumber),
-                (ib, s) => new SalesInvoiceItemDto {  code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = Math.Round(s.CommitPrice * (decimal)s.Quantity * (1 + (decimal)s.TaxRate),2) })
+                (ib, s) => new SalesInvoiceItemDto {  code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = Math.Round(s.CommitPrice * (decimal)s.Quantity *  (decimal)s.TaxRate,2) })
                 .ToList();
 
             invoice.inovice_number = myfilter.invoice_number;
