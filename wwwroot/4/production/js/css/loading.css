@@ -1,5 +1,5 @@
 ﻿
-.modal {
+.modal-loading {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -10,7 +10,7 @@
     background: rgba( 255, 255, 255, 0.8) url('FhHRx.gif') 50% 50% no-repeat;
 }
 
-body.loading .modal {
+body.loading .modal-loading {
 display: block;
 overflow: hidden;
 }
