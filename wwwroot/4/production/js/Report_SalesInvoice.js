@@ -591,7 +591,8 @@ function initTable(data, id, datafield) {
         var invo = myTableData[index].InvoiceNumber;
         //return "<a href='" + row.url + "'>" + invo + "</a>";
         var st = "";
-        st = '<a type="button" class="btn btn - primary" data-toggle="modal" data-target="#myCategoryRep" id="mycatbtn" hidden>' + invo + '</a>';
+        st = "<a href=invoice.html?inv="+ invo + " target='_blank'>" + invo + "</a>";
+  //    st = '<a type="button" class="btn btn - primary" data-toggle="modal" data-target="#myinovice" id="mycatbtn" onclick=$("#inv_no").html('+invo+') hidden>' + invo + '</a>';
         //st = '<p><a class="btn btn - primary" data-toggle="collapse" href="#collapseExample_' + invo +'" role="button" aria-expanded="false" aria-controls="collapseExample">';
         //st += invo;
         //st += '</a></p>';

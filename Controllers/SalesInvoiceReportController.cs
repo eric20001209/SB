@@ -31,6 +31,7 @@ namespace SB.Controllers
             myfilter.end_time = end_time;
             myfilter.invoice_number = invoice_number;
 
+            _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
             var returnlist = _context.Invoice
                 .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId : true)
                 .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
@@ -52,37 +53,26 @@ namespace SB.Controllers
         }
 
         [HttpGet()]
-        public IActionResult getSalesInvoiceReport([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end
-            , [FromQuery] TimeSpan start_time, [FromQuery] TimeSpan end_time, [FromQuery] int? invoice_number)
+        public IActionResult getSalesInvoiceReport([FromQuery] int? invoice_number)
         {
             //setup filter
             var myfilter = new SalesInvoiceReportFilterDto();
-            myfilter.BranchId = branch;
-            myfilter.Start = start;
-            myfilter.End = end;
-            myfilter.start_time = start_time;
-            myfilter.end_time = end_time;
             myfilter.invoice_number = invoice_number;
 
             //get returnlist
-            var returnlist = CreateSalesInvoiceReport(myfilter);
+            var returnlist = CreateSalesInvoice(myfilter);
             return Ok(returnlist);
         }
 
-        private List<IGrouping<int?, SalesInvoiceItemDto>> CreateSalesInvoiceReport(SalesInvoiceReportFilterDto myfilter) 
+        private InvoiceDto CreateSalesInvoice(SalesInvoiceReportFilterDto myfilter) 
         {
-            List<IGrouping<int?, SalesInvoiceItemDto >> report = new List<IGrouping<int?, SalesInvoiceItemDto>>();
+            InvoiceDto invoice = new InvoiceDto();
             if (myfilter.Start == null || myfilter.End == null)
-                return report;
+                return invoice;
 
             _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
 
-            var list = _context.Invoice
-                .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId : true)
-                .Where(i => myfilter.Start == null ? true : i.CommitDate >= myfilter.Start)
-                .Where(i => myfilter.End == null ? true : i.CommitDate <= myfilter.End)
-                .Where(i => myfilter.start_time == null ? true : i.CommitDate.TimeOfDay >= myfilter.start_time)
-                .Where(i => myfilter.end_time == null ? true : i.CommitDate.TimeOfDay <= myfilter.end_time)
+            var itemlist = _context.Invoice
                 .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
 
                 .Select(i => new { i.InvoiceNumber, BranchId = i.Branch, i.CommitDate, i.Total })
@@ -90,15 +80,16 @@ namespace SB.Controllers
                 i => i.BranchId,
                 b => b.BranchId,
                 (i, b) => new { BranchName = b.BranchName, i.InvoiceNumber, i.CommitDate, i.Total })
-                .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.SalesTotal }),
+                .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.TaxRate, s.SalesTotal }),
                 (ib => ib.InvoiceNumber),
                 (s => s.InvoiceNumber),
-                (ib, s) => new SalesInvoiceItemDto { invoice_number = s.InvoiceNumber, code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity })
-                .GroupBy(ibs => ibs.invoice_number)
+                (ib, s) => new SalesInvoiceItemDto {  code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = Math.Round(s.CommitPrice * (decimal)s.Quantity * (1 + (decimal)s.TaxRate),2) })
                 .ToList();
-                
 
-            return list;
+            invoice.inovice_number = myfilter.invoice_number;
+            invoice.sales_items = itemlist;
+
+            return invoice;
         }
     }
 }
