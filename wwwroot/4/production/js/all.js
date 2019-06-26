@@ -6,3 +6,7 @@
             $("body").removeClass("loading");
         });
 }); //loading effect。。。
+
+function removeModal() {
+    $("body").removeClass("loading");
+}

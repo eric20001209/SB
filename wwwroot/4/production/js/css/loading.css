@@ -7,11 +7,10 @@
     left: 0;
     height: 100%;
     width: 100%;
-    /*background: rgba( 255, 255, 255, .8) url('http://i.stack.imgur.com/FhHRx.gif') 50% 50% no-repeat;*/
-    background: rgba( 255, 255, 255, .8) url('FhHRx.gif') 50% 50% no-repeat;
+    background: rgba( 255, 255, 255, 0.8) url('FhHRx.gif') 50% 50% no-repeat;
 }
 
 body.loading .modal {
-    display: block;
-    overflow: hidden;
+display: block;
+overflow: hidden;
 }

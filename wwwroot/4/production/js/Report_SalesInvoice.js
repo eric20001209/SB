@@ -558,7 +558,8 @@ function initTable(data, id, datafield) {
 
                 field: 'InvoiceNumber',
                 sortable: true,
-                title: 'Invoice'
+                formatter: LinkFormatter,
+                title: '#Invoice'
 
             },
             {
@@ -585,6 +586,21 @@ function initTable(data, id, datafield) {
         ],
         data: myTableData
     });
+
+    function LinkFormatter(value, row, index) {
+        var invo = myTableData[index].InvoiceNumber;
+        //return "<a href='" + row.url + "'>" + invo + "</a>";
+        var st = "";
+        st = '<a type="button" class="btn btn - primary" data-toggle="modal" data-target="#myCategoryRep" id="mycatbtn" hidden>' + invo + '</a>';
+        //st = '<p><a class="btn btn - primary" data-toggle="collapse" href="#collapseExample_' + invo +'" role="button" aria-expanded="false" aria-controls="collapseExample">';
+        //st += invo;
+        //st += '</a></p>';
+        //st += '<div class="collapse" id="collapseExample_' + invo+'">';
+        //st += invo ;
+        //st += '</div>';
+        return st;
+       
+    }
 
     function currency(index) {
         var amount = myTableData[index].Total,
