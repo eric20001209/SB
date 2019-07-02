@@ -66,7 +66,8 @@ function getData() {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            alert(data);
+            //alert(JSON.stringify(data));
+            //alert(JSON.parse(data));
         },
         error: function (data) {
             if (data.status == 401)

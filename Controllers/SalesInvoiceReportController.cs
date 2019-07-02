@@ -74,6 +74,11 @@ namespace SB.Controllers
 
             _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
 
+            var invoice_count = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Count();
+            if (invoice_count == 0)
+                return invoice;
+            var commite_date = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.CommitDate).FirstOrDefault();
+
             var itemlist = _context.Invoice
                 .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
 
@@ -90,6 +95,7 @@ namespace SB.Controllers
 
             invoice.inovice_number = myfilter.invoice_number;
             invoice.sales_items = itemlist;
+            invoice.commit_date = commite_date;
 
             return invoice;
         }

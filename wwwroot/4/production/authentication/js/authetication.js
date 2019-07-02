@@ -195,7 +195,7 @@ function doAuthetication() {
         beforeSend: function (xhr) {
             if (localStorage.getItem("token") != null) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
-                alert(localStorage.getItem("name"));
+                //alert(localStorage.getItem("name"));
                 document.getElementById("username").innerHTML = localStorage.getItem("name");
                 document.getElementById("username2").innerHTML = localStorage.getItem("name");
             }
