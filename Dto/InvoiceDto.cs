@@ -13,13 +13,8 @@ namespace SB.Dto
         public decimal? tax { get; set; }
         public DateTime commit_date { get; set; }
         public decimal? total { get; set; }
-        //public string sales { get; set; }
-        //public string customer { get; set; }
-        //[EmailAddress]
-        //public string sutomer_email { get; set; }
-        //public string from { get; set; }
-        //public string to { get; set; }
-
+        public BuyerDto Buyer { get; set; }
+        public SellerDto Seller { get; set; }
         public List<SalesInvoiceItemDto> sales_items = new List<SalesInvoiceItemDto>();
     }
 }
