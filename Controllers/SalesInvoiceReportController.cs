@@ -79,7 +79,7 @@ namespace SB.Controllers
                 return invoice;
             var commite_date = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.CommitDate).FirstOrDefault();
             var tax = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.Tax).FirstOrDefault();
-
+            var total = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.Total).FirstOrDefault();
             var itemlist = _context.Invoice
                 .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
 
@@ -91,13 +91,14 @@ namespace SB.Controllers
                 .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.TaxRate, s.SalesTotal }),
                 (ib => ib.InvoiceNumber),
                 (s => s.InvoiceNumber),
-                (ib, s) => new SalesInvoiceItemDto {  code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = Math.Round(s.CommitPrice * (decimal)s.Quantity ,3) })
+                (ib, s) => new SalesInvoiceItemDto {  code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = Math.Round(s.CommitPrice * (decimal)s.Quantity ,2) })
                 .ToList();
 
             invoice.inovice_number = myfilter.invoice_number;
             invoice.sales_items = itemlist;
             invoice.commit_date = commite_date;
             invoice.tax = Math.Round(tax.Value,3);
+            invoice.total = total;
 
             return invoice;
         }

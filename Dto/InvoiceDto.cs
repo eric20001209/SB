@@ -12,9 +12,10 @@ namespace SB.Dto
         public int order_id { get; set; }
         public decimal? tax { get; set; }
         public DateTime commit_date { get; set; }
+        public decimal? total { get; set; }
         //public string sales { get; set; }
         //public string customer { get; set; }
-        [EmailAddress]
+        //[EmailAddress]
         //public string sutomer_email { get; set; }
         //public string from { get; set; }
         //public string to { get; set; }

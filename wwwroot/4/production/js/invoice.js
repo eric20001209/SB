@@ -37,7 +37,7 @@
 //bind print function to button
 $(document).on("click", "#windowprint", function () {
 
-    $("#printArea").addClass("print")
+    document.getElementById("printArea").style.width = '21cm';
     //go to top of the screen, if not do this, it will result layout issue.
     $('body,html').animate({ scrollTop: 0 }, 0);
     //generate img 
@@ -61,7 +61,38 @@ $(document).on("click", "#windowprint", function () {
             doctype: '<!doctype html>'
         });
     });
-}); //print invoice
+    document.getElementById("printArea").style.width = '100%';
+}); 
+
+
+$("#convertToPDF").on("click", function () {
+    document.getElementById("printArea").style.width = '21cm';
+    //go to top of the screen, if not do this, it will result layout issue.
+    $('body,html').animate({ scrollTop: 0 }, 0);
+    //generate img 
+    html2canvas($("#printArea")[0], { scale: 2, logging: false, useCORS: true }).then(function (canvas) {
+        var myImage = canvas.toDataURL("image/png");
+        //after generating pic call print function
+        $("#printContainer")
+            .html("<img id='Image' src=" + myImage + " style='width:100%;'></img>")
+        $("#Image").print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet: null,
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 750,
+            title: null,
+            doctype: '<!doctype html>'
+        });
+    });
+    document.getElementById("printArea").style.width = '100%';
+});
+
 
 function loaddata() {
     getData();
@@ -105,9 +136,10 @@ function getData() {
             commitdate = commitdate.format('DD-MM-YYYY');
             dtax = data.tax;
             tax = data.tax.formatMoney();
+            total = data.total;
             $('#date').html(commitdate);
             $('#invoicenumber').html('Inv No.  #' + invoiceNumber);
-            $('#tax').html(tax);
+
             var sti;
             for (var i = 0; i < data.sales_items.length; i++)
             {
@@ -125,7 +157,8 @@ function getData() {
             }
             $('#itemlist').html(sti);
             $('#subtotal').html(subtotal.formatMoney());
-            $('#total').html((subtotal+dtax).formatMoney());
+            $('#tax').html(tax);
+            $('#total').html(total.formatMoney());
         },
         error: function (data) {
             if (data.status == 401)

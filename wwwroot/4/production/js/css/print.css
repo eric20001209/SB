@@ -22,7 +22,7 @@ img {
 #printArea {
     /* border: 1px purple solid; */
     box-sizing: border-box;
-    width:21cm;
+    /*width:21cm;*/
 }
 
     #printArea:before, #printArea:after {
