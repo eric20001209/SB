@@ -1,0 +1,42 @@
+﻿/* global style */
+body {
+    margin: 0;
+}
+
+img {
+    border: 0;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+    *:before, *:after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+/* print area style */
+#printArea {
+    /* border: 1px purple solid; */
+    box-sizing: border-box;
+    width:21cm;
+}
+
+    #printArea:before, #printArea:after {
+        content: " ";
+        display: table;
+    }
+
+    #printArea:after {
+        clear: both;
+    }
+/* A4 paper style */
+.a4Paper {
+    box-sizing: border-box;
+    height: 29.6cm;
+    padding-top: 0.1cm;
+}
+
