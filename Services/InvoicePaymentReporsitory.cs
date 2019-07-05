@@ -16,16 +16,19 @@ namespace SB.Services
             _context = context;
         }
 
-        Invoice IInvoicePaymentReporsitory.GetInvoice(int invoice_number)
-        {
-            return _context.Invoice.FirstOrDefault(i => i.InvoiceNumber == invoice_number);
-            //throw new NotImplementedException();
-        }
-
         IEnumerable<Invoice> IInvoicePaymentReporsitory.GetInvoices()
         {
             return _context.Invoice.ToList();
-            //throw new NotImplementedException();
+        }
+
+        public IEnumerable<PaymentReportDto> GetPaymentInfo(int? invoice_number)
+        {
+            //return _context.TranInvoice.FirstOrDefault(ti => ti.InvoiceNumber == invoice_number)
+            //    .ToString()
+            //    .Join(
+            //    _context.TranDetail.Select(td =>new { td.InvoiceNumber, td.Id}),
+
+            //    );
         }
     }
 }

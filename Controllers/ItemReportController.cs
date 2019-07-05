@@ -50,7 +50,7 @@ namespace SB.Controllers
             var Categoryitems = _context.Sales
                 .Where(c => cat == null? true : c.Cat == cat)
                 .Select(s => new { s.Code })
-                .Join(_context.CodeRelations.Select(c => new { c.Code, c.NameCn }),
+                .Join (_context.CodeRelations.Select(c => new { c.Code, c.NameCn }),
                 s => s.Code,
                 c => c.Code,
                 (s, c) => new { s.Code, Name = c.NameCn }).GroupBy(c => c.Code)
