@@ -54,6 +54,7 @@ namespace SB
                     castedResolver.NamingStrategy = null;
                  }}).AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()));
 
+            services.AddScoped<IInvoicePaymentReporsitory, InvoicePaymentReporsitory>();
             services.AddTransient<iMailService,LocalMailService>();
 
             string connectionString = @"Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True";
