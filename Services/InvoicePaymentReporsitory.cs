@@ -16,19 +16,36 @@ namespace SB.Services
             _context = context;
         }
 
-        IEnumerable<Invoice> IInvoicePaymentReporsitory.GetInvoices()
+        IEnumerable<InvoiceWithPaymentDto> IInvoicePaymentReporsitory.GetInvoices()
         {
-            return _context.Invoice.ToList();
+            return _context.Invoice
+                .Select(i => new InvoiceWithPaymentDto { branch = i.Branch, inovice_number = i.InvoiceNumber, tax = i.Tax, total = i.Total, commit_date = i.CommitDate })
+                .ToList();
+        }
+
+        public InvoiceWithPaymentDto GetInvoice(int? invoice_number)
+        {
+            return _context.Invoice.Where(i => i.InvoiceNumber == invoice_number)
+                .Select(i => new InvoiceWithPaymentDto { branch = i.Branch, inovice_number = i.InvoiceNumber, tax = i.Tax, total = i.Total, commit_date = i.CommitDate }).FirstOrDefault()
+                ;
+
+            //throw new NotImplementedException();
         }
 
         public IEnumerable<PaymentReportDto> GetPaymentInfo(int? invoice_number)
         {
-            //return _context.TranInvoice.FirstOrDefault(ti => ti.InvoiceNumber == invoice_number)
-            //    .ToString()
-            //    .Join(
-            //    _context.TranDetail.Select(td =>new { td.InvoiceNumber, td.Id}),
+            var returnlist = from ti in _context.TranInvoice
+                             where ti.InvoiceNumber == invoice_number
+                             join td in _context.TranDetail
+                             on ti.TranId equals td.Id
+                             //join e in _context.EnumTable
+                             //on td.PaymentMethod equals e.Id
+                             //where e.Class == "payment_method"
 
-            //    );
+                             select new PaymentReportDto { payment_method = td.PaymentMethod.ToString(), amount = ti.AmountApplied };
+            return returnlist;
         }
+
+
     }
 }

@@ -9,7 +9,8 @@ namespace SB.Services
 {
     public interface IInvoicePaymentReporsitory
     {
-        IEnumerable<Invoice> GetInvoices();
+        IEnumerable<InvoiceWithPaymentDto> GetInvoices();
+        InvoiceWithPaymentDto GetInvoice(int? invoice_number);
         IEnumerable<PaymentReportDto> GetPaymentInfo(int? invoice_number);
     }
 }

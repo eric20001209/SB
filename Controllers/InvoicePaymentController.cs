@@ -20,7 +20,7 @@ namespace SB.Controllers
         }
 
         [HttpGet()]
-        public IActionResult GetInvoice([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] int? invoiceNumber)
+        public IActionResult GetInvoices([FromQuery] int? branch, [FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] int? invoiceNumber)
         {
             var myfilter = new FilterDto();
             myfilter.BranchId = branch;
@@ -31,28 +31,43 @@ namespace SB.Controllers
             return Ok(myinovices);
         }
 
-        List<InvoiceDto> getInvoices(FilterDto myfilter, [FromQuery] int? invoiceNumber)
+        List<InvoiceWithPaymentDto> getInvoices(FilterDto myfilter, [FromQuery] int? invoiceNumber)
         {
             //create returnlist
-            List<InvoiceDto> InvoicesToReturn = new List<InvoiceDto>();
+            List<InvoiceWithPaymentDto> InvoicesToReturn = new List<InvoiceWithPaymentDto>();
 
             //get entities
             var myInvoices = _reporsitory.GetInvoices()
-                .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId : true)
-                .Where(i => myfilter.Start != null ? i.CommitDate >= myfilter.Start : true)
-                .Where(i => myfilter.End != null ? i.CommitDate <= myfilter.End : true)
-                .Where(i => invoiceNumber.HasValue ? i.InvoiceNumber == invoiceNumber : true)
-                .ToList();
+                .Where(i => myfilter.BranchId.HasValue ? i.branch == myfilter.BranchId : true)
+                .Where(i => myfilter.Start != null ? i.commit_date >= myfilter.Start : true)
+                .Where(i => myfilter.End != null ? i.commit_date <= myfilter.End : true)
+                .Where(i => invoiceNumber.HasValue ? i.inovice_number == invoiceNumber : true)
+                .Select(i=>new  { i.inovice_number, i.tax,i.commit_date,i.total, i.branch}).ToList();
+
+            //var Invoices = new InvoiceWithPaymentDto
+            //{
+            //    branch = myInvoices.,
+            //    inovice_number = i.inovice_number,
+            //    tax = i.tax,
+            //    commit_date = i.commit_date,
+            //    total = i.total
+            //}
 
             //mapping entities to returnlist
-            myInvoices.ForEach(i => InvoicesToReturn.Add(new InvoiceDto
+            myInvoices.ForEach(i => InvoicesToReturn.Add(new InvoiceWithPaymentDto
             {
-                inovice_number = i.InvoiceNumber,
-                tax = i.Tax,
-                commit_date = i.CommitDate,
-                total = i.Total,
-                //payment = new List<PaymentReportDto> { }
-            }));
+                branch = i.branch,
+                inovice_number = i.inovice_number,
+                tax = i.tax,
+                commit_date = i.commit_date,
+                total = i.total,
+                payment = _reporsitory.GetPaymentInfo(i.inovice_number).ToList()
+            }
+            ));
+
+
+
+
 
             return InvoicesToReturn;
         }
