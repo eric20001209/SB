@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SB.Models
 {
     public partial class Invoice
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int InvoiceNumber { get; set; }
         public int? Branch { get; set; }
@@ -52,5 +56,7 @@ namespace SB.Models
         public string Barcode { get; set; }
         public bool IsRedeem { get; set; }
         public int Points { get; set; }
+
+        public ICollection<TranInvoice> tranInvoice { get; set; } = new List<TranInvoice>();
     }
 }

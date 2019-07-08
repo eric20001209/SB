@@ -18,6 +18,7 @@ using Newtonsoft.Json.Serialization;
 using SB.Services;
 using SB.Data;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace SB
 {
@@ -80,8 +81,11 @@ namespace SB
 
             app.UseDefaultFiles();
             app.UseStaticFiles(); //allow to access file in wwwroot folder
-
             app.UseHttpsRedirection();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Models.Card, Dto.RegisterDto>();
+            });
             app.UseMvc();
         }
     }

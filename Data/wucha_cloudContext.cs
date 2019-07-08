@@ -14,6 +14,7 @@ namespace SB.Data
         public wucha_cloudContext(DbContextOptions<wucha_cloudContext> options)
             : base(options)
         {
+            Database.Migrate();
         }
 
         public virtual DbSet<Branch> Branch { get; set; }
