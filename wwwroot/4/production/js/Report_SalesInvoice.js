@@ -551,54 +551,88 @@ function initTable(data, id, datafield) {
         //height: '100%',
         resizable: true,
         columns: [
-            {
-                //title: 'Index',
+            [{
                 valign: 'middle',
                 align: 'center',
                 visible: false,
-
-                width: 0
-                ,
+                width: 0,
                 formatter: function (value, row, index) {
                     return index + 1;
                 }
-            },
-
-            {
-                //colspan:2,
+            }, {
+                title: 'Branch',
                 field: 'BranchName',
-                title: 'Branch'
-            },
-            {
-
+                rowspan: 2,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+            }, {
+                title: 'Invoice Detail',
+                colspan: 3,
+                align: 'center'
+            }],
+            [{
                 field: 'InvoiceNumber',
                 sortable: true,
                 formatter: LinkFormatter,
                 title: '#Invoice'
 
-            },
-            {
-
+            }, {
                 field: 'CommitDate',
                 sortable: true,
                 title: 'Date'
-
-            }
-            //,
-            //{
-            //    field: 'Total', //'salesTotal',
-            //    title: 'Amount'
-
-            //}
-            , {
+            }, {
                 field: '',
                 title: 'Amount'
                 ,
                 formatter: function (value, row, index) {
                     return currency(index);
                 }
-            }
+            }]
         ],
+
+
+            //{
+            //    //title: 'Index',
+            //    valign: 'middle',
+            //    align: 'center',
+            //    visible: false,
+
+            //    width: 0
+            //    ,
+            //    formatter: function (value, row, index) {
+            //        return index + 1;
+            //    }
+            //},
+
+        //    {
+        //        field: 'BranchName',
+        //        title: 'Branch'
+        //    },
+        //    {
+
+        //        field: 'InvoiceNumber',
+        //        sortable: true,
+        //        formatter: LinkFormatter,
+        //        title: '#Invoice'
+
+        //    },
+        //    {
+
+        //        field: 'CommitDate',
+        //        sortable: true,
+        //        title: 'Date'
+
+        //    }
+        //    , {
+        //        field: '',
+        //        title: 'Amount'
+        //        ,
+        //        formatter: function (value, row, index) {
+        //            return currency(index);
+        //        }
+        //    }
+        //],
         data: myTableData
     });
 
