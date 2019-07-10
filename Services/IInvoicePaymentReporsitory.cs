@@ -13,5 +13,7 @@ namespace SB.Services
         Invoice GetInvoice(int? invoice_number);
         IEnumerable<TranInvoice> GetPaymentsInfo(int? invoice_number);
         TranInvoice GetPaymentInfo(int? invoice_number, int? tran_id);
+
+        EnumTable GetPaymentMethod(int? payment);
     }
 }

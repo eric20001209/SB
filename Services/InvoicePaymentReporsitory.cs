@@ -47,6 +47,9 @@ namespace SB.Services
                 .Where(ti => ti.invoice_number == invoice_number && ti.TranId == tran_id).FirstOrDefault();
         }
 
-
+        public EnumTable GetPaymentMethod(int? payment)
+        {
+            return _context.EnumTable.Where(et => et.Class == "payment_method" && et.Id == payment).FirstOrDefault();
+        }
     }
 }

@@ -56,6 +56,7 @@ namespace SB.Controllers
                 };
                 i.tranInvoice.ToList().ForEach(ti => invoiceToReturn.payment.Add(new PaymentReportDto
                 {
+                    //payment_method = getPayment_method(ti.payment_method),
                     payment_method = ti.payment_method.ToString(),
                     amount = ti.AmountApplied
                 })); 
@@ -64,6 +65,12 @@ namespace SB.Controllers
             }
 
             return InvoicesToReturn;
+        }
+
+        string getPayment_method(int? i)
+        {
+            var payment = _reporsitory.GetPaymentMethod(i);
+            return payment.Name;
         }
    
     }
