@@ -376,20 +376,31 @@
                                 <!--timepicker end-->
                             </div>
                             <div class="table-responsive">
+                               
                                 <table id="invoicelist"
                                        data-addrbar="true"
+                                       data-search="true"
+                                       data-show-refresh="true"
+                                       data-show-toggle="true"
+                                       data-show-columns="true"
+                                       data-detail-view="true"
+                                       data-click-to-select="true"
+                                       data-detail-formatter="detailFormatter"
+                                       data-minimum-count-columns="3"
                                        data-page-list="[10,20]"
                                        data-locale="en-US"
-                                       data-pagination="true">
+                                       data-pagination="true"
+                                       data-show-footer="true"
+                                       >
                                     <!--<thead>
-                                        <tr>
-                                            <th data-field="BranchName" data-sortable="false">Branch</th>
-                                            <th data-field="InvoiceNumber" data-sortable="false">Invoice#</th>
-                                            <th data-field="CommitDate" data-sortable="true">Amount</th>
-                                            <th data-field="Total" data-sortable="false">Total</th>
-                                            <th data-sortable="false">Action</th>
-                                        </tr>
-                                    </thead>-->
+            <tr>
+                <th data-field="BranchName" data-sortable="false">Branch</th>
+                <th data-field="InvoiceNumber" data-sortable="false">Invoice#</th>
+                <th data-field="CommitDate" data-sortable="true">Amount</th>
+                <th data-field="Total" data-sortable="false">Total</th>
+                <th data-sortable="false">Action</th>
+            </tr>
+        </thead>-->
                                 </table>
                             </div>
                         </div>

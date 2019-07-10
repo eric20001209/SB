@@ -530,29 +530,44 @@ function drawchart(data, daterange, branch, chartType) {
 
 }
 
+
+
+function detailFormatter(index, row) {
+    var html = []
+    $.each(row, function (key, value) {
+        if (key == 'Total')
+            html.push('<p><b>' + key + ':</b> ' + value.formatMoney() + '</p>')
+        else
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+    })
+    return html.join('')
+}
 function initTable(data, id, datafield) {
     var myTableData;
     myTableData = data;
 
     var $table = $(id)
     $table.bootstrapTable('destroy').bootstrapTable({
-        height: '100%',
+        //height: '100%',
         resizable: true,
         columns: [
             {
                 //title: 'Index',
                 valign: 'middle',
                 align: 'center',
-                width: 0,
+                visible: false,
+
+                width: 0
+                ,
                 formatter: function (value, row, index) {
                     return index + 1;
                 }
             },
-            {
 
+            {
+                //colspan:2,
                 field: 'BranchName',
                 title: 'Branch'
-
             },
             {
 
@@ -581,7 +596,7 @@ function initTable(data, id, datafield) {
                 ,
                 formatter: function (value, row, index) {
                     return currency(index);
-                }//格式化进度条
+                }
             }
         ],
         data: myTableData
@@ -609,35 +624,13 @@ function initTable(data, id, datafield) {
         return amount;
     }
 
-    function progress(index) {//add progress bar
-        var percentage = myTableData[index].percent;
-        if (percentage >= 10 && percentage <= 20) {
-            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                + '<div class="progress-bar progress-bar-default" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                + '<span class="sr-only">Complete (danger)</span>'
-                + '</div>'
-                + "</div>"];
-        }
-        else if (percentage > 20) {
-            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                + '<span class="sr-only">Complete (danger)</span>'
-                + '</div>'
-                + "</div>"];
-        }
-        else {
-            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                + '<span class="sr-only">Complete (danger)</span>'
-                + '</div>'
-                + "</div>"];
-        }
-    }
 
     $(window).resize(function () {
         $('#invoicelist').bootstrapTable('resetView');
         //$('#profittabledetail').bootstrapTable('resetView');
     });
 }
+
+
 
 
