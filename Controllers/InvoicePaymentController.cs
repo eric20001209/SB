@@ -33,41 +33,35 @@ namespace SB.Controllers
 
         List<InvoiceWithPaymentDto> getInvoices(FilterDto myfilter, [FromQuery] int? invoiceNumber)
         {
-            //create returnlist
-            List<InvoiceWithPaymentDto> InvoicesToReturn = new List<InvoiceWithPaymentDto>();
-
-            //get entities
+            //get entities without payment
             var myInvoices = _reporsitory.GetInvoices()
-                .Where(i => myfilter.BranchId.HasValue ? i.branch == myfilter.BranchId : true)
-                .Where(i => myfilter.Start != null ? i.commit_date >= myfilter.Start : true)
-                .Where(i => myfilter.End != null ? i.commit_date <= myfilter.End : true)
-                .Where(i => invoiceNumber.HasValue ? i.inovice_number == invoiceNumber : true)
-                .Select(i=>new  { i.inovice_number, i.tax,i.commit_date,i.total, i.branch}).ToList();
+                .Where(i => myfilter.BranchId.HasValue ? i.Branch == myfilter.BranchId : true)
+                .Where(i => myfilter.Start != null ? i.CommitDate >= myfilter.Start : true)
+                .Where(i => myfilter.End != null ? i.CommitDate <= myfilter.End : true)
+                .Where(i => invoiceNumber.HasValue ? i.InvoiceNumber == invoiceNumber : true)
+                .ToList();
+            //create returnlist
 
-            //var Invoices = new InvoiceWithPaymentDto
-            //{
-            //    branch = myInvoices.,
-            //    inovice_number = i.inovice_number,
-            //    tax = i.tax,
-            //    commit_date = i.commit_date,
-            //    total = i.total
-            //}
+            var InvoicesToReturn = new List<InvoiceWithPaymentDto>();
 
-            //mapping entities to returnlist
-            myInvoices.ForEach(i => InvoicesToReturn.Add(new InvoiceWithPaymentDto
+            foreach (var i in myInvoices)
             {
-                branch = i.branch,
-                inovice_number = i.inovice_number,
-                tax = i.tax,
-                commit_date = i.commit_date,
-                total = i.total,
-                payment = _reporsitory.GetPaymentInfo(i.inovice_number).ToList()
+                var invoiceToReturn = new InvoiceWithPaymentDto
+                {
+                    branch = i.Branch,
+                    inovice_number = i.InvoiceNumber,
+                    tax = i.Tax,
+                    commit_date = i.CommitDate,
+                    total = i.Total
+                };
+                i.tranInvoice.ToList().ForEach(ti => invoiceToReturn.payment.Add(new PaymentReportDto
+                {
+                    payment_method = ti.payment_method.ToString(),
+                    amount = ti.AmountApplied
+                })); 
+
+                InvoicesToReturn.Add(invoiceToReturn);
             }
-            ));
-
-
-
-
 
             return InvoicesToReturn;
         }

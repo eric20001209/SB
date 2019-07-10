@@ -1792,7 +1792,7 @@ namespace SB.Data
                     .HasColumnName("amount_applied")
                     .HasColumnType("money");
 
-                entity.Property(e => e.InvoiceNumber).HasColumnName("invoice_number");
+                entity.Property(e => e.invoice_number).HasColumnName("invoice_number");
 
                 entity.Property(e => e.Purchase).HasColumnName("purchase");
 

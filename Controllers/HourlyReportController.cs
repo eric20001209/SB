@@ -161,12 +161,12 @@ namespace SB.Controllers
                 (ti => new
                 {
                     ti.TranId,
-                    ti.InvoiceNumber,
+                    ti.invoice_number,
                     ti.AmountApplied
                 })
                 .Join(
                 invoicesList,
-                ti => ti.InvoiceNumber,
+                ti => ti.invoice_number,
                 i => i.InvoiceNumber,
                 (ti, i) => new
                 {

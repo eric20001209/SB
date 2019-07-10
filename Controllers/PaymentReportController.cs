@@ -56,11 +56,11 @@ namespace SB.Controllers
                     _context.TranInvoice.Select(ti => new
                     {
                         ti.TranId,
-                        ti.InvoiceNumber,
+                        ti.invoice_number,
                         ti.AmountApplied
                     }),
                 i => i.InvoiceNumber,
-                ti => ti.InvoiceNumber,
+                ti => ti.invoice_number,
                 (i, ti) => new { i.InvoiceNumber, ti.TranId,ti.AmountApplied });
 
             var mylist = (from i in invoicesList
@@ -93,37 +93,7 @@ namespace SB.Controllers
 
             List<List<PaymentReportDto>> returnlist = new List<List<PaymentReportDto>> { groupbypayment, groupbyclass };
 
-            //    .Join(
-            //        _context.TranDetail.Select(td => new { TranId = td.Id, payment_method = td.PaymentMethod }),
-            //    iti => iti.ti.TranId,
-            //    td => td.TranId,
-            //(iti, td) => new { });
-            //.Join
-            //(
-            //_context.EnumTable.Where(et=>et.Class == "payment_method").Select(et => new { payment_method = et.Id, payment_method_name = et.Name}),
-            //t=>t.payment_method,
-            //et=>et.payment_method,
-            //(t,et)=>new PaymentReportDto {
-            //    amount=t.amountApplied,
-            //    payment_method = et.payment_method_name,
-            //}).Take(100).ToList();
 
-            //var list = _context.TranInvoice.Select(i => new { i.AmountApplied, i.TranId })
-            //    .Join(_context.TranDetail.Select(td => new { td.Id, td.PaymentMethod }),
-            //    i => i.TranId,
-            //    td => td.Id,
-            //    (i, td) => new { i, td });
-
-            //mylist = (from e in _context.EnumTable.Where(e=>e.Class=="payment_method").ToList()
-            //          join i in list on e.Id equals i.td.PaymentMethod
-            //          select new PaymentReportDto { amount = i.i.AmountApplied, payment_method = e.Name }).ToList();
-            //.Join(_context.EnumTable
-            //.Where(et => et.Class == "payment_method")
-            ////.Where(et=>et.Id!=4).Where(et => et.Id != 7).Where(et => et.Id != 8).Where(et => et.Id != 11).Where(et => et.Id != 12)
-            //.Select(et => new { payment_method=et.Id, payment_method_name = et.Name }),
-            //itd => itd.td.PaymentMethod,
-            //et => et.payment_method,
-            //(itd, et) => new PaymentReportDto { amount = itd.i.AmountApplied, payment_method = et.payment_method_name }).Take(100).ToList();
 
             return returnlist;
         }

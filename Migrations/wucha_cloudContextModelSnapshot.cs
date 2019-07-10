@@ -2050,28 +2050,28 @@ namespace SB.Migrations
                         .HasColumnName("amount_applied")
                         .HasColumnType("money");
 
-                    b.Property<int?>("InvoiceId");
-
-                    b.Property<int>("InvoiceNumber")
-                        .HasColumnName("invoice_number");
-
-                    b.Property<int?>("PaymentMethod");
-
                     b.Property<bool>("Purchase")
                         .HasColumnName("purchase");
 
                     b.Property<int>("TranId")
                         .HasColumnName("tran_id");
 
-                    b.HasKey("Id");
+                    b.Property<int>("invoiceId");
 
-                    b.HasIndex("InvoiceId");
+                    b.Property<int>("invoice_number")
+                        .HasColumnName("invoice_number");
+
+                    b.Property<int?>("payment_method");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("Purchase")
                         .HasName("IDX_tran_invoice_purchase");
 
                     b.HasIndex("TranId")
                         .HasName("IDX_tran_invoice_tranid");
+
+                    b.HasIndex("invoiceId");
 
                     b.ToTable("tran_invoice");
                 });
@@ -2124,9 +2124,10 @@ namespace SB.Migrations
 
             modelBuilder.Entity("SB.Models.TranInvoice", b =>
                 {
-                    b.HasOne("SB.Models.Invoice")
+                    b.HasOne("SB.Models.Invoice", "invoice")
                         .WithMany("tranInvoice")
-                        .HasForeignKey("InvoiceId");
+                        .HasForeignKey("invoiceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -10,8 +10,8 @@ using SB.Data;
 namespace SB.Migrations
 {
     [DbContext(typeof(wucha_cloudContext))]
-    [Migration("20190708043446_add_payment_method_to_tran_invoice")]
-    partial class add_payment_method_to_tran_invoice
+    [Migration("20190710032845_invoiceIdFK")]
+    partial class invoiceIdFK
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -2052,16 +2052,18 @@ namespace SB.Migrations
                         .HasColumnName("amount_applied")
                         .HasColumnType("money");
 
-                    b.Property<int>("InvoiceNumber")
-                        .HasColumnName("invoice_number");
-
-                    b.Property<int?>("PaymentMethod");
-
                     b.Property<bool>("Purchase")
                         .HasColumnName("purchase");
 
                     b.Property<int>("TranId")
                         .HasColumnName("tran_id");
+
+                    b.Property<int>("invoiceId");
+
+                    b.Property<int>("invoice_number")
+                        .HasColumnName("invoice_number");
+
+                    b.Property<int?>("payment_method");
 
                     b.HasKey("Id");
 
@@ -2070,6 +2072,8 @@ namespace SB.Migrations
 
                     b.HasIndex("TranId")
                         .HasName("IDX_tran_invoice_tranid");
+
+                    b.HasIndex("invoiceId");
 
                     b.ToTable("tran_invoice");
                 });
@@ -2118,6 +2122,14 @@ namespace SB.Migrations
                         .HasName("IDX_trans_branch");
 
                     b.ToTable("trans");
+                });
+
+            modelBuilder.Entity("SB.Models.TranInvoice", b =>
+                {
+                    b.HasOne("SB.Models.Invoice", "invoice")
+                        .WithMany("tranInvoice")
+                        .HasForeignKey("invoiceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

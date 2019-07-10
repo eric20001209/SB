@@ -11,12 +11,5 @@ namespace SB.Dto
     {
         public string payment_method { get; set; }
         public decimal amount { get; set; }
-
-        [ForeignKey("inovice_number")]
-        public int? inovice_number { get; set; }
-        public InvoiceWithPaymentDto invoice_with_payment { get; set; }
-
-
-
     }
 }
