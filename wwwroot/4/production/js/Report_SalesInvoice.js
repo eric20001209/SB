@@ -48,13 +48,11 @@ $(function () {
     });
 });
 
-
 var reporttype = 'AllCategory';
 
 function loaddata() {
     getBranchList();
     getDate();
-    //getCategoryList();
     getData();
 }
 
@@ -76,26 +74,6 @@ function getBranchList() {
         prefix += "<option value = 'Total' selected = 'selected' branid='' >Total</option> ";
         content = prefix + content + "</select>";
         $('#branchlist').html(content);
-    }
-    xhr.send(null);
-}
-
-function getCategoryList() {
-    var uri = prefix + "/item/cat";
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", uri, true);
-    xhr.onload = function () {
-        var resp = JSON.parse(xhr.responseText);
-        var cat = '';
-        var content = "";
-        for (var i = 0; i < resp.length; i++) {
-            cat = resp[i].Cat;
-            content = content + "<option value='" + cat + "'>" + cat + "</option>";
-        }
-        var prefix = "<select data-plugin-selectTwo class='form-control populate' id='mycat'>";
-        prefix += "<option value = 'Total' selected = 'selected' >Total</option> ";
-        content = prefix + content + "</select>";
-        $('#categorylist').html(content);
     }
     xhr.send(null);
 }
@@ -176,34 +154,7 @@ function getDate() {
 
 }
 
-function getreporttype() {
-    var type = $('#reporttype').prop('checked');
-    if (type) {
-        //var catValue = $("#categorylist").find("option:selected").attr("value");
-        //if (catValue == 'Total') {
-            reporttype = 'AllCategory';
-        //}
-        //else { reporttype ='OneCategory'}
-        $('#itemlistcontainer').hide();
-    }
-    else {
-        reporttype = 'CategoryItem';
-        getitemlist();
-    }
-
-
-}
-
 function getData() {
-    var chartdatalist = [];
-    var chartdataline, chartdatabar, chartdatapie,chartdataqty, chartdatasales, chartdataprofit;
-    var chartType;
-
-    var type = $('#reporttype').prop('checked');
-    var catValue = $("#categorylist").find("option:selected").attr("value");
-    var itemValue = $("#itemlist").find("option:selected").attr("value");
-    //alert(catValue);
-    //get report type
 
     var from = $("#from").val();
     var to = $("#to").val();
@@ -271,278 +222,65 @@ function getData() {
     });
 }
 
-function drawchart(data, daterange, branch, chartType) {
-
-    //get data for chart
-    var mychartdataqty, mychartdatasales, mychartdataprofit, mychartdataAllCategories, mychartdataOneCategory, mychartdataCategoryItme, mychartdataOneItme;
-
-    mychartdataqty = data.chartdataqty;
-    mychartdatasales = data.chartdatasales;
-    mychartdataprofit = data.chartdataprofit;
-
-    //renew container
-    var chartBarQty, chartBarSales, chartBarProfit;
-
-    if (chartBarQty != null && chartBarQty != "" && chartBarQty != undefined) {
-        chartBarQty.dispose();
-    }
-    if (chartBarSales != null && chartBarSales != "" && chartBarSales != undefined) {
-        chartBarSales.dispose();
-    }
-    if (chartBarProfit != null && chartBarProfit != "" && chartBarProfit != undefined) {
-        chartBarProfit.dispose();
-    }
-
-    chartBarSales = echarts.init(document.getElementById('chart1'));
-    chartBarProfit = echarts.init(document.getElementById('chart2'));
-    chartBarQty = echarts.init(document.getElementById('chart3'));
-
-    //chartBarQty.on('mouseover', function (params) {
-    //    if (params.name) {
-    //        console.log(JSON.stringify(params.name));
-    //    }
-    //});
-
-    var optiongoupbysales = {
-        title: {
-            show: true,
-            text: branch,
-            subtext: daterange
+function GetSalesItems(inv) {
+    var uri = prefix + "/salesinvoice?invoice_number=" + inv;
+    var str = '';
+    var subtotal = 0;
+    $.ajax({
+        type: "get",
+        url: uri,
+        async: false,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+            var sti='';
+            for (var i = 0; i < data.sales_items.length; i++) {
+                sti += "<tr>";
+                sti += "<td>" + data.sales_items[i].qty + "</td>";
+                sti += "<td>" + data.sales_items[i].code + "</td>";
+                sti += "<td></td>";
+                sti += "<td>" + data.sales_items[i].name + "</td>";
+                sti += "<td>" + data.sales_items[i].sales_total.formatMoney() + "</td>";
+                //alert(i);
+                sti += "</tr>";
+                str = sti;
+                subtotal += data.sales_items[i].sales_total;
+                //alert(subtotal);
+            }
+            //alert(sti);
+            return sti;
         },
-            color: ['rgba(9,135,235, 0.8)'],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
-        grid: {
-            left: '6%',
-            right: '6%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: mychartdatasales.keys,
-                axisLabel: {
-                    clickable: true,
-                    formatter: function (params) {
-                        var newParamsName = "";
-                        var paramsNameNumber = params.length;
-                        var provideNumber = 9;
-                        if (paramsNameNumber > provideNumber) {
-                            var tempStr = "";
-
-                            tempStr = params.substring(0, provideNumber);
-                            newParamsName = tempStr + "..."
-                        } else {
-                            newParamsName = params;
-                        }
-                        return newParamsName
-                    },
-
-                    interval: 0,
-                    rotate: 45
-                },
-
-                axisTick: {
-                    alignWithLabel: true
-                }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: 'Sales',
-                type: chartType, //'bar',
-                barWidth: '60%',
-                label: {
-                    normal: {
-                        position: 'top',
-                        show: true,
-                        rotate: 0,
-                        formatter: function (params) {
-                            var res = params['value'].formatMoney();
-                            return res;
-                        }
-                    }
-                },
-                data:
-                    mychartdatasales.value
-            }
-        ]
-    };
-    var optiongoupbyprofit = {
-        title: {
-            show: true,
-            text: branch,
-            subtext: daterange
-        },
-        color: ['rgba(255,125,6, 0.8)'],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
-        grid: {
-            left: '3%',
-            right: '6%',
-            bottom: '3%',
-            containLabel: true
-        },
-        yAxis: [
-            {
-                type: 'category',
-                data: mychartdataprofit.keys,
-                axisTick: {
-                    alignWithLabel: true
-                }
-            }
-        ],
-        xAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: 'Profit',
-                type: chartType , //'bar',
-                barWidth: '60%',
-                label: {
-                    normal: {
-                        position: 'right',
-                        show: true,
-                        formatter: function (params) {
-                            var res = params['value'].formatMoney();
-                            return res;
-                        }
-                    }
-                },
-                data:
-                    mychartdataprofit.value
-            }
-        ]
-    };
-    var optiongoupbyqty = {
-        title: {
-            show: true,
-            text: branch,
-            subtext: daterange
-        },
-        color: ['rgba(135,5,255, 0.7)'],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
-        grid: {
-            left: '6%',
-            right: '6%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: mychartdataqty.keys,
-                axisLabel: {
-                    clickable: true,
-                    formatter: function (params) {
-                        var newParamsName = "";
-                        var paramsNameNumber = params.length;
-                        var provideNumber = 9;
-                        if (paramsNameNumber > provideNumber) {
-                            var tempStr = "";
-
-                            tempStr = params.substring(0, provideNumber);
-                            newParamsName = tempStr + "..."
-                        } else {
-                            newParamsName = params;
-                        }
-                        return newParamsName
-                    },
-
-                    interval: 0,
-                    rotate: 45
-                },
-                axisTick: {
-                    alignWithLabel: true
-                }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: 'Quantity',
-                type: chartType, //'bar',
-                barWidth: '60%',
-                label: {
-                    normal: {
-                        position: 'top',
-                        show: true,
-                        rotate: 0,
-                        formatter: function (params) {
-                            var res = params['value'];
-                            return res;
-                        }
-                    }
-                },
-                data:
-                    mychartdataqty.value
-            }
-        ]
-    };
-
-
-    chartBarQty.setOption(optiongoupbyqty);
-    chartBarSales.setOption(optiongoupbysales);
-    chartBarProfit.setOption(optiongoupbyprofit);
-
-    var charts = [];
-    charts.push(chartBarQty);
-    charts.push(chartBarSales);
-    charts.push(chartBarProfit);
-
-        window.addEventListener("resize", () => {
-            chartBarQty.resize();
-            chartBarSales.resize();
-            chartBarProfit.resize();
-        });
-    //tab
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        for (var i = 0; i < charts.length; i++) {
-            charts[i].resize();
+        error: function (data) {
+            if (data.status == 401)
+                alert('Token Expired!! Redirect to login page!');
+            setTimeout("window.location.href='login.html'", 1000);
         }
     });
-
+    return str;
 }
-
-
 
 function detailFormatter(index, row) {
     var html = []
+    var inv=0;
+    var content = '';
     $.each(row, function (key, value) {
-        if (key == 'Total')
-            html.push('<p><b>' + key + ':</b> ' + value.formatMoney() + '</p>')
-        else
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+
+        if (key == 'InvoiceNumber') {
+            inv = value;
+            content = GetSalesItems(inv);
+            //alert('1111' + content);
+            html.push(content);
+        }
+
+        //if (key == 'Total')
+        //    html.push('<p><b>' + key + ':</b> ' + value.formatMoney() + '</p>')
+        //else
+        //    html.push('<p><b>' + key + ':</b> ' + value + '</p>')
     })
     return html.join('')
 }
-function initTable(data, id, datafield) {
+
+function initTable(data, id) {
     var myTableData;
     myTableData = data;
 
@@ -550,19 +288,23 @@ function initTable(data, id, datafield) {
     $table.bootstrapTable('destroy').bootstrapTable({
         //height: '100%',
         resizable: true,
-        columns: [
-            [{
-                valign: 'middle',
-                align: 'center',
-                visible: false,
-                width: 0,
-                formatter: function (value, row, index) {
-                    return index + 1;
-                }
-            }, {
+        columns:[
+            
+            [
+                //{
+                //valign: 'middle',
+                //align: 'center',
+                //visible: true,
+                //width: 0,
+                //formatter: function (value, row, index) {
+                //    return index + 1;}
+                //}
+                //,
+                {
                 title: 'Branch',
                 field: 'BranchName',
                 rowspan: 2,
+                //colspan:2,
                 align: 'center',
                 valign: 'middle',
                 sortable: true,
@@ -592,18 +334,18 @@ function initTable(data, id, datafield) {
         ],
 
 
-            //{
-            //    //title: 'Index',
-            //    valign: 'middle',
-            //    align: 'center',
-            //    visible: false,
+        //    {
+        //        //title: 'Index',
+        //        valign: 'middle',
+        //        align: 'center',
+        //        visible: false,
 
-            //    width: 0
-            //    ,
-            //    formatter: function (value, row, index) {
-            //        return index + 1;
-            //    }
-            //},
+        //        width: 0
+        //        ,
+        //        formatter: function (value, row, index) {
+        //            return index + 1;
+        //        }
+        //    },
 
         //    {
         //        field: 'BranchName',
