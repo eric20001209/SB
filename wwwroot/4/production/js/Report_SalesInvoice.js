@@ -224,8 +224,9 @@ function getData() {
 
 function GetSalesItems(inv) {
     var uri = prefix + "/salesinvoice?invoice_number=" + inv;
-    var str = '';
+    var str = '<table>';
     var subtotal = 0;
+    var totalqty = 0;
     $.ajax({
         type: "get",
         url: uri,
@@ -235,20 +236,25 @@ function GetSalesItems(inv) {
         success: function (data) {
             var sti='';
             for (var i = 0; i < data.sales_items.length; i++) {
-                sti += "<tr>";
-                sti += "<td>" + data.sales_items[i].qty + "</td>";
+                sti += "<tr style='border:1px'>";
+   
                 sti += "<td>" + data.sales_items[i].code + "</td>";
-                sti += "<td></td>";
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "<td>" + data.sales_items[i].name + "</td>";
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                sti += "<td border=1px>" + data.sales_items[i].qty + "</td>";
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
                 sti += "<td>" + data.sales_items[i].sales_total.formatMoney() + "</td>";
-                //alert(i);
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "</tr>";
-                str = sti;
+                str += sti;
                 subtotal += data.sales_items[i].sales_total;
-                //alert(subtotal);
+                totalqty += data.sales_items[i].qty;
             }
-            //alert(sti);
-            return sti;
+            str += "<tr><td colspan=6>&nbsp;</td></tr>";
+            str += "<tr><td colspan=3></td><td><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b>&nbsp;&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
+            str += "</table>";
+            return str;
         },
         error: function (data) {
             if (data.status == 401)
