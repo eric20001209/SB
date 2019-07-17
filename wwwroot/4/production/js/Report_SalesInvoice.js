@@ -224,7 +224,11 @@ function getData() {
 
 function GetSalesItems(inv) {
     var uri = prefix + "/salesinvoice?invoice_number=" + inv;
+
     var str = '<table>';
+    str += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Amount</th><th></th></tr>";
+    str += "<tr><td colspan=8>&nbsp;</td></tr>";
+
     var subtotal = 0;
     var totalqty = 0;
     $.ajax({
@@ -234,10 +238,10 @@ function GetSalesItems(inv) {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            var sti='';
+            var sti = '';
+            //alert(data.sales_items.length);
             for (var i = 0; i < data.sales_items.length; i++) {
                 sti += "<tr style='border:1px'>";
-   
                 sti += "<td>" + data.sales_items[i].code + "</td>";
                 sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "<td>" + data.sales_items[i].name + "</td>";
@@ -247,10 +251,12 @@ function GetSalesItems(inv) {
                 sti += "<td>" + data.sales_items[i].sales_total.formatMoney() + "</td>";
                 sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "</tr>";
-                str += sti;
+
+                //alert(sti);
                 subtotal += data.sales_items[i].sales_total;
                 totalqty += data.sales_items[i].qty;
             }
+            str += sti;
             str += "<tr><td colspan=6>&nbsp;</td></tr>";
             str += "<tr><td colspan=3></td><td><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b>&nbsp;&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
             str += "</table>";

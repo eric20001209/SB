@@ -10,7 +10,7 @@ namespace SB.Dto
     {
         public int? inovice_number { get; set; }
         public int order_id { get; set; }
-        public decimal? tax { get; set; }
+        public double? tax { get; set; }
         public DateTime commit_date { get; set; }
         public decimal? total { get; set; }
         public BuyerDto Buyer { get; set; }

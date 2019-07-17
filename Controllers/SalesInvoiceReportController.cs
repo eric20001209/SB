@@ -80,24 +80,42 @@ namespace SB.Controllers
             var commite_date = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.CommitDate).FirstOrDefault();
             var tax = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.Tax).FirstOrDefault();
             var total = _context.Invoice.Where(i => i.InvoiceNumber == myfilter.invoice_number).Select(i => i.Total).FirstOrDefault();
-            var itemlist = _context.Invoice
-                .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
 
-                .Select(i => new { i.InvoiceNumber, BranchId = i.Branch, i.CommitDate, i.Total })
-                .Join(_context.Branch.Select(b => new { BranchId = b.Id, BranchName = b.Name }),
-                i => i.BranchId,
-                b => b.BranchId,
-                (i, b) => new { BranchName = b.BranchName, i.InvoiceNumber, i.CommitDate, i.Total })
-                .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.TaxRate, s.SalesTotal }),
-                (ib => ib.InvoiceNumber),
-                (s => s.InvoiceNumber),
-                (ib, s) => new SalesInvoiceItemDto {  code = s.Code, name_cn = s.NameCn, name = s.Name, price = s.CommitPrice, qty = s.Quantity, sales_total = Math.Round(s.CommitPrice * (decimal)s.Quantity ,2) })
-                .ToList();
+            var itemlist =
+           //              (from i in _context.Invoice.Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
+           //                join b in _context.Branch on i.Branch equals b.Id
+           //                join s in _context.Sales on i.InvoiceNumber equals s.InvoiceNumber
+
+           //                select new SalesInvoiceItemDto
+           //                {
+           //                    code = s.Code,
+           //                    name_cn = s.NameCn,
+           //                    name = s.Name,
+           //                    price = (double)s.CommitPrice,
+           //                    qty = s.Quantity,
+           //                    sales_total = Math.Round((double)s.CommitPrice * s.Quantity, 2)
+           //                }).ToList();
+
+
+
+           _context.Invoice
+           .Where(i => myfilter.invoice_number.HasValue ? i.InvoiceNumber == myfilter.invoice_number : true)
+
+            .Select(i => new { i.InvoiceNumber, BranchId = i.Branch, i.CommitDate, i.Total })
+            .Join(_context.Branch.Select(b => new { BranchId = b.Id, BranchName = b.Name }),
+            i => i.BranchId,
+            b => b.BranchId,
+            (i, b) => new { BranchName = b.BranchName, i.InvoiceNumber, i.CommitDate, i.Total })
+            .Join(_context.Sales.Select(s => new { s.InvoiceNumber, s.Code, s.NameCn, s.Name, s.CommitPrice, s.Quantity, s.TaxRate, s.SalesTotal }),
+            (ib => ib.InvoiceNumber),
+            (s => s.InvoiceNumber),
+            (ib, s) => new SalesInvoiceItemDto { code = s.Code, name_cn = s.NameCn, name = s.Name, price = (double)s.CommitPrice, qty = s.Quantity, sales_total = Math.Round((double)s.CommitPrice * s.Quantity, 2) })
+            .ToList();
 
             invoice.inovice_number = myfilter.invoice_number;
             invoice.sales_items = itemlist;
             invoice.commit_date = commite_date;
-            invoice.tax = Math.Round(tax.Value,3);
+            invoice.tax = Math.Round((double)tax.Value,3);
             invoice.total = total;
 
             return invoice;
