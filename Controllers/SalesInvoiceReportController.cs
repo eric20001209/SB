@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SB.Data;
 using SB.Dto;
+using SB.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace SB.Controllers
@@ -14,7 +15,12 @@ namespace SB.Controllers
     [ApiController]
     public class SalesInvoiceReportController : ControllerBase
     {
+        //private readonly IInvoicePaymentReporsitory _reporsitory;
         private wucha_cloudContext _context;
+        //public InvoicePaymentController(IInvoicePaymentReporsitory reporsitory)
+        //{
+        //    _reporsitory = reporsitory;
+        //}
         public SalesInvoiceReportController(wucha_cloudContext context)  //dependency injection
         {
             _context = context;
@@ -112,13 +118,43 @@ namespace SB.Controllers
             (ib, s) => new SalesInvoiceItemDto { code = s.Code, name_cn = s.NameCn, name = s.Name, price = (double)s.CommitPrice, qty = s.Quantity, sales_total = Math.Round((double)s.CommitPrice * s.Quantity, 2) })
             .ToList();
 
+            var paymentlist = _context.TranInvoice
+                .Where(ti => myfilter.invoice_number.HasValue ? ti.invoice_number == myfilter.invoice_number : true)
+                //.Select(ti => new PaymentReportDto { payment_method = ti.payment_method.ToString(), amount = ti.AmountApplied }).ToList(); 
+                .Select(ti => new PaymentReportDto { payment_method = getPayment_method(ti.payment_method), amount = ti.AmountApplied }).ToList();
+
             invoice.inovice_number = myfilter.invoice_number;
             invoice.sales_items = itemlist;
             invoice.commit_date = commite_date;
             invoice.tax = Math.Round((double)tax.Value,3);
             invoice.total = total;
+            invoice.payment = paymentlist;
 
             return invoice;
+        }
+
+
+        string getPayment_method(int? i)
+        {
+            Dictionary<int?, string> paymentMethodList = new Dictionary<int?, string>();
+            string payment_method = "";
+
+            var payment_method_list = _context.EnumTable.Where(et => et.Class == "payment_method")
+                .Select(et=>new {et.Id,et.Name })
+                .OrderBy(et=>et.Id);
+            foreach (var et in payment_method_list)
+            {
+                paymentMethodList.Add(et.Id, et.Name);
+            }
+
+            if (paymentMethodList.ContainsKey(i))
+            {
+                payment_method = paymentMethodList[i];
+            }
+            return payment_method;
+
+
+
         }
     }
 }

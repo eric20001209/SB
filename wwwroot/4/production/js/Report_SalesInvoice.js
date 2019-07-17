@@ -222,13 +222,9 @@ function getData() {
     });
 }
 
-function GetSalesItems(inv) {
+function GetSalesItemsAndPayment(inv) {
     var uri = prefix + "/salesinvoice?invoice_number=" + inv;
-
-    var str = '<table>';
-    str += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Amount</th><th></th></tr>";
-    str += "<tr><td colspan=8>&nbsp;</td></tr>";
-
+    var str = '';
     var subtotal = 0;
     var totalqty = 0;
     $.ajax({
@@ -238,8 +234,10 @@ function GetSalesItems(inv) {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            var sti = '';
-            //alert(data.sales_items.length);
+            //item list
+            var sti = '<table>';
+            sti += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Amount</th><th></th></tr>";
+            sti += "<tr><td colspan=8>&nbsp;</td></tr>";
             for (var i = 0; i < data.sales_items.length; i++) {
                 sti += "<tr style='border:1px'>";
                 sti += "<td>" + data.sales_items[i].code + "</td>";
@@ -251,15 +249,29 @@ function GetSalesItems(inv) {
                 sti += "<td>" + data.sales_items[i].sales_total.formatMoney() + "</td>";
                 sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "</tr>";
-
-                //alert(sti);
                 subtotal += data.sales_items[i].sales_total;
                 totalqty += data.sales_items[i].qty;
             }
+            sti += "<tr><td colspan=6>&nbsp;</td></tr>";
+            sti += "<tr><td colspan=3></td><td><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b>&nbsp;&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
+            sti += "</table>";
+
+            var st = '<table>';
+            st += "<tr><th>Payment Method</th><th></th><th>Amount(Inc GST)</th><th></th></tr>";
+            st += "<tr><td colspan=4>&nbsp;</td></tr>";
+            for (var i = 0; i < data.payment.length; i++) {
+                st += "<tr style='border:1px'>";
+                st += "<td>" + data.payment[i].payment_method + "</td>";
+                st += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                st += "<td>" + data.payment[i].amount.formatMoney() + "</td>";
+                st += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                st += "</tr>";
+            }
+            str = "<table width=100% height=100%><tr><td style='vertical-align: text-top; align:text-left'>";
             str += sti;
-            str += "<tr><td colspan=6>&nbsp;</td></tr>";
-            str += "<tr><td colspan=3></td><td><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b>&nbsp;&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
-            str += "</table>";
+            str += "</td><td style='vertical-align: text-top; align:text-right'>";
+            str += st;
+            str += "</td></tr></table>";
             return str;
         },
         error: function (data) {
@@ -279,7 +291,7 @@ function detailFormatter(index, row) {
 
         if (key == 'InvoiceNumber') {
             inv = value;
-            content = GetSalesItems(inv);
+            content = GetSalesItemsAndPayment(inv);
             //alert('1111' + content);
             html.push(content);
         }
