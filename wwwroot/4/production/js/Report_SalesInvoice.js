@@ -224,6 +224,7 @@ function getData() {
 
 function GetSalesItemsAndPayment(inv) {
     var uri = prefix + "/salesinvoice?invoice_number=" + inv;
+  //  alert(uri);
     var str = '';
     var subtotal = 0;
     var totalqty = 0;

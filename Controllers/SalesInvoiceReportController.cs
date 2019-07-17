@@ -16,7 +16,7 @@ namespace SB.Controllers
     public class SalesInvoiceReportController : ControllerBase
     {
         //private readonly IInvoicePaymentReporsitory _reporsitory;
-        private wucha_cloudContext _context;
+        private readonly wucha_cloudContext _context;
         //public InvoicePaymentController(IInvoicePaymentReporsitory reporsitory)
         //{
         //    _reporsitory = reporsitory;
@@ -120,7 +120,7 @@ namespace SB.Controllers
 
             var paymentlist = _context.TranInvoice
                 .Where(ti => myfilter.invoice_number.HasValue ? ti.invoice_number == myfilter.invoice_number : true)
-                //.Select(ti => new PaymentReportDto { payment_method = ti.payment_method.ToString(), amount = ti.AmountApplied }).ToList(); 
+               // .Select(ti => new PaymentReportDto { payment_method = ti.payment_method.ToString(), amount = ti.AmountApplied }).ToList(); 
                 .Select(ti => new PaymentReportDto { payment_method = getPayment_method(ti.payment_method), amount = ti.AmountApplied }).ToList();
 
             invoice.inovice_number = myfilter.invoice_number;
