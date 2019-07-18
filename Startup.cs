@@ -58,7 +58,8 @@ namespace SB
             services.AddScoped<IInvoicePaymentReporsitory, InvoicePaymentReporsitory>();
             services.AddTransient<iMailService,LocalMailService>();
 
-            string connectionString = @"Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True";
+            string connectionString = @"Server=localhost;Database=wucha_cloud;User Id=;password=;Trusted_Connection=True;MultipleActiveResultSets=true";
+            services.AddScoped<wucha_cloudContext>();
             services.AddDbContext<wucha_cloudContext>(option => option.UseSqlServer(connectionString));  //dependency injection
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -82,10 +83,10 @@ namespace SB
             app.UseDefaultFiles();
             app.UseStaticFiles(); //allow to access file in wwwroot folder
             app.UseHttpsRedirection();
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<Models.Card, Dto.RegisterDto>();
-            });
+            //Mapper.Initialize(cfg =>
+            //{
+            //    cfg.CreateMap<Models.Card, Dto.RegisterDto>();
+            //});
             app.UseMvc();
         }
     }

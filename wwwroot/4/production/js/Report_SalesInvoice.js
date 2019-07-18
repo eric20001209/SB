@@ -236,7 +236,7 @@ function GetSalesItemsAndPayment(inv) {
         success: function (data) {
             //item list
             var sti = '<table>';
-            sti += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Amount</th><th></th></tr>";
+            sti += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Sub Total(Exc GST)</th><th></th></tr>";
             sti += "<tr><td colspan=8>&nbsp;</td></tr>";
             for (var i = 0; i < data.sales_items.length; i++) {
                 sti += "<tr style='border:1px'>";

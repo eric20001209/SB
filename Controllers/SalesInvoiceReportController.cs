@@ -15,12 +15,8 @@ namespace SB.Controllers
     [ApiController]
     public class SalesInvoiceReportController : ControllerBase
     {
-        //private readonly IInvoicePaymentReporsitory _reporsitory;
-        private wucha_cloudContext _context;
-        //public InvoicePaymentController(IInvoicePaymentReporsitory reporsitory)
-        //{
-        //    _reporsitory = reporsitory;
-        //}
+
+        private readonly wucha_cloudContext _context ;
         public SalesInvoiceReportController(wucha_cloudContext context)  //dependency injection
         {
             _context = context;
@@ -120,8 +116,12 @@ namespace SB.Controllers
 
             var paymentlist = _context.TranInvoice
                 .Where(ti => myfilter.invoice_number.HasValue ? ti.invoice_number == myfilter.invoice_number : true)
-                //.Select(ti => new PaymentReportDto { payment_method = ti.payment_method.ToString(), amount = ti.AmountApplied }).ToList(); 
-                .Select(ti => new PaymentReportDto { payment_method = getPayment_method(ti.payment_method), amount = ti.AmountApplied }).ToList();
+                .Select(ti => new PaymentReportDto { payment_method = ti.payment_method.ToString(), amount = ti.AmountApplied }).ToList();
+
+            foreach (var payment in paymentlist)
+            {
+                payment.payment_method = getPayment_method(int.Parse(payment.payment_method));
+            }
 
             invoice.inovice_number = myfilter.invoice_number;
             invoice.sales_items = itemlist;
@@ -134,27 +134,30 @@ namespace SB.Controllers
         }
 
 
+        //string getPayment_method(int? i)
+        //{
+        //    Dictionary<int?, string> paymentMethodList = new Dictionary<int?, string>();
+        //    string payment_method = "";
+
+        //    var payment_method_list = _context.EnumTable.Where(et => et.Class == "payment_method")
+        //        .Select(et => new { et.Id, et.Name })
+        //        .OrderBy(et => et.Id);
+        //    foreach (var et in payment_method_list)
+        //    {
+        //        paymentMethodList.Add(et.Id, et.Name);
+        //    }
+
+        //    if (paymentMethodList.ContainsKey(i))
+        //    {
+        //        payment_method = paymentMethodList[i];
+        //    }
+        //    return payment_method;
+        //}
         string getPayment_method(int? i)
         {
-            Dictionary<int?, string> paymentMethodList = new Dictionary<int?, string>();
-            string payment_method = "";
-
-            var payment_method_list = _context.EnumTable.Where(et => et.Class == "payment_method")
-                .Select(et=>new {et.Id,et.Name })
-                .OrderBy(et=>et.Id);
-            foreach (var et in payment_method_list)
-            {
-                paymentMethodList.Add(et.Id, et.Name);
-            }
-
-            if (paymentMethodList.ContainsKey(i))
-            {
-                payment_method = paymentMethodList[i];
-            }
-            return payment_method;
-
-
-
+            var payment = _context.EnumTable.Where(et => et.Class == "payment_method" && et.Id == i)
+                .Select(et => new {et.Id, et.Name }).ToList().FirstOrDefault();
+            return payment.Name;
         }
     }
 }
