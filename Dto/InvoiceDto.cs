@@ -17,6 +17,6 @@ namespace SB.Dto
         public SellerDto Seller { get; set; }
 
         public List<SalesInvoiceItemDto> sales_items = new List<SalesInvoiceItemDto>();
-        public IEnumerable<PaymentReportDto> payment; // = new List<PaymentReportDto>();
+        public IEnumerable<PaymentReportDto> payment = new List<PaymentReportDto>();
     }
 }

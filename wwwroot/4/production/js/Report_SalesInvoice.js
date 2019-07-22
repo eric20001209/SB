@@ -239,28 +239,28 @@ function GetSalesItemsAndPayment(inv) {
             sti += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Sub Total(Exc GST)</th><th></th></tr>";
             sti += "<tr><td colspan=8>&nbsp;</td></tr>";
             for (var i = 0; i < data.sales_items.length; i++) {
-                sti += "<tr style='border:1px'>";
+                sti += "<tr>";
                 sti += "<td>" + data.sales_items[i].code + "</td>";
-                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "<td>" + data.sales_items[i].name + "</td>";
-                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "<td border=1px>" + data.sales_items[i].qty + "</td>";
-                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>"
                 sti += "<td>" + data.sales_items[i].sales_total.formatMoney() + "</td>";
-                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "</tr>";
                 subtotal += data.sales_items[i].sales_total;
                 totalqty += data.sales_items[i].qty;
             }
             sti += "<tr><td colspan=6>&nbsp;</td></tr>";
-            sti += "<tr><td colspan=3></td><td><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b>&nbsp;&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
+            sti += "<tr><td colspan=2></td><td colspan=2 align='right'><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b colspan=2>&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
             sti += "</table>";
 
             var st = '<table>';
             st += "<tr><th>Payment Method</th><th></th><th>Amount(Inc GST)</th><th></th></tr>";
             st += "<tr><td colspan=4>&nbsp;</td></tr>";
             for (var i = 0; i < data.payment.length; i++) {
-                st += "<tr style='border:1px'>";
+                st += "<tr>";
                 st += "<td>" + data.payment[i].payment_method + "</td>";
                 st += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 st += "<td>" + data.payment[i].amount.formatMoney() + "</td>";
