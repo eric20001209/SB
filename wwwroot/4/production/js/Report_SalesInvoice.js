@@ -235,19 +235,18 @@ function GetSalesItemsAndPayment(inv) {
         dataType: "json",
         success: function (data) {
             //item list
-            var sti = '<table>';
-            sti += "<tr><th>Code</th><th></th><th>Descriptiong</th><th></th><th>Qty</th><th></th><th>Sub Total(Exc GST)</th><th></th></tr>";
+            var sti = '<table style="width:75%">';
+            sti += "<tr><th style='width:10%'>Code</th><th></th><th style='width:60%'>Descriptiong</th><th></th><th>Qty</th><th></th><th>Sub Total(Exc GST)</th><th></th></tr>";
             sti += "<tr><td colspan=8>&nbsp;</td></tr>";
             for (var i = 0; i < data.sales_items.length; i++) {
                 sti += "<tr>";
-                sti += "<td>" + data.sales_items[i].code + "</td>";
+                sti += "<td style='width:10%'>" + data.sales_items[i].code + "</td>";
                 sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-                sti += "<td>" + data.sales_items[i].name + "</td>";
+                sti += "<td style='width:60%'>" + data.sales_items[i].name + "</td>";
                 sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "<td border=1px>" + data.sales_items[i].qty + "</td>";
                 sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>"
                 sti += "<td>" + data.sales_items[i].sales_total.formatMoney() + "</td>";
-                sti += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 sti += "</tr>";
                 subtotal += data.sales_items[i].sales_total;
                 totalqty += data.sales_items[i].qty;
@@ -256,7 +255,7 @@ function GetSalesItemsAndPayment(inv) {
             sti += "<tr><td colspan=2></td><td colspan=2 align='right'><b>&nbsp;Total Qty:&nbsp;</b></td><td>" + totalqty + "</td><td><b colspan=2>&nbsp;&nbsp;Sub Total:&nbsp;</b></td><td>" + subtotal.formatMoney() + "</td></tr>";
             sti += "</table>";
 
-            var st = '<table>';
+            var st = '<table style="width:25%">';
             st += "<tr><th>Payment Method</th><th></th><th>Amount(Inc GST)</th><th></th></tr>";
             st += "<tr><td colspan=4>&nbsp;</td></tr>";
             for (var i = 0; i < data.payment.length; i++) {
@@ -267,6 +266,7 @@ function GetSalesItemsAndPayment(inv) {
                 st += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 st += "</tr>";
             }
+            st += "</table>";
             str = "<table width=100% height=100%><tr><td style='vertical-align: text-top; align:text-left'>";
             str += sti;
             str += "</td><td style='vertical-align: text-top; align:text-right'>";
