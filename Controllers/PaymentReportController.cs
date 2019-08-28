@@ -92,9 +92,6 @@ namespace SB.Controllers
                                   }).ToList();
 
             List<List<PaymentReportDto>> returnlist = new List<List<PaymentReportDto>> { groupbypayment, groupbyclass };
-
-
-
             return returnlist;
         }
     }

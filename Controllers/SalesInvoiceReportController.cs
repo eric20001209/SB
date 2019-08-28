@@ -133,26 +133,6 @@ namespace SB.Controllers
             return invoice;
         }
 
-
-        //string getPayment_method(int? i)
-        //{
-        //    Dictionary<int?, string> paymentMethodList = new Dictionary<int?, string>();
-        //    string payment_method = "";
-
-        //    var payment_method_list = _context.EnumTable.Where(et => et.Class == "payment_method")
-        //        .Select(et => new { et.Id, et.Name })
-        //        .OrderBy(et => et.Id);
-        //    foreach (var et in payment_method_list)
-        //    {
-        //        paymentMethodList.Add(et.Id, et.Name);
-        //    }
-
-        //    if (paymentMethodList.ContainsKey(i))
-        //    {
-        //        payment_method = paymentMethodList[i];
-        //    }
-        //    return payment_method;
-        //}
         string getPayment_method(int? i)
         {
             var payment = _context.EnumTable.Where(et => et.Class == "payment_method" && et.Id == i)
