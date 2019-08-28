@@ -12,10 +12,11 @@ namespace SB.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-
+        public int? parent_id { get; set; }
+        public bool active { get; set; } = false;
         [Required]
         [MaxLength(50)]
         public string desciption { get; set; }
-        public ICollection<ItemToCategory> itc { get; set; }
+        public ICollection<Item> items { get; set; }
     }
 }
