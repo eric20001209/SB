@@ -17,6 +17,6 @@ namespace SB.Entities
         [Required]
         [MaxLength(50)]
         public string desciption { get; set; }
-        public ICollection<Item> items { get; set; }
+        public ICollection<Item> items { get; set; } = new List<Item>();
     }
 }

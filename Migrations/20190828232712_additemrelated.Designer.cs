@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SB.Data;
 
 namespace SB.Migrations
 {
     [DbContext(typeof(wucha_cloudContext))]
-    partial class wucha_cloudContextModelSnapshot : ModelSnapshot
+    [Migration("20190828232712_additemrelated")]
+    partial class additemrelated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

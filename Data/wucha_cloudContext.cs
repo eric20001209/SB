@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SB.Models;
+using SB.Entities;
 
 namespace SB.Data
 {
@@ -14,8 +15,16 @@ namespace SB.Data
         public wucha_cloudContext(DbContextOptions<wucha_cloudContext> options)
             : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
+
+        //create db from entities
+        public virtual DbSet<Barcode> Barcode { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Item> Item { get; set; }
+        public virtual DbSet<ItemToCategory> ItemToCategory { get; set; }
+        public virtual DbSet<Unit> Unit { get; set; }
+        //
 
         public virtual DbSet<Branch> Branch { get; set; }
         public virtual DbSet<Card> Card { get; set; }
