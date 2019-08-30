@@ -16,7 +16,7 @@ namespace SB.Entities
         public bool active { get; set; } = false;
         [Required]
         [MaxLength(50)]
-        public string desciption { get; set; }
+        public string description { get; set; }
         public ICollection<Item> items { get; set; } = new List<Item>();
     }
 }
