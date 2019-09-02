@@ -5,6 +5,32 @@ function loaddata() {
     //getData();
 }
 
+function getCategoryList1() {
+    var uri = "https://localhost:44398/api/category/list";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", uri, true);
+    xhr.onload = function () {
+        var resp = JSON.parse(xhr.responseText);
+        var id = '';
+        var parent_id = '';
+        var description = '';
+        var active = '';
+        var content = '';
+        for (var i = 0; i < resp.length; i++) {
+            id = resp[i].id;
+            parent_id = resp[i].parent_id;
+            description = resp[i].description;
+            active = resp[i].active;
+            content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
+        }
+        var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
+        prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> ";
+        content = prefix + content + "</select>";
+        $('#categorylist').html(content);
+    }
+    xhr.send(null);
+}
+
 function getCategoryList() {
     var uri = "https://localhost:44398/api/category/list";
     var xhr = new XMLHttpRequest();
@@ -30,6 +56,7 @@ function getCategoryList() {
     }
     xhr.send(null);
 }
+
 
 function getDate() {
     $(function () {

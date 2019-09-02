@@ -9,5 +9,9 @@ namespace SB.Dto
     {
         public int Id { get; set; }
         public string Description { get; set; }
+        public bool Active { get; set; }
+        public int? Parent_Id { get; set; }
+
+        public List<CategoryDto> SubCategories = new List<CategoryDto>();
     }
 }
