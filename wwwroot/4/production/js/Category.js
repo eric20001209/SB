@@ -53,6 +53,13 @@ function getCategoryList() {
         prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> ";
         content = prefix + content + "</select>";
         $('#categorylist').html(content);
+
+        //var opts = {
+        //    data: resp,
+        //    select: '#demo'
+        //};
+        //var linkageSel = new LinkageSel(opts);
+        //$('#categorylist').html(linkageSel);
     }
     xhr.send(null);
 }
