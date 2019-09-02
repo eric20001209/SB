@@ -50,7 +50,7 @@ function getCategoryList() {
             content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
         }
         var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
-        prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> ";
+        prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> "; 
         content = prefix + content + "</select>";
         $('#categorylist').html(content);
 
