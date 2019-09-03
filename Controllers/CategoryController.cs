@@ -17,10 +17,8 @@ namespace SB.Controllers
         private wucha_cloudContext _context = new wucha_cloudContext();
 
         [HttpGet("list")]
-        public IActionResult getCategroyList([FromQuery] int? parentId)
+        public IActionResult getCategroyList()
         {
-            if (!parentId.HasValue)
-                parentId = 0;
             var mylist = _context.Category.Select(c=> new {
                 c.id,
                 c.description,
@@ -57,7 +55,6 @@ namespace SB.Controllers
             }
             return Ok(finalList);
         }
-
         public void LoopToAppendSubCat(List<CategoryDto> all, CategoryDto currentCat)
         {
             var subItems = all.Where(ee => ee.Parent_Id == currentCat.Id).ToList();
@@ -68,6 +65,5 @@ namespace SB.Controllers
                 LoopToAppendSubCat(all, subItem);
             }
         }
-
     }
 }

@@ -37,16 +37,18 @@ function getCategoryList() {
     xhr.open("GET", uri, true);
     xhr.onload = function () {
         var resp = JSON.parse(xhr.responseText);
+        console.log(resp);
+
         var id = '';
         var parent_id = '';
         var description = '';
         var active = '';
         var content = '';
         for (var i = 0; i < resp.length; i++) {
-            id = resp[i].id;
-            parent_id = resp[i].parent_id;
-            description = resp[i].description;
-            active = resp[i].active;
+            id = resp[i].Id;
+            parent_id = resp[i].Parent_Id;
+            description = resp[i].Description;
+            active = resp[i].Active;
             content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
         }
         var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
@@ -54,12 +56,51 @@ function getCategoryList() {
         content = prefix + content + "</select>";
         $('#categorylist').html(content);
 
+        //resp = {
+        //    1: {
+        //        name: '蔬菜',
+        //        cell: {
+        //            10: { name: '菠菜', price: 4 },
+        //            11: { name: '茄子', price: 5 }
+        //        }
+        //    },
+        //    3: {
+        //        name: '水果',
+        //        cell: {
+        //            20: {
+        //                name: '苹果',
+        //                cell: { 201: { name: '红富士', price: 20 } }
+        //            },
+        //            21: {
+        //                name: '桃',
+        //                cell: {
+        //                    210: { name: '猕猴桃', price: 30 },
+        //                    211: { name: '油桃', price: 31 },
+        //                    212: { name: '蟠桃', priece: 32 }
+        //                }
+        //            }
+        //        }
+        //    },
+        //    9: {
+        //        name: '粮食',
+        //        cell: {
+        //            30: {
+        //                name: '水稻',
+        //                cell: {
+        //                    301: {
+        //                        name: '大米',
+        //                        cell: { 3001: { name: '五常香米', price: 50 } }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //};
         //var opts = {
         //    data: resp,
-        //    select: '#demo'
+        //    select: '#categorylist'
         //};
         //var linkageSel = new LinkageSel(opts);
-        //$('#categorylist').html(linkageSel);
     }
     xhr.send(null);
 }
