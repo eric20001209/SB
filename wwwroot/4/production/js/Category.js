@@ -37,24 +37,40 @@ function getCategoryList() {
     xhr.open("GET", uri, true);
     xhr.onload = function () {
         var resp = JSON.parse(xhr.responseText);
-        console.log(resp);
 
-        var id = '';
-        var parent_id = '';
-        var description = '';
-        var active = '';
-        var content = '';
-        for (var i = 0; i < resp.length; i++) {
-            id = resp[i].Id;
-            parent_id = resp[i].Parent_Id;
-            description = resp[i].Description;
-            active = resp[i].Active;
-            content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
-        }
-        var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
-        prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> "; 
-        content = prefix + content + "</select>";
-        $('#categorylist').html(content);
+
+        //resp = resp.map(function (item) {
+        //    return {
+        //        id: item.Id,
+        //        text: item.Description,
+        //        inc: item.SubCategories
+        //    }
+        //});
+
+        replaceKeysDeep(resp, {
+            Id: 'id',
+            Description: 'text',
+            SubCategories: 'inc'
+        });
+        console.log(resp);
+        $("#categorylist").select2ToTree({ treeData: { dataArr: resp }, maximumSelectionLength: 3 });
+        //var id = '';
+        //var parent_id = '';
+        //var description = '';
+        //var active = '';
+        //var content = '';
+        //for (var i = 0; i < resp.length; i++) {
+        //    id = resp[i].Id;
+        //    parent_id = resp[i].Parent_Id;
+        //    description = resp[i].Description;
+        //    active = resp[i].Active;
+        //    content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
+        //}
+        //var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
+        //prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> "; 
+        //content = prefix + content + "</select>";
+        //$('#categorylist').html(content);
+
 
         //resp = {
         //    1: {
@@ -105,6 +121,14 @@ function getCategoryList() {
     xhr.send(null);
 }
 
+function replaceKeysDeep(obj, keysMap) { // keysMap = { oldKey1: newKey1, oldKey2: newKey2, etc... 
+    return _.transform(obj, function (result, value, key) { // transform to a new object 
+        var currentKey = keysMap[key] || key; // if the key is in keysMap use the replacement, if not use the original key 
+        result[currentKey] = _.isObject(value) ? replaceKeysDeep(value, keysMap) : value; // if the key is an object run it through the inner function - replaceKeys 
+
+    });
+
+}
 
 function getDate() {
     $(function () {
