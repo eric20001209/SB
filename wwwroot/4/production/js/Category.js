@@ -53,7 +53,7 @@ function getCategoryList() {
             SubCategories: 'inc'
         });
         console.log(resp);
-        $("#categorylist").select2ToTree({ treeData: { dataArr: resp }, maximumSelectionLength: 3 });
+        $("#categorylist").select2ToTree({ treeData: { dataArr: resp }, maximumSelectionLength: 3, placeholder: "Select a category", });
         //var id = '';
         //var parent_id = '';
         //var description = '';
