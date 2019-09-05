@@ -1,32 +1,71 @@
 ﻿
 function loaddata() {
-    getCategoryList();
+    getCategoryListC();
     //getDate();
     //getData();
 }
 
-function getCategoryList1() {
-    var uri = "https://localhost:44398/api/category/list";
+function getCategoryListC(parentId) {
+    //if (parentId == 'undefined')
+        parentId = '0';
+    var uri = "https://localhost:44398/api/category/catList?parentId=" + parentId ;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", uri, true);
     xhr.onload = function () {
         var resp = JSON.parse(xhr.responseText);
+        //var id = '';
+        //var parent_id = '';
+        //var description = '';
+        //var active = '';
+        //var content = '';
+        //for (var i = 0; i < resp.length; i++) {
+        //    id = resp[i].Id;
+        //    parent_id = resp[i].Parent_id;
+        //    description = resp[i].Description;
+        //    active = resp[i].Active;
+        //    content = content + "<option value='" + description + "'  categoryid='" + id + "' parentid='"+parent_id+"'>" + description + "</option>";
+        //}
+        //var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
+        //prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> ";
+        //content = prefix + content + "</select><br>";
+        //$('#categorylist').html(content);
+
+        resp = resp.map(function (item) {
+            return {
+                id: item.Id,
+                text: item.Description
+                //inc: item.SubCategories
+            }
+        });
+        console.log(resp);
+
+
+
+        // resp = {
+        //    id: 1,
+        //    text: 'Barn owl'
+        //};
+        //var newOption = new Option(resp.text, resp.id, false, false);
+        //$('#categorylist').append(newOption).trigger('change');
         var id = '';
         var parent_id = '';
         var description = '';
         var active = '';
         var content = '';
-        for (var i = 0; i < resp.length; i++) {
-            id = resp[i].id;
-            parent_id = resp[i].parent_id;
-            description = resp[i].description;
-            active = resp[i].active;
-            content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
+         for (var i = 0; i < resp.length; i++) {
+            id = resp[i].Id;
+            parent_id = resp[i].Parent_id;
+            description = resp[i].Description;
+            active = resp[i].Active;
+             content = content + "<option value='" + description + "'  categoryid='" + id + "' parentid='" + parent_id + "'>" + description + "</option>";
+
+             $('#categorylist').select2({
+                 templateResult: content
+             });
         }
-        var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
-        prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> ";
-        content = prefix + content + "</select>";
-        $('#categorylist').html(content);
+
+
+
     }
     xhr.send(null);
 }
@@ -37,8 +76,6 @@ function getCategoryList() {
     xhr.open("GET", uri, true);
     xhr.onload = function () {
         var resp = JSON.parse(xhr.responseText);
-
-
         //resp = resp.map(function (item) {
         //    return {
         //        id: item.Id,
@@ -53,7 +90,7 @@ function getCategoryList() {
             SubCategories: 'inc'
         });
         console.log(resp);
-        $("#categorylist").select2ToTree({ treeData: { dataArr: resp }, maximumSelectionLength: 3, placeholder: "Select a category", });
+        $("#categorylist").select2ToTree({ treeData: { dataArr: resp }, maximumSelectionLength: 3, placeholder: 'Select a category' });
         //var id = '';
         //var parent_id = '';
         //var description = '';

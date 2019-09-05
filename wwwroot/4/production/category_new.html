@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>Gentelella Alela! | </title>
+    <title>API DEMO | </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,7 +28,9 @@
     <link href="../vendors/starrr/dist/starrr.css" rel="stylesheet">
     <!-- bootstrap-daterangepicker -->
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-
+    <!--select2 menu-->
+    <link href="css/menu/select2.min.css" rel="stylesheet">
+    <link href="css/menu/select2totree.css" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
 
@@ -193,7 +195,7 @@
                 <div class="">
                     <div class="page-title">
                         <div class="title_left">
-                            <h3>New Category</h3>
+                            <h3>New Item</h3>
                         </div>
 
                         <!--<div class="title_right">
@@ -237,13 +239,20 @@
                                 <div class="x_content">
                                     <br />
                                     <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
-
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="category">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="code">
+                                                Item Code <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input type="text" id="code" required="required" class="form-control col-md-7 col-xs-12">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
                                                 Description <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="category" required="required" class="form-control col-md-7 col-xs-12">
+                                                <input type="text" id="name" required="required" class="form-control col-md-7 col-xs-12">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -256,32 +265,14 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-control col-md-7 col-xs-12" id="categorylist"></div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12" ">
+                                                <!--<select id="categorylist" data-plugin-selectTwo class='form-control populate'></select>-->
+                                                <select id="categorylist" class="form-control col-md-7 col-xs-12" style="width:100%"></select>
                                             </div>
                                         </div>
+               
 
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Gender</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <div id="gender" class="btn-group" data-toggle="buttons">
-                                                    <label class="btn btn-default" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
-                                                        <input type="radio" name="gender" value="male"> &nbsp; Male &nbsp;
-                                                    </label>
-                                                    <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
-                                                        <input type="radio" name="gender" value="female"> Female
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                                                Date Of Birth <span class="required">*</span>
-                                            </label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input id="birthday" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
-                                            </div>
-                                        </div>
+
                                         <div class="ln_solid"></div>
                                         <div class="form-group">
                                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -1182,7 +1173,6 @@
                         </div>
                     </div>
 
-
                     <div class="x_panel">
                         <div class="x_title">
                             <h2>Form Design <small>different form elements</small></h2>
@@ -1290,6 +1280,14 @@
 
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!--linkagesel-->
+    <script src="../vendors/jquery/dist/jquery.js"></script>
+    <script src="js/menu/comm.js"></script>
+    <script src="js/menu/linkagesel-min.js"></script>
+    <script src="js/menu/jquery.cxselect.js"></script>
+    <script src="js/menu/select2.min.js"></script>
+    <script src="js/menu/select2totree.js"></script>
+
     <!-- Bootstrap -->
     <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->
@@ -1328,8 +1326,9 @@
     <script src="js/all.js"></script>
     <script src="js/eChart/echarts.min.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/Report_Payment.js"></script>
+    <script src="js/Category.js"></script>
     <script src="authentication/js/authetication.js"></script>
+    <script src="js/menu/lodash.js"></script>
 
 </body>
 </html>
