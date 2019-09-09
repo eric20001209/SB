@@ -1,71 +1,53 @@
 ﻿
+
 function loaddata() {
-    getCategoryListC();
+    getCategoryListC('0', '#categorylist', '#2categorylist', '#2category');
     //getDate();
     //getData();
 }
 
-function getCategoryListC(parentId) {
-    //if (parentId == 'undefined')
+
+function getCategoryListC(parentId, currentdom, subdom, subcontainer) {
+
+    if (parentId == undefined)
         parentId = '0';
     var uri = "https://localhost:44398/api/category/catList?parentId=" + parentId ;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", uri, true);
     xhr.onload = function () {
         var resp = JSON.parse(xhr.responseText);
-        //var id = '';
-        //var parent_id = '';
-        //var description = '';
-        //var active = '';
-        //var content = '';
-        //for (var i = 0; i < resp.length; i++) {
-        //    id = resp[i].Id;
-        //    parent_id = resp[i].Parent_id;
-        //    description = resp[i].Description;
-        //    active = resp[i].Active;
-        //    content = content + "<option value='" + description + "'  categoryid='" + id + "' parentid='"+parent_id+"'>" + description + "</option>";
-        //}
-        //var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
-        //prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> ";
-        //content = prefix + content + "</select><br>";
-        //$('#categorylist').html(content);
-
-        resp = resp.map(function (item) {
-            return {
-                id: item.Id,
-                text: item.Description
-                //inc: item.SubCategories
-            }
-        });
-        console.log(resp);
-
-
-
-        // resp = {
-        //    id: 1,
-        //    text: 'Barn owl'
-        //};
-        //var newOption = new Option(resp.text, resp.id, false, false);
-        //$('#categorylist').append(newOption).trigger('change');
-        var id = '';
-        var parent_id = '';
-        var description = '';
-        var active = '';
-        var content = '';
-         for (var i = 0; i < resp.length; i++) {
-            id = resp[i].Id;
-            parent_id = resp[i].Parent_id;
-            description = resp[i].Description;
-            active = resp[i].Active;
-             content = content + "<option value='" + description + "'  categoryid='" + id + "' parentid='" + parent_id + "'>" + description + "</option>";
-
-             $('#categorylist').select2({
-                 templateResult: content
-             });
+        if (resp.length == 0) {
+            alert('22222');
         }
+        else {
+            //$(subcontainer).show();
+            //$(subdom).find('option').remove().end();
+            resp = resp.map(function (item) {
+                return {
+                    id: item.Id,
+                    text: item.Description,
+                    parent_id: item.Parent_Id
+                }
+            });
+            console.log(resp);
+            $(currentdom).select2({
+                placeholder: "Select a Category",
+                allowClear: true,
+                data: resp,
+                tags: true
+            })
 
+            $(currentdom).on('select2:select', function (e) {
+                // Do something
+                $(subdom).empty();
+                //$(subcontainer).show();
+                //$(subdom).find('option').remove().end();
+                alert(e.params.data.id + ' ' + e.params.data.text + '  ' + e.params.data.parent_id);
 
+                getCategoryListC(e.params.data.id, subdom, '', '');
 
+            });
+        }
     }
     xhr.send(null);
 }
