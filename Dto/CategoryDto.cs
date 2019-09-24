@@ -11,7 +11,7 @@ namespace SB.Dto
         public string Description { get; set; }
         public bool Active { get; set; }
         public int? Parent_Id { get; set; }
-
+        public int? LayerLevel { get; set; }
         public List<CategoryDto> SubCategories = new List<CategoryDto>();
     }
 }

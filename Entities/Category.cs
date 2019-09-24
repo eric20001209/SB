@@ -12,11 +12,13 @@ namespace SB.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-        public int? parent_id { get; set; }
+        public int parent_id { get; set; }
         public bool active { get; set; } = false;
-        [Required]
+
+        [Required(ErrorMessage = "You should input a category value.")]
         [MaxLength(50)]
         public string description { get; set; }
+        public int? layer_level { get; set; } = 1;
         public ICollection<Item> items { get; set; } = new List<Item>();
     }
 }

@@ -35,5 +35,12 @@ namespace SB.Controllers
 
             return Ok();
         }
+
+        [HttpGet("category/{id}")]
+        public IActionResult getItemList(string id)
+        {
+
+            return Ok();
+        }
     }
 }

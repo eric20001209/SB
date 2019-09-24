@@ -12,9 +12,10 @@ namespace SB.Dto
         public string name_cn { get; set; }
         public decimal price { get; set;}
         public decimal cost { get; set; }
+        public int cat_id { get; set; }
 
         public UnitDto unit;
-        public ICollection<CategoryDto> categries = new List<CategoryDto>();
+        //public ICollection<CategoryDto> categries = new List<CategoryDto>();
         public ICollection<BarcodeDto> barcodes = new List<BarcodeDto>();
 
     }

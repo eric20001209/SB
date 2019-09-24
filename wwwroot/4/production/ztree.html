@@ -1,0 +1,495 @@
+﻿<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE>ZTREE DEMO</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <link rel="stylesheet" href="js/ztree/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="js/ztree/css/bootstrapztree.css" type="text/css">
+    <link rel="stylesheet" href="js/ztree/css/dataTables.bootstrap4.css" type="text/css">
+    <link href="js/ztree/js/bootstrap-tables/bootstrap-table.min.css" rel="stylesheet" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+
+    <script type="text/javascript" src="js/ztree/js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/ztree/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/ztree/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="js/ztree/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="js/ztree/js/jquery.ztree.exedit.js"></script>
+
+    <!--bootstrap talbe-->
+    <script src="js/ztree/js/bootstrap-tables/bootstrap-table.min.js"></script>
+    <script src="js/ztree/js/bootstrap-tables/bootstrap-table-locale-all.min.js"></script>
+    <script src="js/ztree/js/bootstrap-tables/extensions/export/bootstrap-table-export.min.js"></script>
+    <script src="js/ztree/js/bootstrap-tables/extensions/addrbar/bootstrap-table-addrbar.min.js"></script>
+
+    <SCRIPT type="text/javascript">
+        <!--
+        /*
+        $(function () {
+            searchUnitTree();
+        });
+        */
+        var prefix = "https://localhost:44398/api";
+ //       console.log(prefix);
+        var setting = {
+            view: {
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false
+            },
+            check: {
+                enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            edit: {
+                enable: true
+            },
+            callback: {
+                beforeRemove: beforeRemove,  //移除前
+                beforeRename: beforeRename,   //重命名前
+                onRename: onRename,
+                onClick: zTreeOnClick //注册节点的点击事件;
+            }
+        };
+
+        //add rootnode
+        function addRoot() {
+            var cat = document.getElementById("rootnode").value;
+            cat = cat.trim();
+            var parentid = 0;
+
+            var uri = prefix+"/category/add";
+            var someJsonString = {
+                "parent_id": parentid,
+                "cat": cat
+            };
+            if (cat == "") {//判断catalog不为空（其他判断规则在其输入时已经判断） 
+                alert("Root catalog cannot be blank！")
+                return false;
+            }
+            else {
+                $.ajax({
+                    url: uri,//相对应的esb接口地址
+                    type: 'post',
+                    data: JSON.stringify(someJsonString),//向服务器（接口）传递的参数
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var cat = data.cat;
+                        alert('Category ' + cat + ' added sucessfully!');
+                        self.location = 'index.html';
+                    },
+                    error: function (data) {
+                        console.log('error');
+                    }
+                });
+            }
+        };
+
+        //添加根节点
+        $('.addnode').click(function () {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                nodes = zTree.getNodes();
+            console.log(nodes)
+            var name = "New Department" + (newCount++);
+            var newNode;
+            //发送请求保存一个新建的节点，根据返回ID添加新节点
+            var data = {
+                "code": 0,
+                "name": name
+            };
+            $.ajax({
+                type: 'post',
+                url: "",
+                data: data,
+                timeout: 1000, //超时时间设置，单位毫秒
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.flag == 0) {
+                        var newId = res.data;
+                        newNode = zTree.addNodes(null, { id: newId, pId: null, name: name });
+                        zTree.editName(newNode[0]);  //新增后显示编辑状态
+                    }
+                }
+            });
+        });
+        //add node
+        function addHoverDom(treeId, treeNode) {
+            //          alert(treeNode.id);
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0)
+                return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='Add Node' οnfοcus='this.blur();'></span>";
+            sObj.after(addStr);
+            var btn = $("#addBtn_" + treeNode.tId);
+            //           alert(111);
+            //             判断该部门下是否有人员，用于删除节点时，当节点下有信息，禁止删除。
+
+            //var data1 = {
+            //    "id": treeNode.id,
+            //    "name": treeNode.name
+            //};
+            //$.ajax({
+            //type: 'POST',
+            //url: "",
+            //data: data1,
+            //timeout: 1000, //超时时间设置，单位毫秒
+            //dataType: 'json',
+            //    success: function (res) {
+
+            //    var cat = res.cat;
+            //    alert('Category '+ cat +' added sucessfully!');
+            //    },
+            //    error: function (data) {
+            //        console.log('error');
+            //        }
+            //});
+
+            //当点击添加按钮时：
+            if (btn) btn.bind("click", function () {
+ //               alert(treeNode.level);
+                if (treeNode.level >= 2)
+                    return;
+                //                alert(btn.id);
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                //console.log(treeNode.id);
+                var name = "New node" + (newCount++);
+                var newNode;
+                //发送请求保存一个新建的节点，后台返回ID，用返回的ID新增节点
+                var data = {
+                    "parent_id": treeNode.id,
+                    "cat": name
+                };
+                $.ajax({
+                    type: 'post',
+                    url: prefix+"/category/add",
+                    data: JSON.stringify(data),
+                    timeout: 1000, //超时时间设置，单位毫秒
+                    contentType: "application/json",
+                    dataType: 'json',
+                    success: function (data) {
+                        //alert('111');
+                        //console.log(data)
+                        var newId = data.id;
+                        //alert(newId);
+                        //在树节点上增加节点
+                        newNode = zTree.addNodes(treeNode, { id: newId, pId: treeNode.id, name: name });
+                        zTree.editName(newNode[0]) //新增的节点进入编辑状态
+                        return false;
+
+                        //if (res.flag == 0) {
+                        //    var newId = res.id;
+                        //    alert(newId);
+                        //    //在树节点上增加节点
+                        //    newNode = zTree.addNodes(treeNode, { id: newId, pId: treeNode.id, name: name });
+                        //    zTree.editName(newNode[0]) //新增的节点进入编辑状态
+                        //    return false;
+                        //}
+                    }
+                });
+                return false;
+            });
+        }
+        function addHoverDom_old(treeId, treeNode) {
+
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='add node' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+            var btn = $("#addBtn_" + treeNode.tId);
+
+            if (btn) btn.bind("click", function () {
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.addNodes(treeNode, { id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++) });
+                return false;
+            });
+        };
+
+        //edit node
+        function beforeRename(treeId, treeNode, newName) {
+ //       alert(treeNode.name + '/' + treeNode.id + '/' + treeNode.level + '/' + treeNode.pId);
+            if (newName.length == 0) {
+                alert("节点名称不能为空.");
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                setTimeout(function () {
+                    zTree.editName(treeNode)
+                }, 10);
+                return false;
+            }
+            
+            return true;
+        }
+
+        function onRename(event, treeId, treeNode, isCancel) {
+
+ //           return;
+            if (isCancel) {
+                return;
+            }
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            var onodes = zTree.getNodes()
+            console.log(onodes);
+            //发送请求修改节点信息
+            var data = [
+                {
+                    "op": "replace",
+                    "path": "/cat",
+                    "value": treeNode.name,
+                }
+            ];
+            $.ajax({
+                type: 'Patch',
+                url: prefix + "/category/edit?id=" + treeNode.id,
+                data: JSON.stringify(data),
+                timeout: 1000, //超时时间设置，单位毫秒
+                contentType: "application/json",
+                dataType: 'json',
+                success: function (data) {
+                    alert('Node update sucessfully!');
+                },
+                error: function (data) {
+                if (data.status == 400)
+                {
+                    alert('Sorry, this Category exists already!!!');
+                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                    setTimeout(function () {
+                        zTree.editName(treeNode)
+                        }, 10);
+                    return false;
+                }
+                }
+            });
+        }
+
+        //delete node
+        function beforeRemove(treeId, treeNode) {
+            var data = {
+                "id": treeNode.id
+            };
+            //      alert(treeNode.id);
+            //className = (className === "dark" ? "" : "dark");
+
+            if (treeNode.isParent) {
+                alert('Sorry, this node contains child node(s), cannot delete!');
+                return false;
+            }
+            //if(hasMember){
+            //    alert('该部门下有人员，不能删除');
+            //    return false;
+            //}
+            var oFlag = confirm("Delete node -- " + treeNode.name + " ？");
+            //            alert(treeNode.id + " , " + treeNode.name);
+            if (oFlag) {
+                $.ajax({
+                    type: 'delete',
+                    url: prefix + "/category/del?id=" + treeNode.id,
+                    data: data,
+                    timeout: 1000, //超时时间设置，单位毫秒
+                    dataType: 'json',
+                    success: function (res) {
+
+                        console.log(res)
+                        //                  alert('Category "' + res.cat + '" Deleted!!');
+
+                    },
+                    error: function (res) {
+                        console.log('error');
+                    }
+                });
+            }
+            else {
+                return false
+            }
+        }
+
+
+
+
+        //bootstrap datatable
+        function initTable(data, id) {
+            var myTableData;
+            myTableData = data;
+
+            var $table = $(id)
+            $table.bootstrapTable('destroy').bootstrapTable({
+                //height: '100%',
+                resizable: true,
+                columns: [
+                    {
+                        title: 'Item Code',
+                        field: 'code',
+                        //               rowspan: 2,
+                        //colspan:2,
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, {
+                        title: 'Description',
+                        field: 'description',
+                        //               colspan: 3,
+                        align: 'center',
+
+                    },
+                    //                    ], [
+                    {
+                        field: 'cat',
+                        sortable: true,
+                        //                   formatter: LinkFormatter,
+                        title: 'Category'
+
+                    },
+                    {
+                        field: 'scat',
+                        sortable: true,
+                        //                   formatter: LinkFormatter,
+                        align: 'center',
+                        title: 'Sub Category'
+
+                    },
+                    {
+                        field: 'sscat',
+                        sortable: true,
+                        //                   formatter: LinkFormatter,
+                        align: 'center',
+                        title: 'S Sub Category'
+
+                    }, {
+                        field: 'price',
+                        sortable: true,
+                        align: 'center',
+                        title: 'Price'
+                    }
+                    //, {
+                    //    field: '',
+                    //    title: 'Amount'
+                    //    ,
+                    //    formatter: function (value, row, index) {
+                    //        return currency(index);
+                    //    }
+                    //}
+                ],
+
+                data: myTableData
+            });
+
+            //function LinkFormatter(value, row, index) {
+            //var invo = myTableData[index].InvoiceNumber;
+
+            //var st = "";
+            //st = "<a href=invoice.html?inv="+ invo + " target='_blank'>" + invo + "</a>";
+            //return st;
+
+            //}
+        }
+        //click event
+        function zTreeOnClick(event, treeId, treeNode) {
+            if (treeNode.level > 2)
+                return;
+            var id = treeNode.id;
+            var cat = treeNode.name;
+            var level = treeNode.level;
+            $.ajax({
+                type: "get",
+                url: prefix + "/item/" + id,
+                async: true,
+                contentType: "application/json",
+                dataType: "json",
+                success: function (data) {
+                    initTable(data, '#itemList')
+                },
+                error: function (data) {
+                    if (data.status == 401)
+                        alert('Token Expired!! Redirect to login page!');
+ //                   setTimeout("window.location.href='login.html'", 1000);
+                }
+            });
+
+
+            //            alert(treeNode.id + ", " + treeNode.name + ", " + treeNode.level );
+            //这里根据节点ID获取对应信息或进行对应的操作
+        }
+
+        var zNodes;
+
+        //var origin = request.getHeader("Origin");
+        //if (StringUtils.hasText(origin)) {
+        //    resp.addHeader("Access-Control-Allow-Origin", origin);
+        //}
+        ////允许带有cookie访问
+        //resp.addHeader("Access-Control-Allow-Credentials", "true");
+        //resp.addHeader("Access-Control-Allow-Methods", "*");
+        
+        //var headers = request.getHeader("Access-Control-Request-Headers");
+        //if (StringUtils.hasText(headers)){
+        //    resp.addHeader("Access-Control-Allow-Headers", headers);
+        //}
+        //resp.addHeader("Access-Control-Max-Age", "3600");
+
+        function searchUnitTree() {
+            $.ajax({
+                url: prefix + '/category',
+                async: false,
+                dataType: 'json',
+                success: function (response) {
+                    zNodes = response;
+                    console.log(zNodes);
+                },
+                error: function () {
+                    alert("Fatal Error！！！")
+                }
+            });
+        }
+        $(document).ready(function () {
+            searchUnitTree();
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        });
+        var newCount = 1;
+        function removeHoverDom(treeId, treeNode) {
+            $("#addBtn_" + treeNode.tId).unbind().remove();
+        };
+        //-->
+    </SCRIPT>
+</HEAD>
+
+<BODY onload="">
+    <h1>Edit Catalog</h1>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            Add Root Node:
+            <input name="rootnode" id="rootnode" type=text>
+            <button class="btn btn-primary" type="button" onclick="addRoot();">Add</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div id="treeDemo" class="ztree"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12" >
+            <table id="itemList"
+                    data-addrbar="true"
+                    data-search="true"
+                    data-show-refresh="true"
+                    data-show-toggle="true"
+                    data-show-columns="true"
+                    data-detail-view="false"
+                    data-click-to-select="true"
+                    data-minimum-count-columns="3"
+                    data-page-list="[10,20]"
+                    data-locale="en-US"
+                    data-pagination="true">
+            </table>
+        </div>
+    </div>
+
+    
+</BODY>
+</HTML>
