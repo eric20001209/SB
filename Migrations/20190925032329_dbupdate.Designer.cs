@@ -10,8 +10,8 @@ using SB.Data;
 namespace SB.Migrations
 {
     [DbContext(typeof(wucha_cloudContext))]
-    [Migration("20190710032228_invoiceId")]
-    partial class invoiceId
+    [Migration("20190925032329_dbupdate")]
+    partial class dbupdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,86 @@ namespace SB.Migrations
                 .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("SB.Entities.Barcode", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("barcode");
+
+                    b.Property<int>("code");
+
+                    b.Property<int>("itemId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("itemId");
+
+                    b.ToTable("Barcode");
+                });
+
+            modelBuilder.Entity("SB.Entities.Category", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("active");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("layer_level");
+
+                    b.Property<int>("parent_id");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("SB.Entities.Item", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("categoryid");
+
+                    b.Property<int>("code");
+
+                    b.Property<decimal>("cost");
+
+                    b.Property<string>("name");
+
+                    b.Property<string>("name_cn");
+
+                    b.Property<decimal>("price");
+
+                    b.Property<int>("unitid");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Item");
+                });
+
+            modelBuilder.Entity("SB.Entities.Unit", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("quantity");
+
+                    b.Property<string>("unit");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Unit");
+                });
 
             modelBuilder.Entity("SB.Models.Branch", b =>
                 {
@@ -2122,6 +2202,14 @@ namespace SB.Migrations
                         .HasName("IDX_trans_branch");
 
                     b.ToTable("trans");
+                });
+
+            modelBuilder.Entity("SB.Entities.Barcode", b =>
+                {
+                    b.HasOne("SB.Entities.Item", "item")
+                        .WithMany("barcodes")
+                        .HasForeignKey("itemId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SB.Models.TranInvoice", b =>

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace SB.Dto
 {
-    public class CategoryForItemFilter
+    public class CategoryForItemFilterDto
     {
+        public int id { get; set; }
+            
     }
 }

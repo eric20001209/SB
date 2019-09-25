@@ -10,5 +10,7 @@ namespace SB.Entities
         public int id { get; set; }
         public string unit { get; set; }
         public double quantity { get; set; }
+
+        //public ICollection<Item> items { get; set; } = new List<Item>();
     }
 }

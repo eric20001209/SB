@@ -10,8 +10,8 @@ using SB.Data;
 namespace SB.Migrations
 {
     [DbContext(typeof(wucha_cloudContext))]
-    [Migration("20190828232712_additemrelated")]
-    partial class additemrelated
+    [Migration("20190925030655_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,11 +48,13 @@ namespace SB.Migrations
 
                     b.Property<bool>("active");
 
-                    b.Property<string>("desciption")
+                    b.Property<string>("description")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int?>("parent_id");
+                    b.Property<int?>("layer_level");
+
+                    b.Property<int>("parent_id");
 
                     b.HasKey("id");
 
@@ -65,7 +67,9 @@ namespace SB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Categoryid");
+                    b.Property<int>("Categoryid");
+
+                    b.Property<int>("Unitid");
 
                     b.Property<int>("code");
 
@@ -81,26 +85,9 @@ namespace SB.Migrations
 
                     b.HasIndex("Categoryid");
 
+                    b.HasIndex("Unitid");
+
                     b.ToTable("Item");
-                });
-
-            modelBuilder.Entity("SB.Entities.ItemToCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CategoryId");
-
-                    b.Property<int>("itemId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("itemId");
-
-                    b.ToTable("ItemToCategory");
                 });
 
             modelBuilder.Entity("SB.Entities.Unit", b =>
@@ -2231,21 +2218,14 @@ namespace SB.Migrations
 
             modelBuilder.Entity("SB.Entities.Item", b =>
                 {
-                    b.HasOne("SB.Entities.Category")
+                    b.HasOne("SB.Entities.Category", "Category")
                         .WithMany("items")
-                        .HasForeignKey("Categoryid");
-                });
-
-            modelBuilder.Entity("SB.Entities.ItemToCategory", b =>
-                {
-                    b.HasOne("SB.Entities.Category", "category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("Categoryid")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SB.Entities.Item", "item")
-                        .WithMany()
-                        .HasForeignKey("itemId")
+                    b.HasOne("SB.Entities.Unit")
+                        .WithMany("items")
+                        .HasForeignKey("Unitid")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

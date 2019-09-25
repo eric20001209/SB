@@ -19,6 +19,6 @@ namespace SB.Entities
         [MaxLength(50)]
         public string description { get; set; }
         public int? layer_level { get; set; } = 1;
-        public ICollection<Item> items { get; set; } = new List<Item>();
+        //public ICollection<Item> items { get; set; } = new List<Item>();
     }
 }

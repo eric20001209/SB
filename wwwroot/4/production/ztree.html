@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="js/ztree/css/bootstrapztree.css" type="text/css">
     <link rel="stylesheet" href="js/ztree/css/dataTables.bootstrap4.css" type="text/css">
     <link href="js/ztree/js/bootstrap-tables/bootstrap-table.min.css" rel="stylesheet" />
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <script type="text/javascript" src="js/ztree/js/jquery.min.js"></script>
     <script type="text/javascript" src="js/ztree/js/bootstrap.min.js"></script>
@@ -24,11 +24,41 @@
 
     <SCRIPT type="text/javascript">
         <!--
-        /*
         $(function () {
-            searchUnitTree();
-        });
-        */
+    ///货币符号转换
+    // Extend the default Number object with a formatMoney() method:
+    // usage: someVar.formatMoney(decimalPlaces, symbol, thousandsSeparator, decimalSeparator)
+    // defaults: (2, "$", ",", ".")
+    Number.prototype.formatMoney = function (places, symbol, thousand, decimal) {
+        places = !isNaN(places = Math.abs(places)) ? places : 2;
+        symbol = symbol !== undefined ? symbol : "$";
+        thousand = thousand || ",";
+        decimal = decimal || ".";
+        var number = this,
+            negative = number < 0 ? "-" : "",
+            i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+        return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+    };
+
+    // Default usage and custom precision/symbol :
+    var revenue = 12345678;
+    //alert(revenue.formatMoney()); // $12,345,678.00
+    //alert(revenue.formatMoney(0, "HK$ ")); // HK$ 12,345,678
+
+    // European formatting:
+    var price = 4999.99;
+    //alert(price.formatMoney(2, "€", ".", ",")); // €4.999,99
+
+    // It works for negative values, too:
+    //alert((-500000).formatMoney(0, "£ ")); // £ -500,000
+
+    var price = (12345.99).formatMoney(); // "$12,345.99"
+
+    // Remove non-numeric chars (except decimal point/minus sign):
+    //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
+});//货币换算
+
         var prefix = "https://localhost:44398/api";
  //       console.log(prefix);
         var setting = {
@@ -154,8 +184,8 @@
             //当点击添加按钮时：
             if (btn) btn.bind("click", function () {
  //               alert(treeNode.level);
-                if (treeNode.level >= 2)
-                    return;
+                //if (treeNode.level >= 2)
+                //    return;
                 //                alert(btn.id);
                 var zTree = $.fn.zTree.getZTreeObj("treeDemo");
                 //console.log(treeNode.id);
@@ -332,39 +362,52 @@
                         sortable: true,
                     }, {
                         title: 'Description',
-                        field: 'description',
+                        field: 'name',
                         //               colspan: 3,
                         align: 'center',
 
                     },
                     //                    ], [
                     {
-                        field: 'cat',
+                        field: 'description',
                         sortable: true,
                         //                   formatter: LinkFormatter,
-                        title: 'Category'
+                        title: 'category'
 
                     },
-                    {
-                        field: 'scat',
-                        sortable: true,
-                        //                   formatter: LinkFormatter,
-                        align: 'center',
-                        title: 'Sub Category'
+                    //{
+                    //    field: 'scat',
+                    //    sortable: true,
+                    //    //                   formatter: LinkFormatter,
+                    //    align: 'center',
+                    //    title: 'Sub Category'
 
-                    },
-                    {
-                        field: 'sscat',
-                        sortable: true,
-                        //                   formatter: LinkFormatter,
-                        align: 'center',
-                        title: 'S Sub Category'
+                    //},
+                    //{
+                    //    field: 'sscat',
+                    //    sortable: true,
+                    //    //                   formatter: LinkFormatter,
+                    //    align: 'center',
+                    //    title: 'S Sub Category'
 
-                    }, {
+                    //},
+                    {
                         field: 'price',
                         sortable: true,
                         align: 'center',
-                        title: 'Price'
+                        title: 'Price',
+                        formatter: function (value, row, index) {
+                            return currencyP(index);
+                        }
+                    },
+                    {
+                        field: 'cost',
+                        sortable: true,
+                        align: 'center',
+                        title: 'cost',
+                        formatter: function (value, row, index) {
+                            return currencyC(index);
+                        }
                     }
                     //, {
                     //    field: '',
@@ -387,17 +430,29 @@
             //return st;
 
             //}
+
+                    //amount to currency format
+        function currencyP(index) {
+            var amount = myTableData[index].price,
+                amount = amount.formatMoney();
+            return amount;
+        }
+        function currencyC(index) {
+            var amount = myTableData[index].cost,
+                amount = amount.formatMoney();
+            return amount;
+        }
         }
         //click event
         function zTreeOnClick(event, treeId, treeNode) {
-            if (treeNode.level > 2)
-                return;
+            //if (treeNode.level > 2)
+            //    return;
             var id = treeNode.id;
             var cat = treeNode.name;
             var level = treeNode.level;
             $.ajax({
                 type: "get",
-                url: prefix + "/item/" + id,
+                url: prefix + "/item/category/" + id,
                 async: true,
                 contentType: "application/json",
                 dataType: "json",

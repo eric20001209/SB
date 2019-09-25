@@ -14,9 +14,9 @@ namespace SB.Dto
         public decimal cost { get; set; }
         public int cat_id { get; set; }
 
-        public UnitDto unit;
+//        public UnitDto unit;
         //public ICollection<CategoryDto> categries = new List<CategoryDto>();
-        public ICollection<BarcodeDto> barcodes = new List<BarcodeDto>();
+//        public ICollection<BarcodeDto> barcodes = new List<BarcodeDto>();
 
     }
 }

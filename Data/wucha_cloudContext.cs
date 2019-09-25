@@ -22,7 +22,7 @@ namespace SB.Data
         public virtual DbSet<Barcode> Barcode { get; set; }
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Item> Item { get; set; }
-        public virtual DbSet<ItemToCategory> ItemToCategory { get; set; }
+        //public virtual DbSet<ItemToCategory> ItemToCategory { get; set; }
         public virtual DbSet<Unit> Unit { get; set; }
         //
 

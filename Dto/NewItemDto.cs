@@ -16,7 +16,7 @@ namespace SB.Dto
 
         public UnitDto unit;
 
-        public ICollection<ItemToCategory> itc { get; set; }
+        //public ICollection<ItemToCategory> itc { get; set; }
 
         public ICollection<BarcodeDto> barcodes { get; set; } = new List<BarcodeDto>();
     }

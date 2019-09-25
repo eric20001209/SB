@@ -19,11 +19,17 @@ namespace SB.Entities
         public decimal price { get; set; }
         public decimal cost { get; set; }
 
-        public Unit unit;
-        public Category category;
+        public int categoryid { get; set; }
+        public int unitid { get; set; }
 
-        //public ICollection<ItemToCategory> itc { get; set; } 
+        //[ForeignKey("Unitid")]
+        //public int Unitid { get; set; }
+        //public Unit Unit;
 
-        public ICollection<Barcode> barcodes { get; set; } = new List<Barcode>();
+        //[ForeignKey("Categoryid")]
+        //public int Categoryid { get; set; }
+        //public Category Category { get; set; }
+
+        public ICollection<Barcode> barcodes { get; set; }
     }
 }
