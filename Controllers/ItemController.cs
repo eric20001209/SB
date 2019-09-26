@@ -45,7 +45,7 @@ namespace SB.Controllers
             if (newBarcodes == null)
                 return BadRequest();
             
-            List<Barcode> BarcodeToInputList = new List<Barcode>();
+
             Barcode BarcodeToInput = new Barcode();
 
             foreach (var newBarcode in newBarcodes)
@@ -54,12 +54,14 @@ namespace SB.Controllers
                 BarcodeToInput.barcode = newBarcode.barcode;
                 BarcodeToInput.itemId = id;
 
-                if (_context.Barcode.Any(b=>b.barcode == BarcodeToInput.barcode))
+                if (_context.Barcode.Any(b=>b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
                 {
                     continue;
                 }
-
+                _context.Barcode.Add(BarcodeToInput);
             }
+            _context.SaveChanges(); //update db
+
             return Ok();
         }
 
