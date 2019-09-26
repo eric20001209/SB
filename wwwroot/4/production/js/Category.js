@@ -1,7 +1,7 @@
 ﻿
 
 function loaddata() {
-//  getCategoryListC('0', '#categorylist', '#2categorylist', '#2category');
+    //initTable(null, '#itemList');
 }
 
 function getCategoryListC(parentId, currentdom, subdom, subcontainer) {

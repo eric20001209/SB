@@ -6,18 +6,15 @@ using SB.Entities;
 
 namespace SB.Dto
 {
-    public class NewItemDto
+    public class AddItemDto
     {
-        public int Code { get; set; }
+        public int code { get; set; }
         public string name { get; set; }
         public string name_cn { get; set; }
         public decimal price { get; set; }
         public decimal cost { get; set; }
+        public int categoryid { get; set; }
+        public int unitid { get; set; }
 
-        public UnitDto unit;
-
-        //public ICollection<ItemToCategory> itc { get; set; }
-
-        public ICollection<BarcodeDto> barcodes { get; set; } = new List<BarcodeDto>();
     }
 }

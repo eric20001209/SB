@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using SB.Dto;
 using SB.Data;
 using SB.Models;
+using SB.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace SB.Controllers
@@ -17,25 +18,62 @@ namespace SB.Controllers
     {
         private readonly wucha_cloudContext _context = new wucha_cloudContext();
 
-        [HttpPost()]
-        public IActionResult addItem([FromBody] ItemDto newItem)
+        [HttpPost("addItem")]
+        public IActionResult addItem([FromBody] AddItemDto newItem)
         {
             if (newItem == null)
-                return BadRequest();
-
-            var maxCode = _context.CodeRelations.OrderByDescending(c => c.Code).Take(1).FirstOrDefault().Code;
-            newItem.code = maxCode;
-
-            CodeRelations codeRelations = new CodeRelations();
-            codeRelations.Code = newItem.code;
-            codeRelations.Name = newItem.name;
-            codeRelations.NameCn = newItem.name_cn;
-            codeRelations.Price1 = newItem.price;
-            codeRelations.SupplierPrice = newItem.cost;
+                return NotFound();
             
+            Item item = new Item();
+            item.code = newItem.code;
+            item.name = newItem.name;
+            item.name_cn = newItem.name_cn;
+            item.price = newItem.price;
+            item.cost = newItem.cost;
+            item.unitid = newItem.unitid;
+            item.categoryid = newItem.categoryid;
+
+            _context.Add(item);
+            _context.SaveChanges();
 
             return Ok();
         }
+
+        [HttpPost("addBarcode/{id}")]
+        public IActionResult addBarcode(int id, [FromBody] List<AddBarcodeDto> newBarcodes)
+        {
+            if (newBarcodes == null)
+                return BadRequest();
+            
+            List<Barcode> BarcodeToInputList = new List<Barcode>();
+            Barcode BarcodeToInput = new Barcode();
+
+            foreach (var newBarcode in newBarcodes)
+            {
+                BarcodeToInput.code = newBarcode.code;
+                BarcodeToInput.barcode = newBarcode.barcode;
+                BarcodeToInput.itemId = id;
+
+                if (_context.Barcode.Any(b=>b.barcode == BarcodeToInput.barcode))
+                {
+                    continue;
+                }
+
+            }
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult getItem(int id)
+        {
+            var item = _context.Item.Where(i => i.id == id).FirstOrDefault();
+            if (item == null)
+                return BadRequest();
+
+            return Ok(item);
+        }
+
+
 
 
     }
