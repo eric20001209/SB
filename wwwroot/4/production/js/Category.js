@@ -1,11 +1,8 @@
 ﻿
 
 function loaddata() {
-    getCategoryListC('0', '#categorylist', '#2categorylist', '#2category');
-    //getDate();
-    //getData();
+//  getCategoryListC('0', '#categorylist', '#2categorylist', '#2category');
 }
-
 
 function getCategoryListC(parentId, currentdom, subdom, subcontainer) {
 
@@ -73,417 +70,524 @@ function getCategoryList() {
         });
         console.log(resp);
         $("#categorylist").select2ToTree({ treeData: { dataArr: resp }, maximumSelectionLength: 3, placeholder: 'Select a category' });
-        //var id = '';
-        //var parent_id = '';
-        //var description = '';
-        //var active = '';
-        //var content = '';
-        //for (var i = 0; i < resp.length; i++) {
-        //    id = resp[i].Id;
-        //    parent_id = resp[i].Parent_Id;
-        //    description = resp[i].Description;
-        //    active = resp[i].Active;
-        //    content = content + "<option value='" + description + "'  categoryid='" + id + "'>" + description + "</option>";
-        //}
-        //var prefix = "<select data-plugin-selectTwo class='form-control populate' id='bran'>";
-        //prefix += "<option value = '' selected = 'selected' categoryid='' >None Selected</option> "; 
-        //content = prefix + content + "</select>";
-        //$('#categorylist').html(content);
-
-
-        //resp = {
-        //    1: {
-        //        name: '蔬菜',
-        //        cell: {
-        //            10: { name: '菠菜', price: 4 },
-        //            11: { name: '茄子', price: 5 }
-        //        }
-        //    },
-        //    3: {
-        //        name: '水果',
-        //        cell: {
-        //            20: {
-        //                name: '苹果',
-        //                cell: { 201: { name: '红富士', price: 20 } }
-        //            },
-        //            21: {
-        //                name: '桃',
-        //                cell: {
-        //                    210: { name: '猕猴桃', price: 30 },
-        //                    211: { name: '油桃', price: 31 },
-        //                    212: { name: '蟠桃', priece: 32 }
-        //                }
-        //            }
-        //        }
-        //    },
-        //    9: {
-        //        name: '粮食',
-        //        cell: {
-        //            30: {
-        //                name: '水稻',
-        //                cell: {
-        //                    301: {
-        //                        name: '大米',
-        //                        cell: { 3001: { name: '五常香米', price: 50 } }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //};
-        //var opts = {
-        //    data: resp,
-        //    select: '#categorylist'
-        //};
-        //var linkageSel = new LinkageSel(opts);
     }
     xhr.send(null);
 }
 
-function replaceKeysDeep(obj, keysMap) { // keysMap = { oldKey1: newKey1, oldKey2: newKey2, etc... 
-    return _.transform(obj, function (result, value, key) { // transform to a new object 
-        var currentKey = keysMap[key] || key; // if the key is in keysMap use the replacement, if not use the original key 
-        result[currentKey] = _.isObject(value) ? replaceKeysDeep(value, keysMap) : value; // if the key is an object run it through the inner function - replaceKeys 
+$(function () {
+    ///货币符号转换
+    // Extend the default Number object with a formatMoney() method:
+    // usage: someVar.formatMoney(decimalPlaces, symbol, thousandsSeparator, decimalSeparator)
+    // defaults: (2, "$", ",", ".")
+    Number.prototype.formatMoney = function (places, symbol, thousand, decimal) {
+        places = !isNaN(places = Math.abs(places)) ? places : 2;
+        symbol = symbol !== undefined ? symbol : "$";
+        thousand = thousand || ",";
+        decimal = decimal || ".";
+        var number = this,
+            negative = number < 0 ? "-" : "",
+            i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+        return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+    };
 
-    });
+    // Default usage and custom precision/symbol :
+    var revenue = 12345678;
+    //alert(revenue.formatMoney()); // $12,345,678.00
+    //alert(revenue.formatMoney(0, "HK$ ")); // HK$ 12,345,678
 
-}
+    // European formatting:
+    var price = 4999.99;
+    //alert(price.formatMoney(2, "€", ".", ",")); // €4.999,99
 
-function getDate() {
-    $(function () {
-        var start = moment().subtract(1, 'month').startOf('month');//moment().subtract(29, 'days');
-        var end = moment();
+    // It works for negative values, too:
+    //alert((-500000).formatMoney(0, "£ ")); // £ -500,000
 
-        $('#from').html(start.format('DD-MM-YYYY'));
-        $('#to').html(end.format('DD-MM-YYYY'));
+    var price = (12345.99).formatMoney(); // "$12,345.99"
 
-        function cb(start, end) {
-            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    // Remove non-numeric chars (except decimal point/minus sign):
+    //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
+});//货币换算
+
+var prefix = "https://localhost:44398/api";
+//       console.log(prefix);
+var setting = {
+    view: {
+        addHoverDom: addHoverDom,
+        removeHoverDom: removeHoverDom,
+        selectedMulti: false
+    },
+    check: {
+        enable: true
+    },
+    data: {
+        simpleData: {
+            enable: true
         }
+    },
+    edit: {
+        enable: true
+    },
+    callback: {
+        beforeRemove: beforeRemove,  //移除前
+        beforeRename: beforeRename,   //重命名前
+        onRename: onRename,
+        onClick: zTreeOnClick //注册节点的点击事件;
+    }
+};
 
-        $('#reportrange').daterangepicker({
-            startDate: start,
-            endDate: end,
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                'Last 3 Month': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-        }, cb);
-        cb(start, end);
-    });
+//add rootnode
+function addRoot() {
+    var cat = document.getElementById("rootnode").value;
+    cat = cat.trim();
+    var parentid = 0;
 
-    $('#reportrange').on('apply.daterangepicker', function (ev, picker) { //apply button onclick event
-
-        $('#from').html(picker.startDate.format('DD-MM-YYYY'));
-        $('#to').html(picker.endDate.format('DD-MM-YYYY'));
-
-        //console.log($('#from').html());
-        //console.log($('#to').html());
-
-        //$('#reportTitle').html(picker.startDate.format('MMMM D, YYYY') + ' - ' + picker.endDate.format('MMMM D, YYYY'));
-
-        getData();
-    });
-
-    $('#reportrange').on('cancel.daterangepicker', function (ev, picker) { //cancel button onclick event
-        $('#reportrange').val('');
-    });
-
-}
-function getData() {
-    var chartdatalist = [];
-    var chartdataline, chartdatabar, chartdatapiesales, chartdatapieprofit;
-    var salesdatafortable;
-    var profitdatafortable;
-
-    var hour = [];
-    var amount = [];
-    var transaction = [];
-    var total_amount = [];
-    var total_transaction = [];
-
-
-    var branch = [];
-    var salestotal = [];
-    var profittotal = [];
-    var transqty = [];
-    var percent = [];
-
-    var piedatasale = [];
-    var piedataprofit = [];
-
-    var localstoragedata = [];
-
-    var from = $("#from").html();
-    var to = $("#to").html();
-    var startdate = moment(from, 'DD/MM/YYYY').add(0, 'days');
-    var enddate = moment(to, 'DD/MM/YYYY').add(1, 'days');
-
-    var branchId = $("#bran").find("option:selected").attr("branid");
-    var branchName = $("#bran").find("option:selected").attr("value");
-
-    if (branchId == undefined)
-        branchId = '';
-    if (branchName == undefined)
-        branchName = 'All Branches';
-
-    var daterange = '';
-    if (from == to)
-        daterange = startdate.format('DD/MM/YYYY').toString();
-    else
-        daterange = startdate.format('DD/MM/YYYY').toString() + " - " + moment(to, 'DD/MM/YYYY').add(0, 'days').format('DD/MM/YYYY').toString();
-
-    var uri = prefix + "/hourly/daterange" + "?start=" + startdate.format('YYYY-MM-DD') + "&end=" + enddate.format('YYYY-MM-DD') + "&branch=" + branchId;
-    //   alert(uri);
+    var uri = prefix + "/category/add";
     var someJsonString = {
-        "branchId": branchId,
-        "start": startdate.format('YYYY-MM-DD'),
-        "end": enddate.format('YYYY-MM-DD')
+        "parent_id": parentid,
+        "cat": cat
+    };
+    if (cat == "") {//判断catalog不为空（其他判断规则在其输入时已经判断） 
+        alert("Root catalog cannot be blank！")
+        return false;
+    }
+    else {
+        $.ajax({
+            url: uri,//相对应的esb接口地址
+            type: 'post',
+            data: JSON.stringify(someJsonString),//向服务器（接口）传递的参数
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                var cat = data.cat;
+                alert('Category ' + cat + ' added sucessfully!');
+//                self.location = 'index.html';
+            },
+            error: function (data) {
+                console.log('error');
+            }
+        });
+    }
+};
+
+//添加根节点
+$('.addnode').click(function () {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getNodes();
+    console.log(nodes)
+    var cat = document.getElementById("rootnode").value;
+    cat = cat.trim()
+    if (cat == '')
+    {
+        alert("Root catalog cannot be blank！")
+        return false;
+    }
+        
+    var name = "New Department" + (newCount++);
+    var newNode;
+    var parentid = 0;
+    var uri = prefix + "/category/add";
+    //发送请求保存一个新建的节点，根据返回ID添加新节点
+    //var data = {
+    //    "code": 0,
+    //    "name": name
+    //};
+    var someJsonString = {
+        "parent_id": parentid,
+        "cat": cat
     };
     $.ajax({
-        type: "get",
+        type: 'post',
         url: uri,
-        async: true,
-        //data: JSON.stringify(someJsonString),
+        data: JSON.stringify(someJsonString),
+        timeout: 1000, //超时时间设置，单位毫秒
+        dataType: 'json',
         contentType: "application/json",
-        dataType: "json",
-        success: function (data) {
-
-            //alert(JSON.stringify(data));
-
-            var returnList = data[0];
-            //manage data for line chart
-            for (var i = 0; i < returnList.length; i++) {
-                hour[i] = returnList[i].hour;
-                amount[i] = returnList[i].amount;
-                transaction[i] = returnList[i].transaction;
-                total_amount[i] = returnList[i].total_amount;
-                total_transaction[i] = returnList[i].total_transaction;
-
-                //piechart data
-                piedatasale[i] = { 'value': salestotal[i], 'name': branch[i], 'percent': percent[i] };
-                piedataprofit[i] = { 'value': salestotal[i], 'name': branch[i] };
+        success: function (res) {
+            console.log(res)
+  //        if (res.flag == 0)
+            {
+                alert('Category ' + cat + ' added sucessfully!');
+                var newId = res.id;
+                newNode = zTree.addNodes(null, { id: newId, pId: null, name: cat });
+ //               zTree.editName(newNode[0]);  //新增后显示编辑状态
             }
-            //manage data for chart
-            chartdataline = {
-                hour: hour,
-                amount: amount,
-                transaction: transaction,
-                total_amount: total_amount,
-                total_transaction: total_transaction
-            }
-
-            chartdatalist = { chartdataline, chartdatabar, chartdatapiesales, chartdatapieprofit }
-            drawchart(chartdatalist, daterange, branchName);
-            $('#overalltransperday').html(total_transaction[0]);
-            $('#overalltotalperday').html(total_amount[0].formatMoney());
-
-            //initTable(salesdatafortable, '#salestabledetail', 'salesTotal', 'percent')
-            //initTable2(profitdatafortable, '#profittabledetail', 'profitTotal', 'profitpercent');
-        },
-        error: function (data) {
-            if (data.status == 401)
-                alert('Token Expired!! Redirect to login page!');
-            setTimeout("window.location.href='login.html'", 1000);
-            //    $("#showloginModal").click();
-
-        }
-    });
-}
-
-function righthandshowdata(time) {
-    var mybranchDetail;
-    if (localStorage.getItem(branchName) != null) {
-        mybranchDetail = JSON.parse(localStorage.getItem(branchName));
-        $('#branch').html(branchName);
-        document.getElementById("sales").innerHTML = "<h2>" + mybranchDetail.salesTotal.formatMoney() + "</h2>";
-        $('#profit').html("<h2>" + mybranchDetail.profitTotal.formatMoney() + "</h2>");
-        $('#transactions').html("<h2>" + mybranchDetail.TransQty + "</h2>");
-        $('#average').html("<h2>" + mybranchDetail.consumPerTrans.formatMoney() + "</h2>");
-        //alert(mybranchDetail);
-    }
-
-}
-
-function drawchart(data, daterange, branch) {
-
-    //get data for chart
-    var mychartdataLine = data.chartdataline;
-    //renew container
-    var chartLine;
-    if (chartLine != null && chartLine != "" && chartLine != undefined) {
-        chartLine.dispose();
-    }
-    chartLine = echarts.init(document.getElementById('myLineChart'));
-
-    chartLine.on('mouseover', function (params) {
-        //if (params.name) {
-        if (params.name) {
-
-            //righthandshowdata(params.name);
-            console.log(JSON.stringify(params.name));
-        }
-    });
-
-    var optionHoulyLine = '';
-    optionHoulyLine = {
-
-        title: {
-            show: true,
-            text: branch,
-            subtext: daterange
-        },
-        legend: {
-            show: true,
-            data: ['amount', 'transaction'],
-            right: 50
-        },
-        tooltip: {
-            trigger: 'axis',
-            formatter:
-                function (params) {
-                    var res = ''
-                    res += '<p>' + 'Avg amount per trans' + ': ' + params[0].data.formatMoney() + '</p>'
-                    res += '<p>' + 'Avg trans' + ': ' + params[1].data + '</p>'
-                    //console.log(params[0].name)
-                    return res;
-                },
         }
         ,
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: mychartdataLine.hour// ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: [{
-            type: 'value'
-        },
-        {
-            type: 'value',
-            nameLocation: 'start'
-        }],
-        series: [{
-            name: 'amount',
-            data: mychartdataLine.amount, //[820, 932, 901, 934, 1290, 1330, 1320],
-            //color: 'rgba(5,125,255, 0.8)',
-            //areaStyle: { normal: {}},
-            type: 'line'
+        error: function (data) {
+            if (data.status == 400) {
+                alert('Sorry, this Category already exists !!!');
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                //setTimeout(function () {
+                //    zTree.editName(treeNode)
+                //}, 10);
+                return false;
+            }
         }
-            ,
+    });
+});
+//add node
+function addHoverDom(treeId, treeNode) {
+    //          alert(treeNode.id);
+    var sObj = $("#" + treeNode.tId + "_span");
+    if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0)
+        return;
+    var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+        + "' title='Add Node' οnfοcus='this.blur();'></span>";
+    sObj.after(addStr);
+    var btn = $("#addBtn_" + treeNode.tId);
+    //           alert(111);
+    //             判断该部门下是否有人员，用于删除节点时，当节点下有信息，禁止删除。
+
+    //var data1 = {
+    //    "id": treeNode.id,
+    //    "name": treeNode.name
+    //};
+    //$.ajax({
+    //type: 'POST',
+    //url: "",
+    //data: data1,
+    //timeout: 1000, //超时时间设置，单位毫秒
+    //dataType: 'json',
+    //    success: function (res) {
+
+    //    var cat = res.cat;
+    //    alert('Category '+ cat +' added sucessfully!');
+    //    },
+    //    error: function (data) {
+    //        console.log('error');
+    //        }
+    //});
+
+    //当点击添加按钮时：
+    if (btn) btn.bind("click", function () {
+        //               alert(treeNode.level);
+        //if (treeNode.level >= 2)
+        //    return;
+        //                alert(btn.id);
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        //console.log(treeNode.id);
+        var name = "New node" + (newCount++);
+        var newNode;
+        //发送请求保存一个新建的节点，后台返回ID，用返回的ID新增节点
+        var data = {
+            "parent_id": treeNode.id,
+            "cat": name
+        };
+        $.ajax({
+            type: 'post',
+            url: prefix + "/category/add",
+            data: JSON.stringify(data),
+            timeout: 1000, //超时时间设置，单位毫秒
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (data) {
+                //alert('111');
+                //console.log(data)
+                var newId = data.id;
+                //alert(newId);
+                //在树节点上增加节点
+                newNode = zTree.addNodes(treeNode, { id: newId, pId: treeNode.id, name: name });
+                zTree.editName(newNode[0]) //新增的节点进入编辑状态
+                return false;
+
+                //if (res.flag == 0) {
+                //    var newId = res.id;
+                //    alert(newId);
+                //    //在树节点上增加节点
+                //    newNode = zTree.addNodes(treeNode, { id: newId, pId: treeNode.id, name: name });
+                //    zTree.editName(newNode[0]) //新增的节点进入编辑状态
+                //    return false;
+                //}
+            }
+        });
+        return false;
+    });
+}
+function addHoverDom_old(treeId, treeNode) {
+
+    var sObj = $("#" + treeNode.tId + "_span");
+    if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+    var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+        + "' title='add node' onfocus='this.blur();'></span>";
+    sObj.after(addStr);
+    var btn = $("#addBtn_" + treeNode.tId);
+
+    if (btn) btn.bind("click", function () {
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        zTree.addNodes(treeNode, { id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++) });
+        return false;
+    });
+};
+
+//edit node
+function beforeRename(treeId, treeNode, newName) {
+    //       alert(treeNode.name + '/' + treeNode.id + '/' + treeNode.level + '/' + treeNode.pId);
+    if (newName.length == 0) {
+        alert("节点名称不能为空.");
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        setTimeout(function () {
+            zTree.editName(treeNode)
+        }, 10);
+        return false;
+    }
+
+    return true;
+}
+
+function onRename(event, treeId, treeNode, isCancel) {
+
+    //           return;
+    if (isCancel) {
+        return;
+    }
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    var onodes = zTree.getNodes()
+    console.log(onodes);
+    //发送请求修改节点信息
+    var data = [
         {
-            name: 'transaction',
-            data: mychartdataLine.transaction, //[125, 96, 556, 9, 415, 987, 654],
-            //color: 'rgba(245,125,152, 0.8)',
-            yAxisIndex: 1,
-            //areaStyle: { normal: {} },
-            animation: true,
-            type: 'line',
-            smooth: false
+            "op": "replace",
+            "path": "/cat",
+            "value": treeNode.name,
         }
-            //,
-            //{
-            //    symbolSize: 0, // symbol的大小设置为0
-            //    showSymbol: false, // 不显示symbol
-            //    lineStyle: {
-            //        width: 0, // 线宽是0
-            //        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
-            //    },
-
-            //    name: 'total_amount',
-            //    data: mychartdataLine.total_amount, 
-            //    type: 'line'
-            //},
-            //{
-            //    symbolSize: 0, // symbol的大小设置为0
-            //    showSymbol: false, // 不显示symbol
-            //    lineStyle: {
-            //        width: 0, // 线宽是0
-            //        color: 'rgba(0, 0, 0, 0)' // 线的颜色是透明的
-            //    },
-
-            //    name: 'total_transaction',
-            //    data: mychartdataLine.total_transaction,
-            //    type: 'line'
-            //}
-        ]
-    };
-    chartLine.setOption(optionHoulyLine);
-    window.addEventListener("resize", () => {
-        chartLine.resize();
+    ];
+    $.ajax({
+        type: 'Patch',
+        url: prefix + "/category/edit?id=" + treeNode.id,
+        data: JSON.stringify(data),
+        timeout: 1000, //超时时间设置，单位毫秒
+        contentType: "application/json",
+        dataType: 'json',
+        success: function (data) {
+            alert('Node update sucessfully!');
+        },
+        error: function (data) {
+            if (data.status == 400) {
+                alert('Sorry, this Category exists already!!!');
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                setTimeout(function () {
+                    zTree.editName(treeNode)
+                }, 10);
+                return false;
+            }
+        }
     });
 }
 
-function initTable(data, id, datafield) {
+//delete node
+function beforeRemove(treeId, treeNode) {
+    var data = {
+        "id": treeNode.id
+    };
+    //      alert(treeNode.id);
+    //className = (className === "dark" ? "" : "dark");
+
+    if (treeNode.isParent) {
+        alert('Sorry, this node contains child node(s), cannot delete!');
+        return false;
+    }
+    //if(hasMember){
+    //    alert('该部门下有人员，不能删除');
+    //    return false;
+    //}
+    var oFlag = confirm("Delete node -- " + treeNode.name + " ？");
+    //            alert(treeNode.id + " , " + treeNode.name);
+    if (oFlag) {
+        $.ajax({
+            type: 'delete',
+            url: prefix + "/category/del?id=" + treeNode.id,
+            data: data,
+            timeout: 1000, //超时时间设置，单位毫秒
+            dataType: 'json',
+            success: function (res) {
+
+                console.log(res)
+                //                  alert('Category "' + res.cat + '" Deleted!!');
+
+            },
+            error: function (res) {
+                console.log('error');
+            }
+        });
+    }
+    else {
+        return false
+    }
+}
+
+//bootstrap datatable
+function initTable(data, id) {
     var myTableData;
     myTableData = data;
 
     var $table = $(id)
     $table.bootstrapTable('destroy').bootstrapTable({
-        height: '100%',
+        //height: '100%',
         resizable: true,
         columns: [
             {
-                //title: 'Index',
-                valign: 'middle',
+                title: 'Item Code',
+                field: 'code',
+                //               rowspan: 2,
+                //colspan:2,
                 align: 'center',
-                width: 0,
+                valign: 'middle',
+                sortable: true,
+            }, {
+                title: 'Description',
+                field: 'name',
+                //               colspan: 3,
+                align: 'center',
+
+            },
+            //                    ], [
+            {
+                field: 'description',
+                sortable: true,
+                //                   formatter: LinkFormatter,
+                title: 'category'
+
+            },
+            //{
+            //    field: 'scat',
+            //    sortable: true,
+            //    //                   formatter: LinkFormatter,
+            //    align: 'center',
+            //    title: 'Sub Category'
+
+            //},
+            //{
+            //    field: 'sscat',
+            //    sortable: true,
+            //    //                   formatter: LinkFormatter,
+            //    align: 'center',
+            //    title: 'S Sub Category'
+
+            //},
+            {
+                field: 'price',
+                sortable: true,
+                align: 'center',
+                title: 'Price',
                 formatter: function (value, row, index) {
-                    return index + 1;
+                    return currencyP(index);
                 }
             },
             {
-
-                field: 'BranchName',
-                title: 'Branch'
-
-            },
-            {
-                field: datafield, //'salesTotal',
-                title: 'Total Amount'
-
-            }, {
-                field: '',
-                title: 'Percent(%)'
-                ,
+                field: 'cost',
+                sortable: true,
+                align: 'center',
+                title: 'cost',
                 formatter: function (value, row, index) {
-                    return progress(index);
-                }//格式化进度条
-            }],
+                    return currencyC(index);
+                }
+            }
+            //, {
+            //    field: '',
+            //    title: 'Amount'
+            //    ,
+            //    formatter: function (value, row, index) {
+            //        return currency(index);
+            //    }
+            //}
+        ],
+
         data: myTableData
     });
 
-    function progress(index) {//add progress bar
-        var percentage = myTableData[index].percent;
-        if (percentage >= 10 && percentage <= 20) {
-            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                + '<div class="progress-bar progress-bar-default" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                + '<span class="sr-only">Complete (danger)</span>'
-                + '</div>'
-                + "</div>"];
-        }
-        else if (percentage > 20) {
-            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                + '<div class="progress-bar bg-success progress-bar-success" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                + '<span class="sr-only">Complete (danger)</span>'
-                + '</div>'
-                + "</div>"];
-        }
-        else {
-            return ["<div class='h5 mb-0 mr-3 font-weight-bold text-black-800'>" + percentage + "%</div><div class='progress'>"
-                + '<div class="progress-bar bg-danger progress-bar-danger" style="width: ' + percentage + '%"; aria-valuenow :"' + percentage + '"; aria-valuemax="100">'
-                + '<span class="sr-only">Complete (danger)</span>'
-                + '</div>'
-                + "</div>"];
-        }
-    }
+    //function LinkFormatter(value, row, index) {
+    //var invo = myTableData[index].InvoiceNumber;
 
-    $(window).resize(function () {
-        $('#salestabledetail').bootstrapTable('resetView');
-        //$('#profittabledetail').bootstrapTable('resetView');
+    //var st = "";
+    //st = "<a href=invoice.html?inv="+ invo + " target='_blank'>" + invo + "</a>";
+    //return st;
+
+    //}
+
+    //amount to currency format
+    function currencyP(index) {
+        var amount = myTableData[index].price,
+            amount = amount.formatMoney();
+        return amount;
+    }
+    function currencyC(index) {
+        var amount = myTableData[index].cost,
+            amount = amount.formatMoney();
+        return amount;
+    }
+}
+//click event
+function zTreeOnClick(event, treeId, treeNode) {
+    //if (treeNode.level > 2)
+    //    return;
+    var id = treeNode.id;
+    var cat = treeNode.name;
+    var level = treeNode.level;
+    $.ajax({
+        type: "get",
+        url: prefix + "/category/" + id,
+        async: true,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+            initTable(data, '#itemList')
+        },
+        error: function (data) {
+            if (data.status == 401)
+                alert('Token Expired!! Redirect to login page!');
+            //                   setTimeout("window.location.href='login.html'", 1000);
+        }
+    });
+
+
+    //            alert(treeNode.id + ", " + treeNode.name + ", " + treeNode.level );
+    //这里根据节点ID获取对应信息或进行对应的操作
+}
+
+var zNodes;
+
+//var origin = request.getHeader("Origin");
+//if (StringUtils.hasText(origin)) {
+//    resp.addHeader("Access-Control-Allow-Origin", origin);
+//}
+////允许带有cookie访问
+//resp.addHeader("Access-Control-Allow-Credentials", "true");
+//resp.addHeader("Access-Control-Allow-Methods", "*");
+
+//var headers = request.getHeader("Access-Control-Request-Headers");
+//if (StringUtils.hasText(headers)){
+//    resp.addHeader("Access-Control-Allow-Headers", headers);
+//}
+//resp.addHeader("Access-Control-Max-Age", "3600");
+
+function searchUnitTree() {
+    $.ajax({
+        url: prefix + '/category',
+        async: false,
+        dataType: 'json',
+        success: function (response) {
+            zNodes = response;
+            console.log(zNodes);
+        },
+        error: function () {
+            alert("Fatal Error！！！")
+        }
     });
 }
+$(document).ready(function () {
+    searchUnitTree();
+    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+});
+var newCount = 1;
+function removeHoverDom(treeId, treeNode) {
+    $("#addBtn_" + treeNode.tId).unbind().remove();
+};
+
+
+
+
+
+
+
+

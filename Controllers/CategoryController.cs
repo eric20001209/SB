@@ -19,6 +19,7 @@ namespace SB.Controllers
         private wucha_cloudContext _context = new wucha_cloudContext();
         int loopCount = 1;
         bool jumpOut = false;
+        List<int> mylist = new List<int>();
 
         [HttpGet("list")]
         public IActionResult getCategroyList()
@@ -249,7 +250,48 @@ namespace SB.Controllers
             return loopCount;
         }
 
+        [HttpGet("{id}")]
+        public IActionResult getItemList(int id)
+        {
+            var catIdList = getRelatedCatIdList(id);
+            var itemList = _context.Item
+                .Where(i => catIdList.Contains(i.categoryid))
+                .Join(_context.Category.Select(c => new { c.id, c.description }),
+                (i => i.categoryid),
+                (c => c.id),
+                (i, c) => new { i.code, i.name, i.name_cn, c.description, i.price, i.cost }
+                );
 
+            return Ok(itemList);
+        }
+
+        public List<int> getRelatedCatIdList(int id)
+        {
+            if (mylist.Exists(i => i == id))
+            {
+
+            }
+            else
+                mylist.Add(id);
+            var subCat = _context.Category.Where(c => c.parent_id == id);
+            if (subCat == null)
+                return mylist;
+            foreach (var item in subCat)
+            {
+                if (mylist.Exists(i => i == item.id))
+                {
+
+                }
+                else
+                {
+                    mylist.Add(item.id);
+                    getRelatedCatIdList(item.id);
+                }
+
+            }
+
+            return mylist;
+        }
 
     }
 }
