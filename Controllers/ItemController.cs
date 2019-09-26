@@ -81,15 +81,6 @@ namespace SB.Controllers
             if (item == null)
                 return BadRequest();
 
-            //foreach (var barcode in item.barcodes)
-            //{
-            //    mylist.Add(barcode.barcode);
-            //}
-
-            //var item = from i in _context.Item
-            //           join o in _context.Barcode on i.id equals o.itemId
-            //           select new { i, o };
-
             return Ok(item);
         }
 
