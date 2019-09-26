@@ -36,7 +36,7 @@ namespace SB.Controllers
             _context.Add(item);
             _context.SaveChanges();
 
-            return Ok();
+            return Ok(item);
         }
 
         [HttpPost("addBarcode/{id}")]
@@ -68,9 +68,27 @@ namespace SB.Controllers
         [HttpGet("{id}")]
         public IActionResult getItem(int id)
         {
-            var item = _context.Item.Where(i => i.id == id).FirstOrDefault();
+            List<string> mylist = new List<string>();
+
+            var item = _context.Item
+              .Where(i => i.id == id)
+                .Include(i => i.barcodes)
+                .Select(x => new
+                {
+                    code = x.code, x.name, x.name_cn, x.price, x.cost, barcodes=x.barcodes
+                }).FirstOrDefault();
+
             if (item == null)
                 return BadRequest();
+
+            //foreach (var barcode in item.barcodes)
+            //{
+            //    mylist.Add(barcode.barcode);
+            //}
+
+            //var item = from i in _context.Item
+            //           join o in _context.Barcode on i.id equals o.itemId
+            //           select new { i, o };
 
             return Ok(item);
         }
