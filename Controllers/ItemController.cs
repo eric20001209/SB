@@ -23,7 +23,7 @@ namespace SB.Controllers
         {
             if (newItem == null)
                 return NotFound();
-            
+
             Item item = new Item();
             item.code = newItem.code;
             item.name = newItem.name;
@@ -44,7 +44,7 @@ namespace SB.Controllers
         {
             if (newBarcodes == null)
                 return BadRequest();
-            
+
 
             Barcode BarcodeToInput = new Barcode();
 
@@ -54,7 +54,7 @@ namespace SB.Controllers
                 BarcodeToInput.barcode = newBarcode.barcode;
                 BarcodeToInput.itemId = id;
 
-                if (_context.Barcode.Any(b=>b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
+                if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
                 {
                     continue;
                 }
@@ -63,6 +63,27 @@ namespace SB.Controllers
             _context.SaveChanges(); //update db
 
             return Ok();
+        }
+
+        [HttpGet("itemlist")]
+        public IActionResult getItemList()
+        {
+            var itemList = _context.Item
+                .Include(i => i.barcodes)
+                .Select(x => new
+                {
+                    x.code,
+                    x.name,
+                    x.name_cn,
+                    x.price,
+                    x.cost,
+                    x.barcodes
+                }).ToList();
+
+            if (itemList == null)
+                return BadRequest();
+
+            return Ok(itemList);
         }
 
         [HttpGet("{id}")]
@@ -75,7 +96,7 @@ namespace SB.Controllers
                 .Include(i => i.barcodes)
                 .Select(x => new
                 {
-                    code = x.code, x.name, x.name_cn, x.price, x.cost, barcodes=x.barcodes
+                    x.code, x.name, x.name_cn, x.price, x.cost, x.barcodes
                 }).FirstOrDefault();
 
             if (item == null)

@@ -1390,11 +1390,11 @@ table.countries_list {
         border-top: 1px solid #eee
     }
 
-.dataTables_paginate a {
+/*.dataTables_paginate a {
     padding: 6px 9px !important;
     background: #ddd !important;
     border-color: #ddd !important
-}
+}*/
 
 .paging_full_numbers a.paginate_active {
     background-color: rgba(38,185,154,.59) !important;
