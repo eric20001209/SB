@@ -1,4 +1,20 @@
 ﻿
+function getdata() {
+
+    $.ajax({
+        url: prefix + '/item/itemlist',
+        async: false,
+        dataType: 'json',
+        success: function (response) {
+
+            console.log(response);
+        },
+        error: function () {
+            alert("Fatal Error！！！")
+        }
+    });
+}
+
 
 (function ($) {
 
@@ -133,7 +149,7 @@
                 '<a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a>'
             ].join(' ');
 
-            data = this.datatable.row.add(['', '', '', actions]);
+            data = this.datatable.row.add(['', '', '', '', '', '', '', actions]);
             $row = this.datatable.row(data[0]).nodes().to$();
 
             $row
