@@ -73,6 +73,7 @@ namespace SB.Controllers
                 .Include(i => i.barcodes)
                 .Select(x => new
                 {
+                    x.id,
                     x.code,
                     x.name,
                     x.categoryid,
@@ -86,6 +87,7 @@ namespace SB.Controllers
                 i => i.categoryid,
                 c => c.id,
                 (i, c) => new {
+                    i.id,
                     i.code,
                     i.name,
                     i.name_cn,
