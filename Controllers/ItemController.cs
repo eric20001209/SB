@@ -10,6 +10,7 @@ using SB.Models;
 using SB.Entities;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace SB.Controllers
 {
     [Route("api/item")]
@@ -74,14 +75,30 @@ namespace SB.Controllers
                 {
                     x.code,
                     x.name,
+                    x.categoryid,
                     x.name_cn,
                     x.price,
                     x.cost,
                     x.barcodes
-                }).ToList();
+                })
+                .Join(_context.Category
+                .Select(c => new { c.id, c.description }),
+                i => i.categoryid,
+                c => c.id,
+                (i, c) => new {
+                    i.code,
+                    i.name,
+                    i.name_cn,
+                    i.price,
+                    i.cost,
+                    cat = c.description,
+                    unit =""
+                }
+                )
+                .ToList();
 
             if (itemList == null)
-                return BadRequest();
+                return BadRequest();            
 
             return Ok(itemList);
         }

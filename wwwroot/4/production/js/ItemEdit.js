@@ -7,7 +7,7 @@ function getdata() {
         dataType: 'json',
         success: function (response) {
 
-            console.log(response);
+            //console.log(response);
         },
         error: function () {
             alert("Fatal Error！！！")
@@ -19,6 +19,40 @@ function getdata() {
 (function ($) {
 
     'use strict';
+
+    var list = [];
+    var final;
+    $.ajax({
+        url: "https://localhost:44398/api/item/itemlist",
+        async: false,
+        dataType: 'json',
+        success: function (data) {
+            for (var i = 0, len = data.length; i < len; i++) {
+                list[i] = data[i];
+ 
+ //   alert(code + "/" + name + "/" + name_cn);
+     //         arrayReturn.push([data[i].userId, '<a href="http://google.com" target="_blank">' + data[i].title + '</a>', desc.substring(0, 12)]);
+            }
+            //       inittable(arrayReturn);
+
+            final = { "aaData": list };
+            console.log(final);
+        }
+    });
+
+
+    var datatableInit = function () {
+        var $table = $('#datatable-editable');
+        $table.dataTable({
+            "ajax":  //final
+            {
+                "url": "https://localhost:44398/api/item/itemlist",
+                "dataSrc": ""
+            }
+            //bProcessing: true,
+            //sAjaxSource: $table.data('https://localhost:44398/api/item/itemlist')
+        });
+    };
 
     var EditableTable = {
 
@@ -53,19 +87,43 @@ function getdata() {
         },
 
         build: function () {
+            //var $table = $('#datatable-editable');
             this.datatable = this.$table.DataTable({
-                aoColumns: [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
+                //"aoColumns": [
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    { "bSortable": false }
+                //],
+                "ajax": 
+                {
+                    "url": "https://localhost:44398/api/item/itemlist",
+                    "dataSrc": ""
+                },
+
+                "aoColumns": [
+                    { "data": "code" },
+                    { "data": "name" },
+                    { "data": "name_cn" },
+                    { "data": "cat" },
+                    { "data": "unit" },
+                    { "data": "price" },
+                    { "data": "cost" },
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    null,
+                //    null,
                     { "bSortable": false }
                 ]
-            });
 
+            });
             window.dt = this.datatable;
 
             return this;
@@ -254,6 +312,7 @@ function getdata() {
 
     $(function () {
         EditableTable.initialize();
+//        datatableInit();
     });
 
 }).apply(this, [jQuery]);
