@@ -1,58 +1,7 @@
 ﻿
-function getdata() {
-
-    $.ajax({
-        url: prefix + '/item/itemlist',
-        async: false,
-        dataType: 'json',
-        success: function (response) {
-
-            //console.log(response);
-        },
-        error: function () {
-            alert("Fatal Error！！！")
-        }
-    });
-}
-
-
 (function ($) {
 
     'use strict';
-
-    var list = [];
-    var final;
-    $.ajax({
-        url: "https://localhost:44398/api/item/itemlist",
-        async: false,
-        dataType: 'json',
-        success: function (data) {
-            for (var i = 0, len = data.length; i < len; i++) {
-                list[i] = data[i];
- 
- //   alert(code + "/" + name + "/" + name_cn);
-     //         arrayReturn.push([data[i].userId, '<a href="http://google.com" target="_blank">' + data[i].title + '</a>', desc.substring(0, 12)]);
-            }
-            //       inittable(arrayReturn);
-
-            final = { "aaData": list };
-            console.log(final);
-        }
-    });
-
-
-    var datatableInit = function () {
-        var $table = $('#datatable-editable');
-        $table.dataTable({
-            "ajax":  //final
-            {
-                "url": "https://localhost:44398/api/item/itemlist",
-                "dataSrc": ""
-            }
-            //bProcessing: true,
-            //sAjaxSource: $table.data('https://localhost:44398/api/item/itemlist')
-        });
-    };
 
     var EditableTable = {
 
@@ -86,8 +35,16 @@ function getdata() {
             return this;
         },
 
-        build: function () {
-            //var $table = $('#datatable-editable');
+        build: function (row) {
+            //debugger
+            var txt = '';
+            txt += '<td class="actions">';
+            txt += '<a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>';
+            txt += '<a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>';
+            txt += '<a href="#" class="on-default edit-row"><i class="fa fa-pencil"></i></a>';
+            txt += '<a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a></td>';
+            $(row).addClass('gradeX');
+
             this.datatable = this.$table.DataTable({
                 //"aoColumns": [
                 //    null,
@@ -98,7 +55,9 @@ function getdata() {
                 //    null,
                 //    null,
                 //    { "bSortable": false }
-                //],
+                //]
+
+
                 "ajax": 
                 {
                     "url": "https://localhost:44398/api/item/itemlist",
@@ -121,10 +80,10 @@ function getdata() {
                     { "data": "cost" },
                     {
                         "data": "id" ,
-                    //    "bSortable": false,
-                        "render": function (id) {
-                       //     debugger
-                            return '<td class="actions"><a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a><a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a><a href = "#" class="on-default edit-row"><i class="fa fa-pencil"></i></a><a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a></td>'
+                        "bSortable": false,
+                        "render": function () {
+                       ////     debugger
+                            return txt
 
                         }
                     }
@@ -267,6 +226,7 @@ function getdata() {
         },
 
         rowSave: function ($row) {
+            alert('123');
             var _self = this,
                 $actions,
                 values = [];
@@ -319,7 +279,6 @@ function getdata() {
 
     $(function () {
         EditableTable.initialize();
-//        datatableInit();
     });
 
 }).apply(this, [jQuery]);
