@@ -8,7 +8,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>Gentelella Alela! | </title>
+    <title>Edit Item | </title>
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="../octopus_assets/vendor/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="../octopus_assets/vendor/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="../octopus_assets/vendor/magnific-popup/magnific-popup.css" />
+    <link rel="stylesheet" href="../octopus_assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+    <!-- Specific Page Vendor CSS -->
+    <link rel="stylesheet" href="../octopus_assets/vendor/select2/select2.css" />
+    <link rel="stylesheet" href="../octopus_assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../octopus_assets/stylesheets/theme.css" />
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="../octopus_assets/stylesheets/skins/default.css" />
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="../octopus_assets/stylesheets/theme-custom.css">
+    <!-- Head Libs -->
+    <script src="../octopus_assets/vendor/modernizr/modernizr.js"></script>
+
+
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,7 +41,7 @@
     <!-- iCheck -->
     <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
     <!-- bootstrap-wysiwyg -->
-    <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <!--<link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">-->
     <!-- Select2 -->
     <link href="../vendors/select2/dist/css/select2.min.css" rel="stylesheet">
     <!-- Switchery -->
@@ -34,16 +56,18 @@
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
 
+
     <!--import sidebar-->
     <link rel="import" href="sidebar.html" id="mysidebar" />
     <link rel="import" href="footer.html" id="myfooter" />
     <link rel="import" href="liveon.html" id="myliveon" />
     <!--bootstrap-datatables-->
-    <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <!--<link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">-->
     <link href="js/css/loading.css" rel="stylesheet" />
+
 </head>
 
-<body class="nav-md" onload="doAuthetication(),loaddata()">
+<body class="nav-md" onload="">
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
@@ -195,19 +219,9 @@
                 <div class="">
                     <div class="page-title">
                         <div class="title_left">
-                            <h3>New Item</h3>
+                            <h3>Item List</h3>
                         </div>
 
-                        <!--<div class="title_right">
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search for...">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button">Go!</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>-->
                     </div>
                     <div class="clearfix"></div>
                     <div class="row">
@@ -238,87 +252,81 @@
                                 </div>
                                 <div class="x_content">
                                     <br />
-                                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="code">
-                                                Item Code <span class="required">*</span>
-                                            </label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="code" required="required" class="form-control col-md-7 col-xs-12">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
-                                                Description <span class="required">*</span>
-                                            </label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="name" required="required" class="form-control col-md-7 col-xs-12">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name_cn">
-                                                Other Description <span class="required">*</span>
-                                            </label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="name_cn" name="name_cn" required="required" class="form-control col-md-7 col-xs-12">
-                                            </div>
-                                        </div>
-                                        <div class="form-group" id="category">
-                                            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12" ">
-                                                <select id="categorylist" class="form-control col-md-7 col-xs-12" style="width:100%">
-                                                    <option></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <!--<div class="form-group" id="2category" >
-                                            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Second Category</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12" ">
-                                                <select id="2categorylist" class="form-control col-md-7 col-xs-12" style="width:100%">
-                                                    <option></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group"  id="3category" >
-                                            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Third Category</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12" ">
-                                                <select id="3categorylist" class="form-control col-md-7 col-xs-12" style="width:100%">
-                                                    <option></option>
-                                                </select>
-                                            </div>
-                                        </div>-->
-                                        
-                                        <div class="form-group">
-                                            <label for="price" class="control-label col-md-3 col-sm-3 col-xs-12">Price</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="price" name="price" required="required" class="form-control col-md-7 col-xs-12">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="cost" class="control-label col-md-3 col-sm-3 col-xs-12">Cost</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="cost" name="cost" required="required" class="form-control col-md-7 col-xs-12">
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group">
-                                            <label for="cost" class="control-label col-md-3 col-sm-3 col-xs-12">Barcode</label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="barcode" name="barcode" required="required" class="form-control col-md-7 col-xs-12">
+                                    <section class="panel">
+
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="mb-md">
+                                                        <button id="addToTable" class="btn btn-primary">Add <i class="fa fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row col-sm-12">
+                                                <table class="table table-bordered table-striped mb-none" id="datatable-editable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>CODE</th>
+                                                            <th>DES</th>
+                                                            <th>OTHER DES</th>
+                                                            <th>CATEGORY</th>
+                                                            <th>UNIT</th>
+                                                            <th>PRICE</th>
+                                                            <th>COST</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!--<tr class="gradeX" >
+                                                                                                             <td>Trident</td>
+                                                        <td>
+                                                            Internet
+                                                            Explorer 4.0
+                                                        </td>
+                                                        <td>Win 95+</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="actions">
+                                                            <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
+                                                            <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
+                                                            <a href="#" class="on-default edit-row"><i class="fa fa-pencil"></i></a>
+                                                            <a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a>
+                                                        </td>
+                                                                                                         </tr>-->
+                                                    </tbody>
+
+                                                </table>
                                             </div>
                                         </div>
-
-
-                                        <div class="ln_solid"></div>
-                                        <div class="form-group">
-                                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                                <button class="btn btn-primary" type="button">Cancel</button>
-                                                <button class="btn btn-primary" type="reset">Reset</button>
-                                                <button type="submit" class="btn btn-success">Submit</button>
+                                    </section>
+                                    <!-- end: page -->
+                                    <div id="dialog" class="modal-block mfp-hide">
+                                        <section class="panel">
+                                            <header class="panel-heading">
+                                                <h2 class="panel-title">Are you sure?</h2>
+                                            </header>
+                                            <div class="panel-body">
+                                                <div class="modal-wrapper">
+                                                    <div class="modal-text">
+                                                        <p>Are you sure that you want to delete this row?</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                            <footer class="panel-footer">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-right">
+                                                        <button id="dialogConfirm" class="btn btn-primary">Confirm</button>
+                                                        <button id="dialogCancel" class="btn btn-default">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </footer>
+                                        </section>
+                                    </div>
 
-                                    </form>
+
                                 </div>
                             </div>
                         </div>
@@ -329,7 +337,7 @@
             <!-- footer content -->
             <footer>
                 <div class="pull-right">
-                    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+
                 </div>
                 <div class="clearfix"></div>
             </footer>
@@ -337,57 +345,38 @@
         </div>
     </div>
 
-    <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!--linkagesel-->
-    <script src="../vendors/jquery/dist/jquery.js"></script>
-    <script src="js/menu/comm.js"></script>
-    <script src="js/menu/linkagesel-min.js"></script>
-    <script src="js/menu/jquery.cxselect.js"></script>
-    <script src="js/menu/select2.min.js"></script>
-    <script src="js/menu/select2totree.js"></script>
+    <!-- Vendor -->
+    <script src="../octopus_assets/vendor/jquery/jquery.js"></script>
+    <script src="../octopus_assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+    <script src="../octopus_assets/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="../octopus_assets/vendor/nanoscroller/nanoscroller.js"></script>
+    <script src="../octopus_assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="../octopus_assets/vendor/magnific-popup/magnific-popup.js"></script>
+    <script src="../octopus_assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+    <!-- Specific Page Vendor -->
+    <script src="../octopus_assets/vendor/select2/select2.js"></script>
+    <script src="../octopus_assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="../octopus_assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+    <!-- Theme Base, Components and Settings -->
+    <script src="../octopus_assets/javascripts/theme.js"></script>
+    <!-- Theme Custom -->
+    <script src="../octopus_assets/javascripts/theme.custom.js"></script>
+    <!-- Theme Initialization Files -->
+    <script src="../octopus_assets/javascripts/theme.init.js"></script>
 
-    <!-- Bootstrap -->
-    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- bootstrap-progressbar -->
-    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <!-- bootstrap-wysiwyg -->
-    <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-    <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
-    <script src="../vendors/google-code-prettify/src/prettify.js"></script>
-    <!-- jQuery Tags Input -->
-    <script src="../vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
-    <!-- Switchery -->
-    <script src="../vendors/switchery/dist/switchery.min.js"></script>
-    <!-- Select2 -->
-    <script src="../vendors/select2/dist/js/select2.full.min.js"></script>
-    <!-- Parsley -->
-    <script src="../vendors/parsleyjs/dist/parsley.min.js"></script>
-    <!-- Autosize -->
-    <script src="../vendors/autosize/dist/autosize.min.js"></script>
-    <!-- jQuery autocomplete -->
-    <script src="../vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
-    <!-- starrr -->
-    <script src="../vendors/starrr/dist/starrr.js"></script>
+
+
+
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
 
-    <!-- index.js -->
+
+    <!-- js for this -->
     <script src="js/all.js"></script>
-    <script src="js/eChart/echarts.min.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/Category.js"></script>
     <script src="authentication/js/authetication.js"></script>
     <script src="js/menu/lodash.js"></script>
+    <script src="js/ItemNew.js"></script>
 
 
 </body>

@@ -8,29 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>Edit Item | </title>
-    <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" href="../octopus_assets/vendor/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" href="../octopus_assets/vendor/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="../octopus_assets/vendor/magnific-popup/magnific-popup.css" />
-    <link rel="stylesheet" href="../octopus_assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
-    <!-- Specific Page Vendor CSS -->
-    <link rel="stylesheet" href="../octopus_assets/vendor/select2/select2.css" />
-    <link rel="stylesheet" href="../octopus_assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="../octopus_assets/stylesheets/theme.css" />
-    <!-- Skin CSS -->
-    <link rel="stylesheet" href="../octopus_assets/stylesheets/skins/default.css" />
-    <!-- Theme Custom CSS -->
-    <link rel="stylesheet" href="../octopus_assets/stylesheets/theme-custom.css">
-    <!-- Head Libs -->
-    <script src="../octopus_assets/vendor/modernizr/modernizr.js"></script>
-
-
+    <title> API TEST </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -40,40 +18,119 @@
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
     <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- bootstrap-wysiwyg -->
-    <!--<link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">-->
-    <!-- Select2 -->
-    <link href="../vendors/select2/dist/css/select2.min.css" rel="stylesheet">
-    <!-- Switchery -->
-    <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
-    <!-- starrr -->
-    <link href="../vendors/starrr/dist/starrr.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet" />
     <!-- bootstrap-daterangepicker -->
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-    <!--select2 menu-->
-    <link href="css/menu/select2.min.css" rel="stylesheet">
-    <link href="css/menu/select2totree.css" rel="stylesheet">
+    <!--bootstrap-datatimepicker-->
+    <link href="js/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+
+    <!--bootstrap-datapicker-->
+    <link href="js/css/bootstrap-datepicker3.min.css" rel="stylesheet" />
+
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
-
-
     <!--import sidebar-->
     <link rel="import" href="sidebar.html" id="mysidebar" />
     <link rel="import" href="footer.html" id="myfooter" />
     <link rel="import" href="liveon.html" id="myliveon" />
     <!--bootstrap-datatables-->
-    <!--<link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">-->
+    <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <!--loading css-->
     <link href="js/css/loading.css" rel="stylesheet" />
+    <!--bootstrap switch button-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.css" rel="stylesheet" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <style>
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
 
+        .va {
+            vertical-align: middle;
+        }
+
+        .branch {
+            font-size: 15px;
+            margin: 10px auto;
+            border: 0px dashed #000;
+            text-align: center;
+        }
+
+        .branchinput {
+            font-size: 15px;
+            margin: 10px auto;
+            border: 1px solid #000;
+            text-align: center;
+        }
+
+        .inline {
+            display: inline;
+            font-size: 12px;
+            border: 1px dashed #000;
+        }
+
+        .mya {
+            /*color:red;*/
+        }
+            /* unvisited link */
+            .mya:link {
+                color: blue;
+            }
+
+            /* visited link */
+            .mya:visited {
+                color: red;
+                font-weight: bold;
+            }
+
+            /* mouse over link */
+            .mya:hover {
+                color: dodgerblue;
+                text-decoration: underline
+            }
+
+            /* selected link */
+            .mya:active {
+                color: dodgerblue;
+                font-weight: bold;
+            }
+
+        .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+            border-radius: 20px;
+        }
+
+            .toggle.ios .toggle-handle {
+                border-radius: 20px;
+            }
+
+        .tab-content {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .nav-tabs {
+            margin-bottom: 0;
+        }
+
+        /*.detail{margin: 0;display:block;line-height:0px;height:0px;border:0px;
+            }*/
+
+    </style>
 </head>
 
-<body class="nav-md" onload="">
-    <div class="container body">
+<body class="nav-md" id="page-top" onload="doAuthetication(),loaddata()">
+    <div id="containerbody" class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+                        <a href="index.html" class="site_title"><i class="fa fa-home"></i> <span>HTML+API</span></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -85,7 +142,7 @@
                         </div>
                         <div class="profile_info">
                             <span>Welcome,</span>
-                            <h2>John Doe</h2>
+                            <h2><label id="username2">...</label></h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -111,6 +168,7 @@
                             <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
                         </a>
                         <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -129,8 +187,10 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/img.jpg" alt="">John Doe
+                                    <img src="images/img.jpg" alt=""><label id="username"></label>
+
                                     <span class=" fa fa-angle-down"></span>
+
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="javascript:;"> Profile</a></li>
@@ -141,7 +201,10 @@
                                         </a>
                                     </li>
                                     <li><a href="javascript:;">Help</a></li>
-                                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                                    <li>
+                                        <!--<a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out </a>-->
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="fa fa-sign-out pull-right"></i>Logout</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -216,166 +279,194 @@
             <!-- /top navigation -->
             <!-- page content -->
             <div class="right_col" role="main">
-                <div class="">
-                    <div class="page-title">
-                        <div class="title_left">
-                            <h3>Item Edit</h3>
-                        </div>
-
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h2> <small></small></h2>
-                                    <ul class="nav navbar-right panel_toolbox">
-                                        <li>
-                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li>
-                                                    <a href="#">Settings 1</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Settings 2</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a class="close-link"><i class="fa fa-close"></i></a>
-                                        </li>
-                                    </ul>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-                                    <br />
-
-                                    <section class="panel">
-
-                                        <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="dashboard_graph">
+                            <div class="row x_title">
+                                <div class="col-md-8 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <!--branch filter start-->
                                             <div class="row">
-                                                <div class="col-sm-6">
-                                                    <div class="mb-md">
-                                                        <button id="addToTable" class="btn btn-primary">Add <i class="fa fa-plus"></i></button>
-                                                    </div>
+                                                <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4" style="text-align:center;vertical-align:middle"></div>
+                                                <div class="branch col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                                    <!--<input id="reporttype" type="checkbox" checked data-toggle="toggle" data-on="Category Report" data-off="Item Report" data-onstyle="danger" data-offstyle="success" onchange="getreporttype()">-->
                                                 </div>
-                                            </div>
-                                            <table class="table table-bordered table-striped mb-none" id="datatable-editable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>CODE</th>
-                                                        <th>DES</th>
-                                                        <th>OTHER DES</th>
-                                                        <th>CATEGORY</th>
-                                                        <th>UNIT</th>
-                                                        <th>PRICE</th>
-                                                        <th>COST</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!--<tr class="gradeX" >
-                                                         <td>Trident</td>
-    <td>
-        Internet
-        Explorer 4.0
-    </td>
-    <td>Win 95+</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td class="actions">
-        <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
-        <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-        <a href="#" class="on-default edit-row"><i class="fa fa-pencil"></i></a>
-        <a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a>
-    </td>
-                                                     </tr>-->
-                                                </tbody>
 
-</table>
+                                            </div>
+                                            <!--branch filter end-->
                                         </div>
-                                    </section>
-                                    <!-- end: page -->
-                                    <div id="dialog" class="modal-block mfp-hide">
-                                        <section class="panel">
-                                            <header class="panel-heading">
-                                                <h2 class="panel-title">Are you sure?</h2>
-                                            </header>
-                                            <div class="panel-body">
-                                                <div class="modal-wrapper">
-                                                    <div class="modal-text">
-                                                        <p>Are you sure that you want to delete this row?</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <footer class="panel-footer">
-                                                <div class="row">
-                                                    <div class="col-md-12 text-right">
-                                                        <button id="dialogConfirm" class="btn btn-primary">Confirm</button>
-                                                        <button id="dialogCancel" class="btn btn-default">Cancel</button>
-                                                    </div>
-                                                </div>
-                                            </footer>
-                                        </section>
                                     </div>
-
-
                                 </div>
+
                             </div>
+                            <div class="table-responsive">
+                                <!--<div id="toolbar">
+                                    <button id="remove" class="btn btn-danger" disabled>
+                                        <i class="glyphicon glyphicon-remove"></i> Delete
+                                    </button>
+                                </div>-->
+                                <table id="itemlist"
+                                       data-addrbar="true"
+                                       data-search="true"
+                                       data-show-refresh="true"
+                                       data-show-toggle="true"
+                                       data-show-columns="true"
+                                       data-detail-view="true"
+                                       data-click-to-select="true"
+                                       data-detail-formatter="detailFormatter"
+                                       data-minimum-count-columns="3"
+                                       data-page-list="[10,20]"
+                                       data-locale="en-US"
+                                       data-pagination="true">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+            </div>
+
+            <!--modal for inovice-->
+            <div class="modal fade" id="myinovice" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Invoice # <label id="inv_no"></label></h4>
+
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-header">
+
+                            </div>
+                            <div class="card-body">
+                            </div>
+                            <div class="card-footer"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <!--modal ends-->
             <!-- /page content -->
             <!-- footer content -->
-            <footer>
-                <div class="pull-right">
-
-                </div>
-                <div class="clearfix"></div>
-            </footer>
+            <script>
+                document.write(myfooter.import.body.innerHTML);
+            </script>
             <!-- /footer content -->
         </div>
     </div>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html" onclick="doLogout()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal confirm delete-->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
 
-    <!-- Vendor -->
-    <script src="../octopus_assets/vendor/jquery/jquery.js"></script>
-    <script src="../octopus_assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
-    <script src="../octopus_assets/vendor/bootstrap/js/bootstrap.js"></script>
-    <script src="../octopus_assets/vendor/nanoscroller/nanoscroller.js"></script>
-    <script src="../octopus_assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="../octopus_assets/vendor/magnific-popup/magnific-popup.js"></script>
-    <script src="../octopus_assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
-    <!-- Specific Page Vendor -->
-    <script src="../octopus_assets/vendor/select2/select2.js"></script>
-    <script src="../octopus_assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
-    <script src="../octopus_assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
-    <!-- Theme Base, Components and Settings -->
-    <script src="../octopus_assets/javascripts/theme.js"></script>
-    <!-- Theme Custom -->
-    <script src="../octopus_assets/javascripts/theme.custom.js"></script>
-    <!-- Theme Initialization Files -->
-    <script src="../octopus_assets/javascripts/theme.init.js"></script>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete this item?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
 
-
-
+        </div>
+    </div>
+    <!---->
+    <!--loading modal-->
+    <div class="modal-loading">
+        <!-- Place at bottom of page -->
+    </div>
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- Skycons -->
+    <script src="../vendors/skycons/skycons.js"></script>
+    <!-- Flot -->
+    <script src="../vendors/Flot/jquery.flot.js"></script>
+    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="../vendors/Flot/jquery.flot.time.js"></script>
+    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
+    <!-- Flot plugins -->
+    <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
+    <!-- DateJS -->
+    <script src="../vendors/DateJS/build/date.js"></script>
+    <!-- JQVMap -->
+    <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="js/datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="js/datepicker/bootstrap-datetimepicker.js"></script>
 
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
+    <!-- datatables-->
+    <script src="js/datatables/jquery.dataTables.js"></script>
+    <script src="js/datatables/dataTables.bootstrap4.js"></script>
 
+    <!--bootstrap talbe-->
+    <link href="js/bootstrap-tables/bootstrap-table.min.css" rel="stylesheet" />
+    <script src="js/bootstrap-tables/bootstrap-table.min.js"></script>
+    <script src="js/bootstrap-tables/bootstrap-table-locale-all.min.js"></script>
+    <script src="js/bootstrap-tables/extensions/export/bootstrap-table-export.min.js"></script>
+    <script src="js/bootstrap-tables/extensions/addrbar/bootstrap-table-addrbar.min.js"></script>
 
-    <!-- js for this -->
+    <!--bootstrap switch button-->
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <!-- index.js -->
     <script src="js/all.js"></script>
+    <script src="js/eChart/echarts.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/Report_SalesInvoice.js"></script>
     <script src="authentication/js/authetication.js"></script>
-    <script src="js/menu/lodash.js"></script>
     <script src="js/ItemEdit.js"></script>
-
-
 </body>
 </html>
