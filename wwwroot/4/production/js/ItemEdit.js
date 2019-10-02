@@ -70,18 +70,23 @@ window.operateEvents = {
     'click .edit-row': function (e, value, row, index) {
         alert('You click like action, row: ' + JSON.stringify(row))
     },
-    //'click .remove-row': function (e, value, row, index) {
-    //    $table.bootstrapTable('remove', {
-    //        field: 'id',
-    //        values: [row.id]
-    //    })
-    //}
+    'click .remove-row': function (e, value, row, index) {
+        var r = confirm('delete this item?');
+        if (r == false) { return; }
+        else {
+            $table.bootstrapTable('remove', {
+                field: 'id',
+                values: [row.id]
+            })
+        }
+    }
 }
 
 function operateFormatter(value, row, index) {
     return [
         '<a href="#" class="edit-row"><i class="fa fa-pencil"></i></a>',
-        '&nbsp;&nbsp; <a href="#" class="remove-row" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o"></i></a>'
+        '&nbsp;&nbsp;',
+        '<a href="#" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
 }
 
