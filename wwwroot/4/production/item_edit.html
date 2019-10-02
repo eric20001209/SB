@@ -301,12 +301,12 @@
 
                             </div>
                             <div class="table-responsive">
-                                <!--<div id="toolbar">
-                                    <button id="remove" class="btn btn-danger" disabled>
-                                        <i class="glyphicon glyphicon-remove"></i> Delete
+                                <div id="toolbar">
+                                    <button id="addrow" class="btn btn-default add-new">
+                                        <i class="glyphicon glyphicon-plus"></i> Add Row
                                     </button>
-                                </div>-->
-                                <table id="itemlist"
+                                </div>
+                                <table class="table order-list" id="itemlist"
                                        data-addrbar="true"
                                        data-search="true"
                                        data-show-refresh="true"
@@ -379,18 +379,43 @@
             </div>
         </div>
     </div>
-    <!--modal confirm delete-->
-    <div id="myModal" class="modal fade" role="dialog">
+    <!--modal item edit-->
+    <div id="newItemModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Delete this item?</h4>
+                    <h4 class="modal-title">New Item</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Delete this item?</p>
+                    <div class="col-md-8 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <!--branch filter start-->
+                                <div class="row">
+                                    <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4" style="text-align:center;vertical-align:middle"></div>
+                                    <div class="branch col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                    </div>
+
+                                </div>
+                                <!--branch filter end-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <!--branch filter start-->
+                                <div class="row">
+                                    <div class="branch col-xs-4 col-sm-4 col-md-4 col-lg-4" style="text-align:center;vertical-align:middle">Branch:</div>
+                                    <div class="branch col-xs-8 col-sm-8 col-md-8 col-lg-8" id="branchlist"></div>
+                                </div>
+                                <!--branch filter end-->
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Yes</button>

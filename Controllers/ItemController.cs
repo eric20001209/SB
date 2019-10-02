@@ -96,7 +96,7 @@ namespace SB.Controllers
                     cat = c.description,
                     unit =""
                 }
-                )
+                ).OrderByDescending(i=>i.id)
                 .ToList();
 
             if (itemList == null)
