@@ -26,24 +26,10 @@
 
 var $table = $('#itemlist')
 var $button = $('#addrow')
-//var $remove = $('#remove')
 
 $(function () {
     $button.click(function () {
-
         insertrow()
-        //$table.bootstrapTable('insertRow', {
-        //    index: 0,
-        //    row: {
-        //        id: id,
-        //        code: randomId,
-        //        name: 'Item ' + randomId,
-        //        name_cn: '新产品',
-        //        price: '$' + '0.00',
-        //        cost: '$' + '0.00',
-        //        action: operateFormatter
-        //    }
-        //})
     })
 })
 
@@ -166,10 +152,17 @@ window.operateEvents = {
 }
 function operateFormatter(value, row, index) {
     return [
-        '<a href="#" class="edit-row"><i class="fa fa-pencil"></i></a>',
+        '<a href="#" class="edit-row" data-toggle="modal" data-target="#itemEditModal"><i class="fa fa-pencil"></i></a>',
         '&nbsp;&nbsp;',
         '<a href="#" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
+}
+function detailFormatter(index, row) {
+    var html = []
+    $.each(row, function (key, value) {
+        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+    })
+    return html.join('')
 }
 function initTable(data, id) {
     var myTableData;

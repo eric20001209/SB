@@ -124,7 +124,7 @@ namespace SB.Controllers
             return Ok(itemList);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("item/{id}")]
         public IActionResult getItem(int id)
         {
             List<string> mylist = new List<string>();
@@ -134,7 +134,7 @@ namespace SB.Controllers
                 .Include(i => i.barcodes)
                 .Select(x => new
                 {
-                    x.code, x.name, x.name_cn, x.price, x.cost, x.barcodes
+                    x.code, x.name, x.name_cn, x.price, x.cost,x.unitid,x.categoryid, x.barcodes
                 }).FirstOrDefault();
 
             if (item == null)
