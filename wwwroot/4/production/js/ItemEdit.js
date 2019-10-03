@@ -136,7 +136,9 @@ function responseHandler(res) {
 }
 window.operateEvents = {
     'click .edit-row': function (e, value, row, index) {
+        $('#itemId').html(' - ' + row.id);
         alert('You click like action, row: ' + JSON.stringify(row))
+
     },
     'click .remove-row': function (e, value, row, index) {
         var r = confirm('delete this item?');
