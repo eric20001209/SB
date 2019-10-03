@@ -137,7 +137,14 @@ function responseHandler(res) {
 window.operateEvents = {
     'click .edit-row': function (e, value, row, index) {
         $('#itemId').html(' - ' + row.id);
-        alert('You click like action, row: ' + JSON.stringify(row))
+        $('#hiddenid').html(row.id);
+        $('#code').val(row.code);
+        $('#description').val(row.name);
+        $('#otherdes').val(row.name_cn);
+        $('#price').val(row.price)
+        $('#cost').val(row.cost)
+
+ //     alert('You click like action, row: ' + JSON.stringify(row))
 
     },
     'click .remove-row': function (e, value, row, index) {
@@ -233,6 +240,9 @@ function initTable(data, id) {
     $(window).resize(function () {
         $('#itemlist').bootstrapTable('resetView');
     });
+}
+function updateitem() {
+    var id = $('#hiddenid').html();
 }
 
 

@@ -9,7 +9,7 @@ using SB.Data;
 using SB.Models;
 using SB.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace SB.Controllers
 {
@@ -51,6 +51,29 @@ namespace SB.Controllers
             _context.Remove(itemToRemove);
             _context.SaveChanges();
             return Ok(itemToRemove);
+        }
+
+        [HttpPatch("edit")]
+        public IActionResult editItem([FromQuery] int id, [FromBody] JsonPatchDocument<CatUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+                return BadRequest();
+            var itemToUpdate = _context.Item.Where(i => i.id == id)
+                .Include(i=>i.barcodes)
+                .Select(x =>new
+                {
+                    x.code,
+                    x.name,
+                    x.name_cn,
+                    x.price,
+                    x.cost,
+                    x.unitid,
+                    x.categoryid,
+                    x.barcodes
+                })
+                .FirstOrDefault();
+
+            return Ok();
         }
 
         [HttpPost("addBarcode/{id}")]
