@@ -24,85 +24,91 @@
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
 });
 
-//$(document).ready(function () {
-//    $('[data-toggle="tooltip"]').tooltip();
-//    var actions = $("table td:last-child").html();
-//    // Append table with add row form on add new button click
-//    $(".add-new").click(function () {
-//        $(this).attr("disabled", "disabled");
-//        var index = $("table tbody tr:last-child").index();
-//        var row = '<tr>' + '<td></td><td></td>'+
-//            '<td><input type="text" class="form-control" name="code" id="code"></td>' +
-//            '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-//            '<td><input type="text" class="form-control" name="name_cn" id="name_cn"></td>' +
-//            '<td><input type="text" class="form-control" name="price" id="name_cn"></td>' +
-//            '<td><input type="text" class="form-control" name="cost" id="name_cn"></td>' +
-//            '<td><a href="#" class="on-editing save-row"><i class="fa fa-save"></i></a>&nbsp;&nbsp;<a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a></td>' +
-//            '</tr>';
-//        $("table").append(row);
-//        $("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
-//        $('[data-toggle="tooltip"]').tooltip();
-//    });
-//    // Add row on add button click
-//    $(document).on("click", ".add", function () {
-//        var empty = false;
-//        var input = $(this).parents("tr").find('input[type="text"]');
-//        input.each(function () {
-//            if (!$(this).val()) {
-//                $(this).addClass("error");
-//                empty = true;
-//            } else {
-//                $(this).removeClass("error");
-//            }
-//        });
-//        $(this).parents("tr").find(".error").first().focus();
-//        if (!empty) {
-//            input.each(function () {
-//                $(this).parent("td").html($(this).val());
-//            });
-//            $(this).parents("tr").find(".add, .edit").toggle();
-//            $(".add-new").removeAttr("disabled");
-//        }
-//    });
-//    // Edit row on edit button click
-//    $(document).on("click", ".edit", function () {
-//        $(this).parents("tr").find("td:not(:last-child)").each(function () {
-//            $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
-//        });
-//        $(this).parents("tr").find(".add, .edit").toggle();
-//        $(".add-new").attr("disabled", "disabled");
-//    });
-//    // Delete row on delete button click
-//    $(document).on("click", ".delete", function () {
-//        $(this).parents("tr").remove();
-//        $(".add-new").removeAttr("disabled");
-//    });
-//});
-
-
-
-
 var $table = $('#itemlist')
 var $button = $('#addrow')
 //var $remove = $('#remove')
 
 $(function () {
     $button.click(function () {
-        var randomId = 100 + ~~(Math.random() * 100)
-        $table.bootstrapTable('insertRow', {
-            index: 0,
-            row: {
-                id: randomId,
-                code: randomId,
-                name: 'Item ' + randomId,
-                name_cn: '新产品',
-                price: '$' + randomId,
-                cost: '$' + '0.00',
-                action: operateFormatter
-            }
-        })
+
+        insertrow()
+        //$table.bootstrapTable('insertRow', {
+        //    index: 0,
+        //    row: {
+        //        id: id,
+        //        code: randomId,
+        //        name: 'Item ' + randomId,
+        //        name_cn: '新产品',
+        //        price: '$' + '0.00',
+        //        cost: '$' + '0.00',
+        //        action: operateFormatter
+        //    }
+        //})
     })
 })
+
+function insertrow() {
+    var uri = prefix + "/item/add";
+    var code = 100 + ~~(Math.random() * 100)
+    var someJsonString = {
+        "code": code,
+        "name": 'new item',
+        "name_cn": '新产品',
+        "price": 0,
+        "cost": 0
+    };
+    $.ajax({
+        url: uri,//相对应的esb接口地址
+        type: 'post',
+        data: JSON.stringify(someJsonString),//向服务器（接口）传递的参数
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+            var id = data.id;
+            var code = data.code;
+            var name = data.name;
+            var name_cn = data.name_cn
+            var price = data.price
+            var cost= data.cost
+
+//          alert('item ' + id + '/' + code + '/' + name + ' added sucessfully!');
+
+            $table.bootstrapTable('insertRow', {
+                index: 20,
+                row: {
+                    id: id,
+                    code: code,
+                    name: name,
+                    name_cn: name_cn,
+                    price: price.formatMoney(),
+                    cost: cost.formatMoney(),
+                    action: operateFormatter
+                }
+            })
+            //                self.location = 'index.html';
+        },
+        error: function (data) {
+            console.log('error');
+        }
+    });
+}
+function removerow(id) {
+    $.ajax({
+        type: 'delete',
+        url: prefix + "/item/remove?id=" + id,
+        //data: data,
+        timeout: 1000, //超时时间设置，单位毫秒
+        dataType: 'json',
+        success: function (res) {
+
+            console.log(res)
+
+        },
+        error: function (res) {
+            console.log('error');
+        }
+    });
+}
 
 function loaddata()
 {
@@ -150,6 +156,7 @@ window.operateEvents = {
         var r = confirm('delete this item?');
         if (r == false) { return; }
         else {
+            removerow(row.id);
             $table.bootstrapTable('remove', {
                 field: 'id',
                 values: [row.id]
