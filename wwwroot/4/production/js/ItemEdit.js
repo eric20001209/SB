@@ -134,6 +134,7 @@ function responseHandler(res) {
     })
     return res
 }
+
 window.operateEvents = {
     'click .edit-row': function (e, value, row, index) {
         $('#itemId').html(' - ' + row.id);
@@ -143,6 +144,7 @@ window.operateEvents = {
         $('#otherdes').val(row.name_cn);
         $('#price').val(row.price)
         $('#cost').val(row.cost)
+        $('#category').html(row.categoryid)
 
  //     alert('You click like action, row: ' + JSON.stringify(row))
 
@@ -182,14 +184,14 @@ function initTable(data, id) {
         height: '100%',
         resizable: true,
         columns: [
-            {
-                valign: 'middle',
-                align: 'center',
-                width: 0,
-                formatter: function (value, row, index) {
-                    return index + 1;
-                }
-            },
+            //{
+            //    valign: 'middle',
+            //    align: 'center',
+            //    width: 0,
+            //    formatter: function (value, row, index) {
+            //        return index + 1;
+            //    }
+            //},
             {
                 field: 'code',
                 title: 'Code'
@@ -203,6 +205,11 @@ function initTable(data, id) {
             {
                 field: 'name_cn',
                 title: 'Other Des'
+
+            },
+            {
+                field: 'cat',
+                title: 'Category'
 
             },
             {

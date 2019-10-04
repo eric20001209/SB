@@ -18,6 +18,8 @@ namespace SB.Controllers
     public class ItemController : ControllerBase
     {
         private readonly wucha_cloudContext _context = new wucha_cloudContext();
+        List<CategoryDto> relateCategoryList = new List<CategoryDto>();
+        List<int> mylist = new List<int>();
 
         [HttpPost("add")]
         public IActionResult addItem([FromBody] AddItemDto newItem)
@@ -106,10 +108,11 @@ namespace SB.Controllers
         public IActionResult getItemList()
         {
             var itemList = (from i in _context.Item
-                           //join c in _context.Category on i.categoryid equals c.id
+                           join c in _context.Category on i.categoryid equals c.id into cat from c in cat.DefaultIfEmpty()
                            select new
                             {
-                                i.id, i.code, i.name, i.name_cn, i.price,i.cost,
+                                i.id, i.code, i.name, i.name_cn, i.price,i.cost,i.categoryid,
+                                cat = c.description
                             }).OrderByDescending(i=>i.id);
             //_context.Item
             //.Include(i => i.barcodes)
@@ -164,6 +167,76 @@ namespace SB.Controllers
                 return BadRequest();
 
             return Ok(item);
+        }
+
+        [HttpGet("item/cat/{catid}")]
+        public IActionResult getIteRelateCategory(int catid)
+        {
+            //var catlist = _context.Category.Where(c => c.id == catid).ToList();
+            //if (catlist == null)
+            //    return BadRequest();
+            var catlist = getRelatedCategoryList(catid); //getRelatedCatIdList(catid);
+            return Ok(catlist);
+        }
+
+        public List<int> getRelatedCatIdList(int id)
+        {
+            var parent_id = _context.Category.Where(c => c.id == id).FirstOrDefault().parent_id;
+
+            if (mylist.Exists(i => i == id))
+            {
+            }
+            else
+                mylist.Add(id);
+
+            var parentCat = _context.Category.Where(c => c.id == parent_id);
+            if (parentCat == null)
+                return mylist;
+            foreach (var item in parentCat)
+            {
+                if (mylist.Exists(i => i == item.id))
+                {
+                }
+                else
+                {
+                    mylist.Add(item.id);
+                    getRelatedCatIdList(item.id);
+                }
+            }
+            return mylist;
+        }
+        public List<CategoryDto> getRelatedCategoryList(int id)
+        {
+            var category = _context.Category
+                .Where(c => c.id == id)
+                .Select(c=>new CategoryDto { Id=c.id, Description = c.description, Parent_Id = c.parent_id, LayerLevel = c.layer_level})
+                .FirstOrDefault();
+            
+            var parent_id = _context.Category.Where(c => c.id == id).FirstOrDefault().parent_id;
+            if (relateCategoryList.Exists(i => i.Id == id))
+            {
+            }
+            else
+                relateCategoryList.Add(category);
+
+            var parentCat = _context.Category.Where(c => c.id == parent_id)
+                .Select(c=> new CategoryDto { Id = c.id, Description = c.description, Parent_Id = c.parent_id, LayerLevel = c.layer_level });
+            if (parentCat == null)
+                return relateCategoryList;
+            foreach (var item in parentCat)
+            {
+                if (relateCategoryList.Exists(i => i.Id == item.Id))
+                {
+                }
+                else
+                {
+                    relateCategoryList.Add(item);
+                    getRelatedCategoryList(item.Id);
+                }
+            }
+
+            var final = relateCategoryList.OrderBy(c => c.LayerLevel).ToList();
+            return final;
         }
 
 
