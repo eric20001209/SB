@@ -60,7 +60,7 @@ namespace SB.Controllers
                 }
             }
 
-            return Ok(finalList);
+            return Ok(finalList.ToList());
         }
         public void LoopToAppendSubCat(List<CategorySelect2Dto> all, CategorySelect2Dto currentCat )
         {

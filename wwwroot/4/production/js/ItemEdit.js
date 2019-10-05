@@ -23,7 +23,6 @@
     // Remove non-numeric chars (except decimal point/minus sign):
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
 });
-
 var $table = $('#itemlist')
 var $button = $('#addrow')
 
@@ -32,7 +31,6 @@ $(function () {
         insertrow()
     })
 })
-
 function insertrow() {
     var uri = prefix + "/item/add";
     var code = 100 + ~~(Math.random() * 100)
@@ -95,7 +93,6 @@ function removerow(id) {
         }
     });
 }
-
 function loaddata()
 {
     getdata();
@@ -134,7 +131,6 @@ function responseHandler(res) {
     })
     return res
 }
-
 window.operateEvents = {
     'click .edit-row': function (e, value, row, index) {
         $('#itemId').html(' - ' + row.id);
@@ -145,6 +141,7 @@ window.operateEvents = {
         $('#price').val(row.price)
         $('#cost').val(row.cost)
         $('#category').html(row.categoryid)
+        getCategory(row.categoryid)
 
  //     alert('You click like action, row: ' + JSON.stringify(row))
 
@@ -251,6 +248,37 @@ function initTable(data, id) {
 function updateitem() {
     var id = $('#hiddenid').html();
 }
+
+function getCategory(id)
+{
+    //var uri = prefix + '/item/item/cat/' + id;
+    var uri = prefix + '/category/list';
+    var levels = 0;
+    $.ajax({
+        type: "get",
+        url: uri,
+        async: true,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+            var mydata = data;
+            //for (var i = 0; i < levels; i++) {
+            $("#category").select2ToTree({ treeData: { dataArr: mydata }, maximumSelectionLength: 3 });
+                //console.log(data[i]);
+            //}
+        },
+        error: function (data) {
+            if (data.status == 401)
+                setTimeout("window.location.href='login.html'", 3000);
+        }
+    });
+
+    //$("#category").select2ToTree({ treeData: { dataArr: data }, maximumSelectionLength: 3 });
+}
+
+
+
+
 
 
 

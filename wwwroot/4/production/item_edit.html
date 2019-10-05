@@ -36,6 +36,9 @@
     <link rel="import" href="sidebar.html" id="mysidebar" />
     <link rel="import" href="footer.html" id="myfooter" />
     <link rel="import" href="liveon.html" id="myliveon" />
+    <!--select2tree-->
+    <link href="css/menu/select2.css" rel="stylesheet" />
+    <link href="css/menu/select2totree.css" rel="stylesheet" />
     <!--bootstrap-datatables-->
     <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
     <!--loading css-->
@@ -416,7 +419,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <div id="category"></div>
+                                <div id="category" style="width:16em"></div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -502,7 +505,9 @@
     <script src="js/bootstrap-tables/bootstrap-table-locale-all.min.js"></script>
     <script src="js/bootstrap-tables/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="js/bootstrap-tables/extensions/addrbar/bootstrap-table-addrbar.min.js"></script>
-
+    <!--select2tree-->
+    <script src="js/menu/select2.js"></script>
+    <script src="js/menu/select2totree.js"></script>
     <!--bootstrap switch button-->
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
