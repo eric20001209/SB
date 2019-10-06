@@ -264,7 +264,7 @@ function getCategory(id)
             var mydata = data;
             //for (var i = 0; i < levels; i++) {
             $("#category").select2ToTree({
-                treeData: { dataArr: mydata }
+                treeData: { dataArr: mydata } 
                 //, maximumSelectionLength: 1
             });
                 //console.log(data[i]);
