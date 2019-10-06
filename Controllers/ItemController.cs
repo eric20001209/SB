@@ -75,6 +75,15 @@ namespace SB.Controllers
                 })
                 .FirstOrDefault();
 
+            if (itemToUpdate == null)
+                return NotFound();
+
+            //var catToPatch = new CatUpdateDto
+            //{
+            //    id = catToUpdate.id,
+            //    parent_id = catToUpdate.parent_id,
+            //    cat = catToUpdate.description
+            //};
             return Ok();
         }
 

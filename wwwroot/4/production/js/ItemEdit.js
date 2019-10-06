@@ -141,7 +141,7 @@ window.operateEvents = {
         $('#price').val(row.price)
         $('#cost').val(row.cost)
         $('#category').html(row.categoryid)
-        getCategory(row.categoryid)
+        getCategory(row.cat,row.categoryid)
 
  //     alert('You click like action, row: ' + JSON.stringify(row))
 
@@ -249,7 +249,7 @@ function updateitem() {
     var id = $('#hiddenid').html();
 }
 
-function getCategory(id)
+function getCategory(text,id)
 {
     //var uri = prefix + '/item/item/cat/' + id;
     var uri = prefix + '/category/list';
@@ -262,6 +262,8 @@ function getCategory(id)
         dataType: "json",
         success: function (data) {
             var mydata = data;
+            var option = new Option(text, id, true, true);
+            $("#category").append(option).trigger('change');
             //for (var i = 0; i < levels; i++) {
             $("#category").select2ToTree({
                 treeData: { dataArr: mydata } 
