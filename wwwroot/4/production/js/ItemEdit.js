@@ -263,7 +263,10 @@ function getCategory(id)
         success: function (data) {
             var mydata = data;
             //for (var i = 0; i < levels; i++) {
-            $("#category").select2ToTree({ treeData: { dataArr: mydata }, maximumSelectionLength: 3 });
+            $("#category").select2ToTree({
+                treeData: { dataArr: mydata }
+                //, maximumSelectionLength: 1
+            });
                 //console.log(data[i]);
             //}
         },
