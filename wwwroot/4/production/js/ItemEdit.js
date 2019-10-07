@@ -134,6 +134,8 @@ function responseHandler(res) {
 window.operateEvents = {
     'click .edit-row': function (e, value, row, index) {
         $('#itemId').html(' - ' + row.id);
+
+        $('#hiddenindex').html(index);
         $('#hiddenid').html(row.id);
         $('#code').val(row.code);
         $('#description').val(row.name);
@@ -168,7 +170,24 @@ function operateFormatter(value, row, index) {
 function detailFormatter(index, row) {
     var html = []
     $.each(row, function (key, value) {
-        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+        var myValue='';
+        if (key == 'barcodes') {
+
+            if (value != null) {
+                for (var i = 0; i < value.length; i++) {
+                    myValue += value[i].barcode + ', ';
+        //            alert(JSON.stringify(value));
+                }
+            }
+            else {
+                myValue = null;
+            }
+        }
+        else {
+            myValue = value;
+        }
+//      html.push('<p><b>' + key + ':</b> ' + JSON.stringify(value) + '</p>')
+        html.push('<p><b>' + key + ':</b> ' + myValue + '</p>')
     })
     return html.join('')
 }
@@ -181,14 +200,14 @@ function initTable(data, id) {
         height: '100%',
         resizable: true,
         columns: [
-            //{
-            //    valign: 'middle',
-            //    align: 'center',
-            //    width: 0,
-            //    formatter: function (value, row, index) {
-            //        return index + 1;
-            //    }
-            //},
+            {
+                valign: 'middle',
+                align: 'center',
+                width: 0,
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },
             {
                 field: 'code',
                 title: 'Code'
@@ -245,8 +264,82 @@ function initTable(data, id) {
         $('#itemlist').bootstrapTable('resetView');
     });
 }
+
 function updateitem() {
-    var id = $('#hiddenid').html();
+
+    var id = $('#hiddenid').html().trim();
+    var code = $('#code').val();
+    var name = $('#description').val();
+    var name_cn = $('#otherdes').val();
+    var price = $('#price').val().replace('$', '');
+    var cost = $('#cost').val().replace('$', '');
+    var categoryid = $("#category option:selected").val();
+    var category = $("#category option:selected").text();
+    var index = $('#hiddenindex').html();
+
+    var data = [
+        {
+            "op": "replace",
+            "path": "/code",
+            "value": code
+        },
+        {
+            "op": "replace",
+            "path": "/name",
+            "value": name
+        },
+        {
+            "op": "replace",
+            "path": "/name_cn",
+            "value": name_cn
+
+        },
+        {
+            "op": "replace",
+            "path": "/price",
+            "value": price.replace('$','')
+        },
+        {
+            "op": "replace",
+            "path": "/cost",
+            "value": cost.replace('$', '')
+        },
+        {
+            "op": "replace",
+            "path": "/cat_id",
+            "value": categoryid
+        }
+    ];
+    $.ajax({
+        type: 'Patch',
+        url: prefix + "/item/edit?id=" + id,
+        data: JSON.stringify(data),
+        timeout: 1000, //超时时间设置，单位毫秒
+        contentType: "application/json",
+        dataType: 'json',
+        success: function (data) {
+            alert('Item update sucessfully!');
+        },
+        error: function (data) {
+            if (data.status == 400) {
+                alert('Sorry, this item update fail !!!');
+                return false;
+            }
+        }
+    });
+
+    var $table = $('#itemlist')
+    $table.bootstrapTable('updateRow', {
+        index: index,
+        row: {
+            code: code, 
+            name: name,
+            name_cn: name_cn, 
+            price: price,
+            cost: cost,
+            cat: category
+        }
+    })
 }
 
 function getCategory(text,id)
@@ -262,15 +355,27 @@ function getCategory(text,id)
         dataType: "json",
         success: function (data) {
             var mydata = data;
+
             var option = new Option(text, id, true, true);
             $("#category").append(option).trigger('change');
+
             //for (var i = 0; i < levels; i++) {
             $("#category").select2ToTree({
-                treeData: { dataArr: mydata } 
+                treeData: { dataArr: mydata }  //, templateResult: formatState, templateSelection: formatState
+            
                 //, maximumSelectionLength: 1
             });
-                //console.log(data[i]);
-            //}
+
+            //function formatState(state) {
+            //    //if (state.id >= 1 && state.id <= 3) {
+            //    //    return $(
+            //    //        //'<span><img src="./' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+            //    //        state.text
+            //    //    );
+            //    //}
+            //    //else
+            //        return state.text;
+            //};
         },
         error: function (data) {
             if (data.status == 401)

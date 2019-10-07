@@ -56,35 +56,50 @@ namespace SB.Controllers
         }
 
         [HttpPatch("edit")]
-        public IActionResult editItem([FromQuery] int id, [FromBody] JsonPatchDocument<CatUpdateDto> patchDoc)
+        public IActionResult editItem([FromQuery] int id, [FromBody] JsonPatchDocument<ItemUpdateDto> patchDoc)
         {
             if (patchDoc == null)
                 return BadRequest();
             var itemToUpdate = _context.Item.Where(i => i.id == id)
-                .Include(i=>i.barcodes)
-                .Select(x =>new
-                {
-                    x.code,
-                    x.name,
-                    x.name_cn,
-                    x.price,
-                    x.cost,
-                    x.unitid,
-                    x.categoryid,
-                    x.barcodes
-                })
+                //.Include(i=>i.barcodes)
+                //.Select(x =>new
+                //{
+                //    x.code,
+                //    x.name,
+                //    x.name_cn,
+                //    x.price,
+                //    x.cost,
+                //    x.unitid,
+                //    x.categoryid,
+                //    x.barcodes
+                //})
                 .FirstOrDefault();
 
             if (itemToUpdate == null)
                 return NotFound();
+            var itemToPatch = new ItemUpdateDto()
+            {
+                code = itemToUpdate.code,
+                name = itemToUpdate.name,
+                name_cn = itemToUpdate.name_cn,
+                price = itemToUpdate.price,
+                cost = itemToUpdate.cost,
+                cat_id = itemToUpdate.categoryid
+            };
+            patchDoc.ApplyTo(itemToPatch, ModelState);
 
-            //var catToPatch = new CatUpdateDto
-            //{
-            //    id = catToUpdate.id,
-            //    parent_id = catToUpdate.parent_id,
-            //    cat = catToUpdate.description
-            //};
-            return Ok();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            itemToUpdate.code = itemToPatch.code;
+            itemToUpdate.name = itemToPatch.name;
+            itemToUpdate.name_cn = itemToPatch.name_cn;
+            itemToUpdate.price = itemToPatch.price;
+            itemToUpdate.cost = itemToPatch.cost;
+            itemToUpdate.categoryid = itemToPatch.cat_id;
+
+            _context.SaveChanges();
+            return NoContent();
         }
 
         [HttpPost("addBarcode/{id}")]
@@ -117,11 +132,13 @@ namespace SB.Controllers
         public IActionResult getItemList()
         {
             var itemList = (from i in _context.Item
+                            .Include(i =>i.barcodes)
                            join c in _context.Category on i.categoryid equals c.id into cat from c in cat.DefaultIfEmpty()
                            select new
                             {
                                 i.id, i.code, i.name, i.name_cn, i.price,i.cost,i.categoryid,
-                                cat = c.description
+                                cat = c.description,
+                                i.barcodes
                             }).OrderByDescending(i=>i.id);
             //_context.Item
             //.Include(i => i.barcodes)
