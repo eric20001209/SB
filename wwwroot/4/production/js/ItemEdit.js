@@ -194,8 +194,8 @@ function detailFormatter(index, row) {
 function initTable(data, id) {
     var myTableData;
     myTableData = data;
-
     var $table = $(id)
+
     $table.bootstrapTable('destroy').bootstrapTable({
         height: '100%',
         resizable: true,
@@ -264,6 +264,7 @@ function initTable(data, id) {
         $('#itemlist').bootstrapTable('resetView');
     });
 }
+function initTableBarcode() { }
 function updateitem() {
 
     var $table = $('#itemlist')
@@ -403,32 +404,24 @@ function getCategory(text,id)
 function getBarcodes(itemId) {
 
     var uri = prefix + '/item/barcodeList/' + itemId;
-    $('#barcodelist').dataTable({
-        "ajax": {
-            "url": uri,
-            "dataSrc": ""
+    $.ajax({
+        type: "get",
+        url: uri,
+        async: true,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+            if (data.length == 0)
+                return;
+            for (var i = 0; i < data.length; i++) {
+                alert(data[i].barcode);
+            }
         },
-        "Columns": [
-
-            { "data": "barcode" }
-        ]
+        error: function (data) {
+            if (data.status == 401)
+                setTimeout("window.location.href='login.html'", 3000);
+        }
     });
-    //$.ajax({
-    //    type: "get",
-    //    url: uri,
-    //    async: true,
-    //    contentType: "application/json",
-    //    dataType: "json",
-    //    success: function (data) {
-    //        for (var i = 0; i < data.length; i++) {
-
-    //        }
-    //    },
-    //    error: function (data) {
-    //        if (data.status == 401)
-    //            setTimeout("window.location.href='login.html'", 3000);
-    //    }
-    //});
 }
 
 

@@ -451,12 +451,19 @@
                                             <i class="glyphicon glyphicon-plus"></i> Add Barcode
                                         </button>
                                     </div>
-                                    <table id="barcodelist" class="display" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>barcode</th>
-                                            </tr>
-                                        </thead>
+                                    <table class="table order-list" id="barcodelist"
+                                           data-addrbar="true"
+                                           data-search="true"
+                                           data-show-refresh="true"
+                                           data-show-toggle="true"
+                                           data-show-columns="true"
+                                           data-detail-view="true"
+                                           data-click-to-select="true"
+                                           data-detail-formatter="detailFormatter"
+                                           data-minimum-count-columns="3"
+                                           data-page-list="[10,20,50]"
+                                           data-locale="en-US"
+                                           data-pagination="true">
                                     </table>
                                 </div>
                             </div>
