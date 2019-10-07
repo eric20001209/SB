@@ -41,6 +41,7 @@
     <link href="css/menu/select2totree.css" rel="stylesheet" />
     <!--bootstrap-datatables-->
     <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <link rel="stylesheet" href="../octopus_assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
     <!--loading css-->
     <link href="js/css/loading.css" rel="stylesheet" />
     <!--bootstrap switch button-->
@@ -319,7 +320,7 @@
                                        data-click-to-select="true"
                                        data-detail-formatter="detailFormatter"
                                        data-minimum-count-columns="3"
-                                       data-page-list="[10,20]"
+                                       data-page-list="[10,20,50]"
                                        data-locale="en-US"
                                        data-pagination="true">
                                 </table>
@@ -446,23 +447,16 @@
                                 
                                 <div class="table-responsive">
                                     <div id="toolbar">
-                                        <button id="addrow" class="btn btn-default add-new">
+                                        <button id="addbarcode" class="btn btn-default add-new">
                                             <i class="glyphicon glyphicon-plus"></i> Add Barcode
                                         </button>
                                     </div>
-                                    <table class="table order-list" id="barcodelist"
-                                           data-addrbar="true"
-                                           data-search="true"
-                                           data-show-refresh="true"
-                                           data-show-toggle="false"
-                                           data-show-columns="true"
-                                           data-detail-view="true"
-                                           data-click-to-select="true"
-                                           data-detail-formatter="detailFormatter"
-                                           data-minimum-count-columns="2"
-                                           data-page-list="[10,20]"
-                                           data-locale="en-US"
-                                           data-pagination="true">
+                                    <table id="barcodelist" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>barcode</th>
+                                            </tr>
+                                        </thead>
                                     </table>
                                 </div>
                             </div>
@@ -544,7 +538,6 @@
     <script src="js/all.js"></script>
     <script src="js/eChart/echarts.min.js"></script>
     <script src="js/config.js"></script>
-    <!--<script src="js/Report_SalesInvoice.js"></script>-->
     <script src="authentication/js/authetication.js"></script>
     <script src="js/ItemEdit.js"></script>
 </body>

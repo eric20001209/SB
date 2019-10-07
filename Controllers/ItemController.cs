@@ -102,32 +102,6 @@ namespace SB.Controllers
             return NoContent();
         }
 
-        [HttpPost("addBarcode/{id}")]
-        public IActionResult addBarcode(int id, [FromBody] List<AddBarcodeDto> newBarcodes)
-        {
-            if (newBarcodes == null)
-                return BadRequest();
-
-
-            Barcode BarcodeToInput = new Barcode();
-
-            foreach (var newBarcode in newBarcodes)
-            {
-                BarcodeToInput.code = newBarcode.code;
-                BarcodeToInput.barcode = newBarcode.barcode;
-                BarcodeToInput.itemId = id;
-
-                if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
-                {
-                    continue;
-                }
-                _context.Barcode.Add(BarcodeToInput);
-            }
-            _context.SaveChanges(); //update db
-
-            return Ok();
-        }
-
         [HttpGet("itemlist")]
         public IActionResult getItemList()
         {
@@ -265,7 +239,56 @@ namespace SB.Controllers
             return final;
         }
 
-        
+        [HttpPost("addBarcode/{id}")]
+        public IActionResult addBarcode(int id, [FromBody] List<AddBarcodeDto> newBarcodes)
+        {
+            if (newBarcodes == null)
+                return BadRequest();
+
+
+            Barcode BarcodeToInput = new Barcode();
+
+            foreach (var newBarcode in newBarcodes)
+            {
+                BarcodeToInput.code = newBarcode.code;
+                BarcodeToInput.barcode = newBarcode.barcode;
+                BarcodeToInput.itemId = id;
+
+                if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
+                {
+                    continue;
+                }
+                _context.Barcode.Add(BarcodeToInput);
+            }
+            _context.SaveChanges(); //update db
+
+            return Ok();
+        }
+
+        [HttpGet("barcodeList/{itemId}")]
+        public IActionResult barcodeList(int itemId)
+        {
+            var barcodes = new List<BarcodeDto>();
+            var barcodeList = _context.Barcode.Where(b => b.itemId == itemId).ToList();
+
+            if (barcodeList == null)
+                return NotFound();
+
+
+            foreach (var b in barcodeList)
+            {
+                var barcode = new BarcodeDto();
+                barcode.id = b.id;
+                barcode.itemId = b.itemId;
+                barcode.barcode = b.barcode;
+
+                barcodes.Add(barcode);
+            }
+
+            return Ok(barcodes);
+        }
+
+
 
 
 

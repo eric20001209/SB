@@ -58,7 +58,7 @@ function insertrow() {
 //          alert('item ' + id + '/' + code + '/' + name + ' added sucessfully!');
 
             $table.bootstrapTable('insertRow', {
-                index: 20,
+                index: 0,
                 row: {
                     id: id,
                     code: code,
@@ -144,7 +144,7 @@ window.operateEvents = {
         $('#cost').val(row.cost)
         $('#category').html(row.categoryid)
         getCategory(row.cat,row.categoryid)
-
+        getBarcodes(row.id)
  //     alert('You click like action, row: ' + JSON.stringify(row))
 
     },
@@ -264,10 +264,10 @@ function initTable(data, id) {
         $('#itemlist').bootstrapTable('resetView');
     });
 }
-
 function updateitem() {
 
     var $table = $('#itemlist')
+
     var id = $('#hiddenid').html().trim();
     var code = $('#code').val();
     var name = $('#description').val();
@@ -322,6 +322,18 @@ function updateitem() {
         dataType: 'json',
         success: function (data) {
             alert('Item update sucessfully!');
+            //alert(id);
+            //$table.bootstrapTable('updateByUniqueId', {
+            //    id: 5,
+            //    row: {
+            //        code: code,
+            //        name: name,
+            //        name_cn: name_cn,
+            //        price: price,
+            //        cost: cost,
+            //        cat: category
+            //    }
+            //})
             $table.bootstrapTable('updateRow', {
                 index: index,
                 row: {
@@ -345,7 +357,6 @@ function updateitem() {
 
 
 }
-
 function getCategory(text,id)
 {
     //var uri = prefix + '/item/item/cat/' + id;
@@ -389,6 +400,37 @@ function getCategory(text,id)
 
     //$("#category").select2ToTree({ treeData: { dataArr: data }, maximumSelectionLength: 3 });
 }
+function getBarcodes(itemId) {
+
+    var uri = prefix + '/item/barcodeList/' + itemId;
+    $('#barcodelist').dataTable({
+        "ajax": {
+            "url": uri,
+            "dataSrc": ""
+        },
+        "Columns": [
+
+            { "data": "barcode" }
+        ]
+    });
+    //$.ajax({
+    //    type: "get",
+    //    url: uri,
+    //    async: true,
+    //    contentType: "application/json",
+    //    dataType: "json",
+    //    success: function (data) {
+    //        for (var i = 0; i < data.length; i++) {
+
+    //        }
+    //    },
+    //    error: function (data) {
+    //        if (data.status == 401)
+    //            setTimeout("window.location.href='login.html'", 3000);
+    //    }
+    //});
+}
+
 
 
 
