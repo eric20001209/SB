@@ -438,6 +438,35 @@
                                 <input id="cost" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                                Barcodes <span class="required"></span>
+                            </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                
+                                <div class="table-responsive">
+                                    <div id="toolbar">
+                                        <button id="addrow" class="btn btn-default add-new">
+                                            <i class="glyphicon glyphicon-plus"></i> Add Barcode
+                                        </button>
+                                    </div>
+                                    <table class="table order-list" id="barcodelist"
+                                           data-addrbar="true"
+                                           data-search="true"
+                                           data-show-refresh="true"
+                                           data-show-toggle="false"
+                                           data-show-columns="true"
+                                           data-detail-view="true"
+                                           data-click-to-select="true"
+                                           data-detail-formatter="detailFormatter"
+                                           data-minimum-count-columns="2"
+                                           data-page-list="[10,20]"
+                                           data-locale="en-US"
+                                           data-pagination="true">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">

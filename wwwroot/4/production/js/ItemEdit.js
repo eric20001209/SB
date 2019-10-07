@@ -267,6 +267,7 @@ function initTable(data, id) {
 
 function updateitem() {
 
+    var $table = $('#itemlist')
     var id = $('#hiddenid').html().trim();
     var code = $('#code').val();
     var name = $('#description').val();
@@ -276,6 +277,8 @@ function updateitem() {
     var categoryid = $("#category option:selected").val();
     var category = $("#category option:selected").text();
     var index = $('#hiddenindex').html();
+
+  //  alert(id);
 
     var data = [
         {
@@ -319,6 +322,17 @@ function updateitem() {
         dataType: 'json',
         success: function (data) {
             alert('Item update sucessfully!');
+            $table.bootstrapTable('updateRow', {
+                index: index,
+                row: {
+                    code: code,
+                    name: name,
+                    name_cn: name_cn,
+                    price: price,
+                    cost: cost,
+                    cat: category
+                }
+            })
         },
         error: function (data) {
             if (data.status == 400) {
@@ -328,18 +342,8 @@ function updateitem() {
         }
     });
 
-    var $table = $('#itemlist')
-    $table.bootstrapTable('updateRow', {
-        index: index,
-        row: {
-            code: code, 
-            name: name,
-            name_cn: name_cn, 
-            price: price,
-            cost: cost,
-            cat: category
-        }
-    })
+
+
 }
 
 function getCategory(text,id)
