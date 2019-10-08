@@ -76,7 +76,7 @@
                     { "data": "name" },
                     { "data": "name_cn" },
                     { "data": "cat" },
-                    { "data": "unit" },
+                    //{ "data": "unit" },
                     { "data": "price" },
                     { "data": "cost" },
                     {

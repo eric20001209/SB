@@ -23,8 +23,113 @@
     // Remove non-numeric chars (except decimal point/minus sign):
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
 });
+
+
+//$(function() {
+//        $("#test-table").FullTable({
+
+//            "ajax":
+//            {
+//                "url": "https://localhost:44398/api/item/barcodelist/4",
+//                "dataSrc": ""
+//            },
+//            "columns": {"data":"barcode"},
+//            "alwaysCreating": true,
+//            "selectable": true,
+//            "editable": true,
+//            "orderable": false,
+//            "filterable": false,
+
+//            "fields": {
+//                //"gender": {
+//                //    "options": [
+//                //        {
+//                //            "title": "Male",
+//                //            "value": "xy"
+//                //        },
+//                //        {
+//                //            "title": "Female",
+//                //            "value": "xx"
+//                //        }
+//                //    ],
+//                //    "mandatory": true,
+//                //    "placeholder": "Select one",
+//                //    "errors": {
+//                //        "mandatory": "Gender name is mandatory"
+//                //    }
+//                //},
+//                //"firstname": {
+//                //    "mandatory": true,
+//                //    "errors": {
+//                //        "mandatory": "First name is mandatory"
+//                //    }
+//                //},
+//                //"lastname": {
+//                //    "mandatory": true,
+//                //    "errors": {
+//                //        "mandatory": "Last name is mandatory"
+//                //    }
+//                //},
+//                //"age": {
+//                //    "type": "integer",
+//                //    "mandatory": false,
+//                //    "validator": function (age) {
+//                //        if (age >= 0) {
+//                //            return true;
+//                //        } else {
+//                //            return false;
+//                //        }
+//                //    },
+//                //    "errors": {
+//                //        "type": "Age must be an integer number",
+//                //        "mandatory": "Age is mandatory",
+//                //        "validator": "Age cannot be negative"
+//                //    }
+//                //},
+//                //"height": {
+//                //    "type": "decimal",
+//                //    "mandatory": false,
+//                //    "validator": function (height) {
+//                //        if ((height > 0.3) && (height <= 2.8)) {
+//                //            return true;
+//                //        } else {
+//                //            return false;
+//                //        }
+//                //    },
+//                //    "errors": {
+//                //        "type": "Height must be a number",
+//                //        "mandatory": "Height is mandatory",
+//                //        "validator": "Height cannot be neither biggest than 2.8 nor lowest than 0.3"
+//                //    }
+//                //},
+//                //"description": {
+//                //    "mandatory": false
+//                //},
+//                "barcode": {
+//                    "mandatory": false
+//                }
+//            }
+//        });
+//        $("#test-table-add-row").click(function () {
+//            $("#test-table").FullTable("addRow");
+//        });
+//        $("#test-table-get-value").click(function () {
+//            console.log($("#test-table").FullTable("getData"));
+//        });
+//        $("#test-table").FullTable("on", "error", function (errors) {
+//            for (var error in errors) {
+//                error = errors[error];
+//                console.log(error);
+//            }
+//        });
+//        $("#test-table").FullTable("draw");
+//    }
+//);
 var $table = $('#itemlist')
 var $button = $('#addrow')
+
+var $tableBarcode = $('#barcodelist')
+var $buttonBarcode = $('#addbarcode')
 
 $(function () {
     $button.click(function () {
@@ -160,9 +265,34 @@ window.operateEvents = {
         }
     }
 }
+
+window.operateEventsBarcode = {
+    'click .edit-row': function (e, value, row, index) {
+             alert('You click like action, row: ' + JSON.stringify(row))
+    },
+    'click .remove-row': function (e, value, row, index) {
+        alert('12123');
+        var r = confirm('delete this item?');
+        if (r == false) { return; }
+        else {
+//            removerow(row.id);
+            $tableBarcode.bootstrapTable('remove', {
+                field: 'id',
+                values: [row.id]
+            })
+        }
+    }
+}
 function operateFormatter(value, row, index) {
     return [
         '<a href="#" class="edit-row" data-toggle="modal" data-target="#itemEditModal"><i class="fa fa-pencil"></i></a>',
+        '&nbsp;&nbsp;',
+        '<a href="#" class="remove-row"><i class="fa fa-trash-o"></i></a>'
+    ].join('')
+}
+function operateFormatterBarcodes(value, row, index) {
+    return [
+        '<a href="#" class="edit-row"><i class="fa fa-pencil"></i></a>',
         '&nbsp;&nbsp;',
         '<a href="#" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
@@ -264,7 +394,6 @@ function initTable(data, id) {
         $('#itemlist').bootstrapTable('resetView');
     });
 }
-function initTableBarcode() { }
 function updateitem() {
 
     var $table = $('#itemlist')
@@ -404,6 +533,7 @@ function getCategory(text,id)
 function getBarcodes(itemId) {
 
     var uri = prefix + '/item/barcodeList/' + itemId;
+    $('#barcodelist').bootstrapTable('destroy');
     $.ajax({
         type: "get",
         url: uri,
@@ -411,11 +541,59 @@ function getBarcodes(itemId) {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            if (data.length == 0)
+            if (data.length == 0) 
                 return;
-            for (var i = 0; i < data.length; i++) {
-                alert(data[i].barcode);
-            }
+            $('#barcodelist').bootstrapTable('destroy').bootstrapTable({
+
+                resizable: true,
+                columns: [{
+                    field: 'id',
+                    title: 'ID',
+                    sortable: 'true',
+                    editable: 'false'
+                },{
+                    field: 'barcode',
+                    title: 'Barcode',
+                    sortable: 'true',
+                    editable: 'true'
+                    }, {
+                        field: 'id',
+                        title: 'Action',
+                        clickToSelect: false,
+                        events: window.operateEventsBarcode,
+                        formatter: operateFormatterBarcodes
+                    }
+                ],
+                data: data
+            });
+
+            $tableBarcode.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table',
+                function () {
+                    $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                    selections = getIdSelections()
+                    // push or splice the selections if you want to save all data selections
+                })
+            $tableBarcode.on('all.bs.table', function (e, name, args) {
+                console.log(name, args)
+            })
+
+            $(window).resize(function () {
+                $('#barcodelist').bootstrapTable('resetView');
+            });
+
+            //var $table = $('#barcodelist');
+
+            //$(function () {
+            //    $table.on('click-row.bs.table', function (e, row, $element) {
+            //        //alert('111');
+            //        //$('td', row).each(function () {
+            //        //    $(this).html('<input type="text" value="' + $(this).html() + '" />');
+            //        //});
+            //        $('.success').removeClass('success');
+            //        $($element).addClass('success');
+            //    });
+            //});
         },
         error: function (data) {
             if (data.status == 401)

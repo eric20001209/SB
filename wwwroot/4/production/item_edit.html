@@ -41,13 +41,57 @@
     <link href="css/menu/select2totree.css" rel="stylesheet" />
     <!--bootstrap-datatables-->
     <link href="js/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <link href="js/bootstrap-tables/bootstrap-table.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="../octopus_assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+    <!--fulltable-->
+    <link href="css/fulltable/jquery.fulltable.css" rel="stylesheet" />
     <!--loading css-->
     <link href="js/css/loading.css" rel="stylesheet" />
     <!--bootstrap switch button-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.css" rel="stylesheet" />
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <style>
+        /********fulltable***************
+        #barcodelist {
+            position:relative;
+            width:400px;
+            margin:4px 0;
+            border-collapse: collapse;
+
+            font-family: tahoma, arial, helvetica !important;
+            font-size: 9pt !important;
+        }
+        #barcodelist, #barcodelist th, #barcodelist td {
+            border: 1px solid #CCC5C3  ;
+        }
+        #barcodelist th, #barcodelist td  {
+            padding:0 2em;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+            line-height:22px;
+            height:22px;
+        }
+        a.button {
+            position: relative;
+            display: inline-block;
+
+            font-family: tahoma, arial, helvetica;
+            font-size: 9pt;
+            font-weight: bold;
+
+            color: #ffffff;
+            background-color: #AAAAAA;
+
+            padding: 5px;
+
+            text-decoration: none;
+
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+        /**********************************/
         .table-responsive {
             overflow-x: auto;
             overflow-y: hidden;
@@ -441,21 +485,21 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                                Barcodes <span class="required"></span>
+                                Barcode <span class="required"></span>
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                
                                 <div class="table-responsive">
                                     <div id="toolbar">
-                                        <button id="addbarcode" class="btn btn-default add-new">
+                                        <button id="addbarcode" class="btn btn-default add-newbarcode">
                                             <i class="glyphicon glyphicon-plus"></i> Add Barcode
                                         </button>
                                     </div>
                                     <table class="table order-list" id="barcodelist"
                                            data-addrbar="true"
-                                           data-search="true"
-                                           data-show-refresh="true"
-                                           data-show-toggle="true"
+                                           data-search="false"
+                                           data-editable="true"
+                                           data-show-refresh="false"
+                                           data-show-toggle="false"
                                            data-show-columns="true"
                                            data-detail-view="true"
                                            data-click-to-select="true"
@@ -463,12 +507,12 @@
                                            data-minimum-count-columns="3"
                                            data-page-list="[10,20,50]"
                                            data-locale="en-US"
-                                           data-pagination="true">
+                                           data-pagination="false">
                                     </table>
                                 </div>
                             </div>
                         </div>
-                    </form>
+</form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="updateitem()" data-dismiss="modal">Yes</button>
@@ -484,6 +528,7 @@
         <!-- Place at bottom of page -->
     </div>
     <!-- jQuery -->
+    <!--<script src="js/fulltable/jquery-1.7.2.min.js"></script>-->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
     <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -529,12 +574,16 @@
     <script src="js/datatables/jquery.dataTables.js"></script>
     <script src="js/datatables/dataTables.bootstrap4.js"></script>
 
-    <!--bootstrap talbe-->
-    <link href="js/bootstrap-tables/bootstrap-table.min.css" rel="stylesheet" />
+    <!--bootstrap table-->
+
     <script src="js/bootstrap-tables/bootstrap-table.min.js"></script>
     <script src="js/bootstrap-tables/bootstrap-table-locale-all.min.js"></script>
     <script src="js/bootstrap-tables/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="js/bootstrap-tables/extensions/addrbar/bootstrap-table-addrbar.min.js"></script>
+    <!--<script src="js/bootstrap-tables/bootstrap-table-editable.js"></script>-->
+    <!--fulltable-->
+
+    <script src="js/fulltable/jquery.fulltable.js"></script>
     <!--select2tree-->
     <script src="js/menu/select2.js"></script>
     <script src="js/menu/select2totree.js"></script>
