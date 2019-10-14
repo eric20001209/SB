@@ -24,20 +24,20 @@
     //priceVal = parseFloat(price.replace(/[^0-9-.]/g, '')); // 12345.99
 });
 
-
-
 var $table = $('#itemlist')
 var $button = $('#addrow')
-
 var $tableBarcode = $('#barcodelist')
 var $buttonBarcode = $('#addbarcode')
 
-$(function () {
-    $button.click(function () {
+$(function(){
+
+    $button.click(function()
+    {
         insertrow()
     })
 
     $buttonBarcode.click(function () {
+
         var itemId = $('#hiddenid').html().trim();
         var barcode = $('#addnewbarcode').val().trim();
         var uri = prefix + "/item/addBarcode/" + itemId;
@@ -55,20 +55,20 @@ $(function () {
                 var id = data.id;
                 var itemId = data.itemId;
                 var barcode = data.barcode;
-                alert('1111');
+//              alert('1111');
                 $tableBarcode.bootstrapTable('insertRow', {
                     index: 0,
                     row: {
                         id: id,
                         itemId: itemId,
                         barcode: barcode
-
                     }
                 })
-                alert('2222');
+//              alert('2222');
                 $('#addnewbarcode').val("");
             },
-            error: function (data) {
+            error: function (data)
+            {
                 console.log('error');
             }
         });
@@ -165,7 +165,6 @@ function deletebarcode(id) {
 
     }
 }
-
 function addbarcode() {
     var itemId = $('#hiddenid').html().trim();
     var barcode = $('#addnewbarcode').val().trim();
@@ -201,8 +200,6 @@ function addbarcode() {
         }
     });
 }
-
-
 function insertrow() {
     var uri = prefix + "/item/add";
     var code = 100 + ~~(Math.random() * 100)
@@ -349,7 +346,6 @@ window.operateEventsBarcode = {
         }
     }
 }
-
 function operateFormatter(value, row, index) {
     return [
         //'<a href="#" id="barcodeedit" class="edit-row" data-toggle="modal" data-target="#itemEditModal"><i class="fa fa-pencil"></i></a>',
@@ -358,7 +354,6 @@ function operateFormatter(value, row, index) {
         '<a href="#" id="barcoderemove" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
 }
-
 function operateFormatterBarcodes(value, row, index) {
     return [
         '<a href="#" class="edit-row"><i class="fa fa-pencil"></i></a>',
@@ -366,7 +361,6 @@ function operateFormatterBarcodes(value, row, index) {
         '<a href="#" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
 }
-
 function detailFormatter(index, row) {
     var html = []
     $.each(row, function (key, value) {
@@ -600,7 +594,6 @@ function getCategory(text,id)
 
     //$("#category").select2ToTree({ treeData: { dataArr: data }, maximumSelectionLength: 3 });
 }
-
 //function rowAttributes(row, index) {
 //    return {
 //        'data-toggle': 'popover',
@@ -614,9 +607,6 @@ function getCategory(text,id)
 //        ].join(', ')
 //    }
 //}
-
-
-
 function getBarcodes(itemId) {
     var uri = prefix + '/item/barcodeList/' + itemId;
     $('#barcodelist').bootstrapTable('destroy');
