@@ -261,27 +261,23 @@ namespace SB.Controllers
 
             return Ok(barcodes);
         }
-        [HttpPost("addBarcode/{id}")]
-        public IActionResult addBarcode(int id, [FromBody] List<AddBarcodeDto> newBarcodes)
+
+        [HttpPost("addBarcode/{itemId}")]
+        public IActionResult addBarcode(int itemId, [FromBody] AddBarcodeDto newBarcode)
         {
-            if (newBarcodes == null)
+            if (newBarcode == null)
                 return BadRequest();
-
-
             Barcode BarcodeToInput = new Barcode();
 
-            foreach (var newBarcode in newBarcodes)
-            {
-                BarcodeToInput.code = newBarcode.code;
-                BarcodeToInput.barcode = newBarcode.barcode;
-                BarcodeToInput.itemId = id;
+            BarcodeToInput.barcode = newBarcode.barcode;
+            BarcodeToInput.itemId = itemId;
 
-                if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
-                {
-                    continue;
-                }
-                _context.Barcode.Add(BarcodeToInput);
+            if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode && b.itemId != itemId)) //check if this barcode exists
+            {
+                return BadRequest("Barcode exists!");
             }
+            _context.Barcode.Add(BarcodeToInput);
+            
             _context.SaveChanges(); //update db
 
             return Ok();
@@ -304,7 +300,7 @@ namespace SB.Controllers
             patchDoc.ApplyTo(barcodeToPatch, ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if (_context.Barcode.Any(b => b.barcode == barcodeToPatch.barcode))
+            if (_context.Barcode.Any(b => b.barcode == barcodeToPatch.barcode && b.itemId != barcodeToPatch.itemId))
                 return BadRequest("this barcode exists！");
 
             barcodeToUpdate.barcode = barcodeToPatch.barcode;

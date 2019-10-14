@@ -38,15 +38,15 @@ $(function () {
     })
 
     $buttonBarcode.click(function () {
-     //   insertrow()
-        $tableBarcode.bootstrapTable('insertRow', {
-            index: 0,
-            row: {
-                id: '33',
-                itemId: '4',
-                barcode: '65465464'
-            }
-        })
+        addbarcode();
+        //$tableBarcode.bootstrapTable('insertRow', {
+        //    index: 0,
+        //    row: {
+        //        id: '',
+        //        itemId: '4',
+        //        barcode: '65465464'
+        //    }
+        //})
     })
 })
 function openMotai() {
@@ -106,7 +106,6 @@ function saveupdate(id) {
         }
     });
 }
-
 function deletebarcode(id) {
 
     var r = confirm('delete this barcode?');
@@ -133,6 +132,41 @@ function deletebarcode(id) {
         });
 
     }
+}
+
+function addbarcode() {
+    var itemId = $('#hiddenid').html().trim();
+    var barcode = $('#addnewbarcode').html().trim();
+    var uri = prefix + "/item/addBarcode/" + itemId;
+    var someJsonString = {
+        "itemId": itemId,
+        "barcode": barcode
+    };
+    $.ajax({
+        url: uri,//相对应的esb接口地址
+        type: 'post',
+        data: JSON.stringify(someJsonString),//向服务器（接口）传递的参数
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+            var id = data.id;
+            var itemId = data.itemId;
+            var barcode = data.barcode;
+
+            $tableBarcode.bootstrapTable('insertRow', {
+                index: 0,
+                row: {
+                    id: id,
+                    itemId: itemId,
+                    barcode: barcode
+                    //action: operateFormatter
+                }
+            })
+        },
+        error: function (data) {
+            console.log('error');
+        }
+    });
 }
 
 

@@ -485,14 +485,23 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                                Barcode <span class="required"></span>
+                                Barcode(s) <span class="required"></span>
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="table-responsive">
-                                    <div id="toolbar">
-                                        <button id="addbarcode" class="btn btn-default add-newbarcode" onclick="addtr()">
-                                            <i class="glyphicon glyphicon-plus"></i> Add Barcode
-                                        </button>
+                                    <div id="toolbar" class="from-group">
+
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                                <input id="addnewbarcode" class="form-control" type="text">
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                <button id="addbarcode" class="btn btn-default add-newbarcode">
+                                                    <i class="glyphicon glyphicon-plus"></i> Add
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <table class="table order-list" id="barcodelist"
                                            data-addrbar="true"
@@ -510,9 +519,12 @@
                                            data-pagination="false">
                                     </table>
                                 </div>
-                            </div>
+
+
+
+                             </div>
                         </div>
-</form>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="updateitem()" data-dismiss="modal">Yes</button>
