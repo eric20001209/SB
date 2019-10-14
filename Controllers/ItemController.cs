@@ -106,14 +106,14 @@ namespace SB.Controllers
         public IActionResult getItemList()
         {
             var itemList = (from i in _context.Item
-                            .Include(i =>i.barcodes)
-                           join c in _context.Category on i.categoryid equals c.id into cat from c in cat.DefaultIfEmpty()
-                           select new
+                            .Include(i => i.barcodes)
+                            join c in _context.Category on i.categoryid equals c.id into cat from c in cat.DefaultIfEmpty()
+                            select new
                             {
-                                i.id, i.code, i.name, i.name_cn, i.price,i.cost,i.categoryid,
+                                i.id, i.code, i.name, i.name_cn, i.price, i.cost, i.categoryid,
                                 cat = c.description,
                                 i.barcodes
-                            }).OrderByDescending(i=>i.id);
+                            }).OrderByDescending(i => i.id);
             //_context.Item
             //.Include(i => i.barcodes)
             //.Select(x => new
@@ -145,7 +145,7 @@ namespace SB.Controllers
             //.ToList();
 
             if (itemList == null)
-                return BadRequest();            
+                return BadRequest();
 
             return Ok(itemList);
         }
@@ -160,7 +160,7 @@ namespace SB.Controllers
                 .Include(i => i.barcodes)
                 .Select(x => new
                 {
-                    x.code, x.name, x.name_cn, x.price, x.cost,x.unitid,x.categoryid, x.barcodes
+                    x.code, x.name, x.name_cn, x.price, x.cost, x.unitid, x.categoryid, x.barcodes
                 }).FirstOrDefault();
 
             if (item == null)
@@ -209,9 +209,9 @@ namespace SB.Controllers
         {
             var category = _context.Category
                 .Where(c => c.id == id)
-                .Select(c=>new CategoryDto { Id=c.id, Description = c.description, Parent_Id = c.parent_id, LayerLevel = c.layer_level})
+                .Select(c => new CategoryDto { Id = c.id, Description = c.description, Parent_Id = c.parent_id, LayerLevel = c.layer_level })
                 .FirstOrDefault();
-            
+
             var parent_id = _context.Category.Where(c => c.id == id).FirstOrDefault().parent_id;
             if (relateCategoryList.Exists(i => i.Id == id))
             {
@@ -220,7 +220,7 @@ namespace SB.Controllers
                 relateCategoryList.Add(category);
 
             var parentCat = _context.Category.Where(c => c.id == parent_id)
-                .Select(c=> new CategoryDto { Id = c.id, Description = c.description, Parent_Id = c.parent_id, LayerLevel = c.layer_level });
+                .Select(c => new CategoryDto { Id = c.id, Description = c.description, Parent_Id = c.parent_id, LayerLevel = c.layer_level });
             if (parentCat == null)
                 return relateCategoryList;
             foreach (var item in parentCat)
@@ -239,6 +239,28 @@ namespace SB.Controllers
             return final;
         }
 
+        [HttpGet("barcodeList/{itemId}")]
+        public IActionResult barcodeList(int itemId)
+        {
+            var barcodes = new List<BarcodeDto>();
+            var barcodeList = _context.Barcode.Where(b => b.itemId == itemId).ToList();
+
+            if (barcodeList == null)
+                return NotFound();
+
+
+            foreach (var b in barcodeList)
+            {
+                var barcode = new BarcodeDto();
+                barcode.id = b.id;
+                barcode.itemId = b.itemId;
+                barcode.barcode = b.barcode;
+
+                barcodes.Add(barcode);
+            }
+
+            return Ok(barcodes);
+        }
         [HttpPost("addBarcode/{id}")]
         public IActionResult addBarcode(int id, [FromBody] List<AddBarcodeDto> newBarcodes)
         {
@@ -265,29 +287,42 @@ namespace SB.Controllers
             return Ok();
         }
 
-        [HttpGet("barcodeList/{itemId}")]
-        public IActionResult barcodeList(int itemId)
+        [HttpPatch("updateBarcode/{id}")]
+        public IActionResult updateBarcode(int id, [FromBody] JsonPatchDocument<BarcodeDto> patchDoc)
         {
-            var barcodes = new List<BarcodeDto>();
-            var barcodeList = _context.Barcode.Where(b => b.itemId == itemId).ToList();
-
-            if (barcodeList == null)
+            if (patchDoc == null)
+                return BadRequest();
+            var barcodeToUpdate = _context.Barcode.Where(b => b.id == id).FirstOrDefault() ;
+            if (barcodeToUpdate == null)
                 return NotFound();
-
-
-            foreach (var b in barcodeList)
+            var barcodeToPatch = new BarcodeDto()
             {
-                var barcode = new BarcodeDto();
-                barcode.id = b.id;
-                barcode.itemId = b.itemId;
-                barcode.barcode = b.barcode;
+                id = barcodeToUpdate.id,
+                itemId = barcodeToUpdate.itemId,
+                barcode = barcodeToUpdate.barcode 
+            };
+            patchDoc.ApplyTo(barcodeToPatch, ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if (_context.Barcode.Any(b => b.barcode == barcodeToPatch.barcode))
+                return BadRequest("this barcode exists！");
 
-                barcodes.Add(barcode);
-            }
-
-            return Ok(barcodes);
+            barcodeToUpdate.barcode = barcodeToPatch.barcode;
+            _context.SaveChanges();
+            return NoContent();
         }
 
+        [HttpDelete("deleteBarcode/{id}")]
+        public IActionResult deleteBarcode(int id)
+        {
+            var barcodeToDelete = _context.Barcode.Where(b => b.id == id).FirstOrDefault();
+            if (barcodeToDelete == null)
+                return NotFound("barcode not found!");
+
+            _context.Remove(barcodeToDelete);
+            _context.SaveChanges();
+            return Ok(barcodeToDelete);
+        }
 
 
 

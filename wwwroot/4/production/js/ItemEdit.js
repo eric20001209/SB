@@ -65,22 +65,74 @@ function beforeupdate(id, barcode) {
     //alert(id);
     //alert(barcode);
 }
-
 function saveupdate(id) {
 
     $('#savebarcode' + id).hide();
     $('#editbarcode' + id).show();
 
     var newtext = $('#newbarcode' + id).val();
-    alert(newtext); 
+    //alert(newtext); 
     $('#barcode' + id).html(newtext);
+    var barcode = newtext;
+
+    var data = [
+        {
+            "op": "replace",
+            "path": "/barcode",
+            "value": barcode
+        }
+    ];
+    $.ajax({
+        type: 'Patch',
+        url: prefix + "/item/updateBarcode/"+id,
+        data: JSON.stringify(data),
+        timeout: 1000, //超时时间设置，单位毫秒
+        contentType: "application/json",
+        dataType: 'json',
+        success: function (data) {
+            alert('Barcode update sucessfully!');
+            $table.bootstrapTable('updateRow', {
+                id: id,
+                row: {
+                    barcode: barcode
+                }
+            })
+        },
+        error: function (data) {
+            if (data.status == 400) {
+                    alert('Sorry, this item update fail !!!');
+                return false;
+            }
+        }
+    });
 }
-
-
 
 function deletebarcode(id) {
 
- //   alert(id);
+    var r = confirm('delete this barcode?');
+    if (r == false) { return; }
+    else {
+        //        removerow(row.id);
+        $('#barcodelist').bootstrapTable('remove', {
+            field: 'id',
+            values: [id]
+        })
+
+        $.ajax({
+            type: 'delete',
+            url: prefix + "/item/deleteBarcode/" + id,
+            //data: data,
+            timeout: 1000, //超时时间设置，单位毫秒
+            dataType: 'json',
+            success: function (res) {
+                console.log(res)
+            },
+            error: function (res) {
+                console.log('error');
+            }
+        });
+
+    }
 }
 
 
