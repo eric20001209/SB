@@ -38,7 +38,40 @@ $(function () {
     })
 
     $buttonBarcode.click(function () {
-        addbarcode();
+        var itemId = $('#hiddenid').html().trim();
+        var barcode = $('#addnewbarcode').val().trim();
+        var uri = prefix + "/item/addBarcode/" + itemId;
+        var someJsonString = {
+            "itemId": itemId,
+            "barcode": barcode
+        };
+        $.ajax({
+            url: uri,//相对应的esb接口地址
+            type: 'post',
+            data: JSON.stringify(someJsonString),//向服务器（接口）传递的参数
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                var id = data.id;
+                var itemId = data.itemId;
+                var barcode = data.barcode;
+                alert('1111');
+                $tableBarcode.bootstrapTable('insertRow', {
+                    index: 0,
+                    row: {
+                        id: id,
+                        itemId: itemId,
+                        barcode: barcode
+
+                    }
+                })
+                alert('2222');
+                $('#addnewbarcode').val("");
+            },
+            error: function (data) {
+                console.log('error');
+            }
+        });
         //$tableBarcode.bootstrapTable('insertRow', {
         //    index: 0,
         //    row: {
@@ -52,7 +85,6 @@ $(function () {
 function openMotai() {
     $("#itemEditModal").modal({ backdrop: 'static', keyboard: false });  //手动开启
 }
-
 function beforeupdate(id, barcode) {
     $('#savebarcode' + id).show();
     $('#editbarcode' + id).hide();
@@ -136,7 +168,7 @@ function deletebarcode(id) {
 
 function addbarcode() {
     var itemId = $('#hiddenid').html().trim();
-    var barcode = $('#addnewbarcode').html().trim();
+    var barcode = $('#addnewbarcode').val().trim();
     var uri = prefix + "/item/addBarcode/" + itemId;
     var someJsonString = {
         "itemId": itemId,
@@ -152,16 +184,17 @@ function addbarcode() {
             var id = data.id;
             var itemId = data.itemId;
             var barcode = data.barcode;
-
+            //alert('1111');
             $tableBarcode.bootstrapTable('insertRow', {
                 index: 0,
                 row: {
                     id: id,
                     itemId: itemId,
                     barcode: barcode
-                    //action: operateFormatter
                 }
             })
+            //alert('2222');
+            $('#addnewbarcode').val("");
         },
         error: function (data) {
             console.log('error');
@@ -316,14 +349,16 @@ window.operateEventsBarcode = {
         }
     }
 }
+
 function operateFormatter(value, row, index) {
     return [
         //'<a href="#" id="barcodeedit" class="edit-row" data-toggle="modal" data-target="#itemEditModal"><i class="fa fa-pencil"></i></a>',
-        '<a href="#" id="barcodeedit" class="edit-row" onclick="openMotai()"><i class="fa fa-pencil"></i></a>',
+        '<a href="#" id="barcodeedit" class="edit-row"  data-backdrop="static" data-keyboard="false"  onclick="openMotai()"><i class="fa fa-pencil"></i></a>',
         '&nbsp;&nbsp;',
         '<a href="#" id="barcoderemove" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
 }
+
 function operateFormatterBarcodes(value, row, index) {
     return [
         '<a href="#" class="edit-row"><i class="fa fa-pencil"></i></a>',
@@ -331,6 +366,7 @@ function operateFormatterBarcodes(value, row, index) {
         '<a href="#" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
 }
+
 function detailFormatter(index, row) {
     var html = []
     $.each(row, function (key, value) {

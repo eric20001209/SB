@@ -265,14 +265,14 @@ namespace SB.Controllers
         [HttpPost("addBarcode/{itemId}")]
         public IActionResult addBarcode(int itemId, [FromBody] AddBarcodeDto newBarcode)
         {
-            if (newBarcode == null)
+            if (newBarcode == null || newBarcode.barcode == "")
                 return BadRequest();
             Barcode BarcodeToInput = new Barcode();
 
             BarcodeToInput.barcode = newBarcode.barcode;
             BarcodeToInput.itemId = itemId;
 
-            if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode && b.itemId != itemId)) //check if this barcode exists
+            if (_context.Barcode.Any(b => b.barcode == BarcodeToInput.barcode)) //check if this barcode exists
             {
                 return BadRequest("Barcode exists!");
             }
@@ -280,7 +280,7 @@ namespace SB.Controllers
             
             _context.SaveChanges(); //update db
 
-            return Ok();
+            return Ok(BarcodeToInput);
         }
 
         [HttpPatch("updateBarcode/{id}")]
