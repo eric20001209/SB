@@ -428,7 +428,7 @@
         </div>
     </div>
     <!--modal item edit-->
-    <div id="itemEditModal" class="modal fade" role="dialog">
+    <div id="itemEditModal" class="modal fade" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog">
 
             <!-- Modal content-->
@@ -490,10 +490,9 @@
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="table-responsive">
                                     <div id="toolbar">
-                                        <button id="addbarcode" class="btn btn-default add-newbarcode">
+                                        <button id="addbarcode" class="btn btn-default add-newbarcode" onclick="addtr()">
                                             <i class="glyphicon glyphicon-plus"></i> Add Barcode
                                         </button>
-             
                                     </div>
                                     <table class="table order-list" id="barcodelist"
                                            data-addrbar="true"

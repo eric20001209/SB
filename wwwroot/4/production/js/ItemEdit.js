@@ -25,106 +25,7 @@
 });
 
 
-//$(function() {
-//        $("#test-table").FullTable({
 
-//            "ajax":
-//            {
-//                "url": "https://localhost:44398/api/item/barcodelist/4",
-//                "dataSrc": ""
-//            },
-//            "columns": {"data":"barcode"},
-//            "alwaysCreating": true,
-//            "selectable": true,
-//            "editable": true,
-//            "orderable": false,
-//            "filterable": false,
-
-//            "fields": {
-//                //"gender": {
-//                //    "options": [
-//                //        {
-//                //            "title": "Male",
-//                //            "value": "xy"
-//                //        },
-//                //        {
-//                //            "title": "Female",
-//                //            "value": "xx"
-//                //        }
-//                //    ],
-//                //    "mandatory": true,
-//                //    "placeholder": "Select one",
-//                //    "errors": {
-//                //        "mandatory": "Gender name is mandatory"
-//                //    }
-//                //},
-//                //"firstname": {
-//                //    "mandatory": true,
-//                //    "errors": {
-//                //        "mandatory": "First name is mandatory"
-//                //    }
-//                //},
-//                //"lastname": {
-//                //    "mandatory": true,
-//                //    "errors": {
-//                //        "mandatory": "Last name is mandatory"
-//                //    }
-//                //},
-//                //"age": {
-//                //    "type": "integer",
-//                //    "mandatory": false,
-//                //    "validator": function (age) {
-//                //        if (age >= 0) {
-//                //            return true;
-//                //        } else {
-//                //            return false;
-//                //        }
-//                //    },
-//                //    "errors": {
-//                //        "type": "Age must be an integer number",
-//                //        "mandatory": "Age is mandatory",
-//                //        "validator": "Age cannot be negative"
-//                //    }
-//                //},
-//                //"height": {
-//                //    "type": "decimal",
-//                //    "mandatory": false,
-//                //    "validator": function (height) {
-//                //        if ((height > 0.3) && (height <= 2.8)) {
-//                //            return true;
-//                //        } else {
-//                //            return false;
-//                //        }
-//                //    },
-//                //    "errors": {
-//                //        "type": "Height must be a number",
-//                //        "mandatory": "Height is mandatory",
-//                //        "validator": "Height cannot be neither biggest than 2.8 nor lowest than 0.3"
-//                //    }
-//                //},
-//                //"description": {
-//                //    "mandatory": false
-//                //},
-//                "barcode": {
-//                    "mandatory": false
-//                }
-//            }
-//        });
-//        $("#test-table-add-row").click(function () {
-//            $("#test-table").FullTable("addRow");
-//        });
-//        $("#test-table-get-value").click(function () {
-//            console.log($("#test-table").FullTable("getData"));
-//        });
-//        $("#test-table").FullTable("on", "error", function (errors) {
-//            for (var error in errors) {
-//                error = errors[error];
-//                console.log(error);
-//            }
-//        });
-//        $("#test-table").FullTable("draw");
-//    }
-//);
 var $table = $('#itemlist')
 var $button = $('#addrow')
 
@@ -148,6 +49,41 @@ $(function () {
         })
     })
 })
+function openMotai() {
+    $("#itemEditModal").modal({ backdrop: 'static', keyboard: false });  //手动开启
+}
+
+function beforeupdate(id, barcode) {
+    $('#savebarcode' + id).show();
+    $('#editbarcode' + id).hide();
+
+    var td = $('#barcode' + id).html();
+    var text = td.replace('<div></div>','');
+ //   alert(text);
+    $('#barcode' + id).html('<input id="newbarcode' + id + '" type=text value='+text+' class="form-control input-block">');
+
+    //alert(id);
+    //alert(barcode);
+}
+
+function saveupdate(id) {
+
+    $('#savebarcode' + id).hide();
+    $('#editbarcode' + id).show();
+
+    var newtext = $('#newbarcode' + id).val();
+    alert(newtext); 
+    $('#barcode' + id).html(newtext);
+}
+
+
+
+function deletebarcode(id) {
+
+ //   alert(id);
+}
+
+
 function insertrow() {
     var uri = prefix + "/item/add";
     var code = 100 + ~~(Math.random() * 100)
@@ -277,7 +213,6 @@ window.operateEvents = {
         }
     }
 }
-
 window.operateEventsBarcode = {
     'click #barcodeedit': function(e, value, row, index){
              alert('You click like action, row: ' + JSON.stringify(row))
@@ -297,7 +232,8 @@ window.operateEventsBarcode = {
 }
 function operateFormatter(value, row, index) {
     return [
-        '<a href="#" id="barcodeedit" class="edit-row" data-toggle="modal" data-target="#itemEditModal"><i class="fa fa-pencil"></i></a>',
+        //'<a href="#" id="barcodeedit" class="edit-row" data-toggle="modal" data-target="#itemEditModal"><i class="fa fa-pencil"></i></a>',
+        '<a href="#" id="barcodeedit" class="edit-row" onclick="openMotai()"><i class="fa fa-pencil"></i></a>',
         '&nbsp;&nbsp;',
         '<a href="#" id="barcoderemove" class="remove-row"><i class="fa fa-trash-o"></i></a>'
     ].join('')
@@ -543,8 +479,23 @@ function getCategory(text,id)
     //$("#category").select2ToTree({ treeData: { dataArr: data }, maximumSelectionLength: 3 });
 }
 
-function getBarcodes(itemId) {
+//function rowAttributes(row, index) {
+//    return {
+//        'data-toggle': 'popover',
+//        'data-placement': 'bottom',
+//        'data-trigger': 'hover',
+//        'data-content': [
+//            'Index: ' + index,
+//            'ID: ' + row.id,
+//            'Barcode: ' + row.barcode
+            
+//        ].join(', ')
+//    }
+//}
 
+
+
+function getBarcodes(itemId) {
     var uri = prefix + '/item/barcodeList/' + itemId;
     $('#barcodelist').bootstrapTable('destroy');
     $.ajax({
@@ -554,8 +505,8 @@ function getBarcodes(itemId) {
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            if (data.length == 0) 
-                return;
+            //if (data.length == 0) 
+            //    return;
 
             $('#barcodelist').bootstrapTable('destroy').bootstrapTable({
 
@@ -569,15 +520,28 @@ function getBarcodes(itemId) {
                     field: 'barcode',
                     title: 'Barcode',
                     sortable: 'true',
-                    editable: 'true'
+                    editable: 'true',
+                        formatter: function (value, row, rowIndex) {
+                            var htm = '<div id="barcode' + row.id + '">' + row.barcode + '<div>';
+                            //htm += '<input id="newbarcode' + row.id + '" type=text hidden>';
+                            return htm;
+                        }
                     }
-                    //, {
-                    //    field: 'id',
-                    //    title: 'Action',
-                    //    clickToSelect: false,
-                    //    //events: window.operateEventsBarcode,
-                    //    //formatter: operateFormatterBarcodes
-                    //}
+                    , {
+                        field: 'id',
+                        title: 'Action',
+                        clickToSelect: false,
+                        formatter: function (value, row, rowIndex) {
+                            var strHtml = '<a href="#" class="on-default" id="editbarcode' + row.id + '" onclick="beforeupdate(' + row.id + ','+row.barcode+')"><i class="fa fa-pencil"></i></a>';
+                            strHtml += '<a hidden href="#" class="on-editing save-row" id="savebarcode' + row.id + '" onclick="saveupdate(' + row.id + ')" ><i class="fa fa-save"></i></a> ';
+                            strHtml += '&nbsp;&nbsp;<a href="#" class="on-default remove-row" onclick=deletebarcode('+row.id+') > <i class="fa fa-trash-o"></i></a > ';
+                            //if (row.status == '新建') {
+                            //    strHtml += ' <a href="javascript:void(0);" οnclick="javascript:void(0)">审核</a>';
+                            //}
+                            return strHtml;
+     
+                        }
+                    }
                 ],
                 data: data
             });
@@ -616,6 +580,8 @@ function getBarcodes(itemId) {
         }
     });
 }
+
+
 
 
 
