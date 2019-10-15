@@ -66,6 +66,7 @@ $(function(){
                 })
 //              alert('2222');
                 $('#addnewbarcode').val("");
+                return false;
             },
             error: function (data)
             {
@@ -85,7 +86,7 @@ $(function(){
 function openMotai() {
     $("#itemEditModal").modal({ backdrop: 'static', keyboard: false });  //手动开启
 }
-function beforeupdate(id, barcode) {
+function beforeupdate(id) {
     $('#savebarcode' + id).show();
     $('#editbarcode' + id).hide();
 
@@ -116,23 +117,27 @@ function saveupdate(id) {
     ];
     $.ajax({
         type: 'Patch',
-        url: prefix + "/item/updateBarcode/"+id,
+        url: prefix + "/item/updateBarcode/" + id,
+        async: false,
         data: JSON.stringify(data),
         timeout: 1000, //超时时间设置，单位毫秒
         contentType: "application/json",
         dataType: 'json',
         success: function (data) {
             alert('Barcode update sucessfully!');
-            $table.bootstrapTable('updateRow', {
+//            alert(id);
+            $tableBarcode.bootstrapTable('updateCellByUniqueId', {
                 id: id,
-                row: {
-                    barcode: barcode
-                }
+                field: 'barcode',
+                value: barcode
             })
         },
         error: function (data) {
             if (data.status == 400) {
-                    alert('Sorry, this item update fail !!!');
+                alert('Sorry, this item update fail !!!');
+                $('#savebarcode' + id).show();
+                $('#editbarcode' + id).hide();
+                $('#barcode' + id).html('<input id="newbarcode' + id + '" type=text value=' + barcode + ' class="form-control input-block">');
                 return false;
             }
         }
@@ -194,6 +199,7 @@ function addbarcode() {
             })
             //alert('2222');
             $('#addnewbarcode').val("");
+            return false;
         },
         error: function (data) {
             console.log('error');
@@ -644,7 +650,7 @@ function getBarcodes(itemId) {
                         title: 'Action',
                         clickToSelect: false,
                         formatter: function (value, row, rowIndex) {
-                            var strHtml = '<a href="#" class="on-default" id="editbarcode' + row.id + '" onclick="beforeupdate(' + row.id + ','+row.barcode+')"><i class="fa fa-pencil"></i></a>';
+                            var strHtml = '<a href="#" class="on-default" id="editbarcode' + row.id + '" onclick="beforeupdate(' + row.id + ')"><i class="fa fa-pencil"></i></a>';
                             strHtml += '<a hidden href="#" class="on-editing save-row" id="savebarcode' + row.id + '" onclick="saveupdate(' + row.id + ')" ><i class="fa fa-save"></i></a> ';
                             strHtml += '&nbsp;&nbsp;<a href="#" class="on-default remove-row" onclick=deletebarcode('+row.id+') > <i class="fa fa-trash-o"></i></a > ';
                             //if (row.status == '新建') {

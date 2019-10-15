@@ -300,7 +300,7 @@ namespace SB.Controllers
             patchDoc.ApplyTo(barcodeToPatch, ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if (_context.Barcode.Any(b => b.barcode == barcodeToPatch.barcode && b.itemId != barcodeToPatch.itemId))
+            if (_context.Barcode.Any(b => b.barcode == barcodeToPatch.barcode && b.id != id))
                 return BadRequest("this barcode exists！");
 
             barcodeToUpdate.barcode = barcodeToPatch.barcode;

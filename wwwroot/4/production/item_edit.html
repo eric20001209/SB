@@ -438,89 +438,90 @@
                     <h4 class="modal-title">Item Edit <label id="itemId"></label><label hidden id="hiddenid"></label><label hidden id="hiddenindex"></label></h4>
                 </div>
                 <div class="modal-body">
-                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="code">
-                                Code <span class="required">*</span>
-                            </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="code" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
+                    <div id="demo-form2" class="form-horizontal form-label-left">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="code">
+                            Code <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="code" required="required" class="form-control col-md-7 col-xs-12">
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
-                                Description <span class="required">*</span>
-                            </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="description" name="description" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
+                            Description <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="description" required="required" class="form-control col-md-7 col-xs-12">
                         </div>
-                        <div class="form-group">
-                            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Other Des</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input id="otherdes" class="form-control col-md-7 col-xs-12" type="text" name="other-des">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Other Des</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input id="otherdes" class="form-control col-md-7 col-xs-12" type="text">
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <select id="category" class="form-control col-md-7 col-xs-12" style="width:20em"></select>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select id="category" class="form-control col-md-7 col-xs-12" style="width:20em"></select>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                                Price <span class="required">*</span>
-                            </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input id="price" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                                Cost <span class="required">*</span>
-                            </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input id="cost" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                                Barcode(s) <span class="required"></span>
-                            </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <div class="table-responsive">
-                                    <div id="toolbar" class="from-group">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                            Price <span class="required">*</span>
+                        </label>
 
-                                        <div class="form-group">
-                                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                                <input id="addnewbarcode" class="form-control" type="text">
-                                            </div>
-                                            <div class="col-md-4 col-sm-4 col-xs-4">
-                                                <button id="addbarcode" class="btn btn-default">
-                                                    <i class="glyphicon glyphicon-plus"></i> Add
-                                                </button>
-                                            </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input id="price" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                            Cost <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input id="cost" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                            Barcode(s) <span class="required"></span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="table-responsive">
+                                <div id="toolbar" class="from-group">
+
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-sm-8 col-xs-8">
+                                            <input id="addnewbarcode" class="form-control" type="text">
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-4">
+                                            <button id="addbarcode111" class="btn btn-default" onclick="addbarcode(); return false;">
+                                                <i class="glyphicon glyphicon-plus"></i> Add
+                                            </button>
                                         </div>
                                     </div>
-                                    <table class="table order-list" id="barcodelist"
-                                           data-addrbar="true"
-                                           data-search="false"
-                                           data-editable="true"
-                                           data-show-refresh="false"
-                                           data-show-toggle="false"
-                                           data-show-columns="true"
-                                           data-detail-view="true"
-                                           data-click-to-select="true"
-                                           data-detail-formatter="detailFormatter"
-                                           data-minimum-count-columns="3"
-                                           data-page-list="[5,10]"
-                                           data-locale="en-US"
-                                           data-pagination="true">
-                                    </table>
                                 </div>
-                             </div>
+                                <table class="table order-list" id="barcodelist"
+                                       data-addrbar="true"
+                                       data-search="false"
+                                       data-editable="true"
+                                       data-show-refresh="false"
+                                       data-show-toggle="false"
+                                       data-show-columns="true"
+                                       data-detail-view="true"
+                                       data-click-to-select="true"
+                                       data-detail-formatter="detailFormatter"
+                                       data-minimum-count-columns="3"
+                                       data-page-list="[5,10]"
+                                       data-locale="en-US"
+                                       data-pagination="true">
+                                </table>
+                            </div>
                         </div>
-                    </form>
+                    </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="updateitem()" data-dismiss="modal">Yes</button>
