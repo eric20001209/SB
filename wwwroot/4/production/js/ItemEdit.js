@@ -98,7 +98,7 @@ function beforeupdate(id) {
     //alert(id);
     //alert(barcode);
 }
-function saveupdate(id) {
+function saveupdate(id, index) {
 
     $('#savebarcode' + id).hide();
     $('#editbarcode' + id).show();
@@ -126,10 +126,14 @@ function saveupdate(id) {
         success: function (data) {
             alert('Barcode update sucessfully!');
 //            alert(id);
-            $tableBarcode.bootstrapTable('updateCellByUniqueId', {
-                id: id,
-                field: 'barcode',
-                value: barcode
+            $tableBarcode.bootstrapTable('updateRow', {
+                index: index,
+                row: {
+                    //itemId: itemId,
+                    barcode: barcode
+                }
+                //field: 'barcode',
+                //value: barcode
             })
         },
         error: function (data) {
@@ -651,7 +655,7 @@ function getBarcodes(itemId) {
                         clickToSelect: false,
                         formatter: function (value, row, rowIndex) {
                             var strHtml = '<a href="#" class="on-default" id="editbarcode' + row.id + '" onclick="beforeupdate(' + row.id + ')"><i class="fa fa-pencil"></i></a>';
-                            strHtml += '<a hidden href="#" class="on-editing save-row" id="savebarcode' + row.id + '" onclick="saveupdate(' + row.id + ')" ><i class="fa fa-save"></i></a> ';
+                            strHtml += '<a hidden href="#" class="on-editing save-row" id="savebarcode' + row.id + '" onclick="saveupdate(' + row.id + ',' + rowIndex+')" ><i class="fa fa-save"></i></a> ';
                             strHtml += '&nbsp;&nbsp;<a href="#" class="on-default remove-row" onclick=deletebarcode('+row.id+') > <i class="fa fa-trash-o"></i></a > ';
                             //if (row.status == '新建') {
                             //    strHtml += ' <a href="javascript:void(0);" οnclick="javascript:void(0)">审核</a>';
