@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using SB.Dto;
+using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace SB.Controllers
 {
@@ -18,29 +20,53 @@ namespace SB.Controllers
     public class BranchReportController : ControllerBase
     {
         wucha_cloudContext _context = new wucha_cloudContext();
-
-        [AllowAnonymous]
+		private ILogger<BranchReportController> _logger;  //微软自带的logger
+		public BranchReportController(ILogger<BranchReportController> logger)
+		{
+			_logger = logger;
+		}
+		[AllowAnonymous]
         [HttpGet()]
-        public IActionResult getBranchReportByDate([FromQuery] DateTime start, [FromQuery] DateTime end)
+        public async Task<IActionResult>getBranchReportByDate([FromQuery] DateTime start, [FromQuery] DateTime end)
         {
             if (start == null || end == null)
-                return BadRequest(ModelState);
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
+			{
+				_logger.LogError($"Start Date or End Date cannot be null!!"); //inject a log!
+				return BadRequest(ModelState);
+			}
 
-            //setup time filter
-            var myfilter = new FilterDto();
+			//if (!ModelState.IsValid)
+			//{
+			//	
+			//	return BadRequest(ModelState);
+			//}
+
+
+			//setup time filter
+			var myfilter = new FilterDto();
             myfilter.Start = start;
             myfilter.End = end.AddDays(1);
 
-            //get Result List
-            var myResult = getBranchReport(myfilter);
-            return Ok(myResult);
+			//get Result List
+			try
+			{
+				var myResult = await getBranchReport(myfilter);
+				_logger.LogInformation($"Get Report Done!!!");
+				return Ok(myResult);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogCritical($"Get Report Error!!! Exception: {ex}");
+				return NotFound();
+			}
+
         }
 
-        public List<BranchReportDto> getBranchReport([FromBody] FilterDto myfilter)
+        public async Task<List<BranchReportDto>> getBranchReport([FromBody] FilterDto myfilter)
         {
             _context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;  //saving garbage collection
+			var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();  //Creating a logger by Nlog!
+
 
             var BranchInvoiceList = (from i in _context.Invoice
                                      join b in _context.Branch on i.Branch equals b.Id
@@ -59,7 +85,10 @@ namespace SB.Controllers
                                     .Where(i => i.CommitDate == null ? true : i.CommitDate <= myfilter.End)
                                     .Where(i => myfilter.BranchId != null ? (i.Branch == myfilter.BranchId) : true)
                                     .Where(b => b.Activated == true);
-
+			if (BranchInvoiceList == null || !await BranchInvoiceList.AnyAsync())
+			{
+				logger.Info($"Invoice list is empty!!");
+			}
 
             var saleslist =
                 _context.Branch
@@ -75,7 +104,12 @@ namespace SB.Controllers
                 i => i.Branch,
                 (b, i) => new { i.InvoiceNumber, b.BranchName, i.CommitDate, i.Branch });
 
-            var sales = from s in _context.Sales
+			if (saleslist == null || !await saleslist.AnyAsync())
+			{
+				logger.Info($"Sales list is empty!!");
+			}
+
+			var sales = from s in _context.Sales
                         join b in BranchInvoiceList on s.InvoiceNumber equals b.InvoiceNumber
                         select new
                         {
@@ -91,8 +125,13 @@ namespace SB.Controllers
                             b.Branch,
                             b.BranchName
                         };
+			if (sales == null || !await sales.AnyAsync())
+			{
+				logger.Info($"Sales is empty!!");
+			}
 
-            double overalltotal = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value, 2); 
+
+			double overalltotal = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value, 2); 
             double overallprofit = Math.Round((double)sales.Select(s => Math.Round((double)s.CommitPrice - (double)s.SupplierPrice) * s.Quantity * (1 + s.TaxRate)).Sum().Value,2);
             double overalltrans = BranchInvoiceList.Count()== 0 ? 1: BranchInvoiceList.Count();
             double overallconsumPerTrans = Math.Round(overalltotal/ overalltrans, 2);
@@ -138,7 +177,6 @@ namespace SB.Controllers
                               //              }).OrderByDescending(o => o.total).Take(10)
 
                           }).ToList();
-
             return report;
         }
     }
